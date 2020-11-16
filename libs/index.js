@@ -1,3 +1,3 @@
 export default function lib() {
-  return "library";
+  return "modified";
 }
