@@ -1,0 +1,106 @@
+# NOTE: update this with your service name
+service: offers
+
+# Create an optimized package for our functions
+package:
+  individually: true
+
+plugins:
+  - serverless-bundle # Package our functions with Webpack
+  - serverless-offline
+  - serverless-dotenv-plugin # Load .env as environment variables
+
+custom: ${file(../../serverless.common.yml):custom}
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: dev
+  region: us-east-2
+  # To load environment variables externally
+  # rename env.example to .env and uncomment
+  # the following line. Also, make sure to not
+  # commit your .env.
+  #
+  #environment:
+  #  SAMPLE_ENV_VAR: ${env:SAMPLE_ENV_VAR}
+
+  environment:
+    stripeSecretKey: ${env:STRIPE_SECRET_KEY}
+    offersTableName: !ImportValue '${self:custom.sstApp}-ExtOffersTableName'
+    offerTableIndex: ${env:OFFER_TABLE_INDEX}
+    userTableName: !ImportValue '${self:custom.sstApp}-ExtUserTableName'
+    collaborationsTableName: !ImportValue '${self:custom.sstApp}-ExtCollaborationsTableName'
+
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Scan
+        - dynamodb:Query
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+        - dynamodb:DescribeTable
+      # Restrict our IAM role permissions to
+      # the specific table for the stage
+      Resource:
+        - !ImportValue '${self:custom.sstApp}-ExtOffersTableArn'
+        - !ImportValue '${self:custom.sstApp}-ExtUserTableArn'
+        - !ImportValue '${self:custom.sstApp}-ExtCollaborationsTableArn'
+functions:
+  create:
+    handler: create.main
+    events:
+      - http:
+          path: offers
+          method: post
+          cors: true
+          authorizer: aws_iam
+  listOffersForInflu:
+    handler: listOffersForInflu.main
+    events:
+      - http:
+          path: offers/listOffersForInflu
+          method: get
+          cors: true
+          authorizer: aws_iam
+  listOffersForBusiness:
+    handler: listOffersForBusiness.main
+    events:
+      - http:
+          path: offers/listOffersForBusiness
+          method: get
+          cors: true
+          authorizer: aws_iam
+  get:
+    handler: get.main
+    events:
+      - http:
+          path: offers/{id}
+          method: get
+          cors: true
+          authorizer: aws_iam
+  update:
+    handler: update.main
+    events:
+      - http:
+          path: offers/{id}
+          method: put
+          cors: true
+          authorizer: aws_iam
+  delete:
+    handler: delete.main
+    events:
+      - http:
+          path: offers/{id}
+          method: delete
+          cors: true
+          authorizer: aws_iam
+# Create our resources with separate CloudFormation templates
+# Create our resources with separate CloudFormation templates
+resources:
+  # API Gateway Errors
+  - ${file(resources/api-gateway-errors.yml)}
+  # Cognito Identity Pool Policy
+  - ${file(resources/cognito-policy.yml)}

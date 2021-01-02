@@ -9,6 +9,10 @@
     "services/*"
   ],
   "devDependencies": {
+    "aws-sdk": "^2.793.0",
     "lerna": "^3.22.1"
+  },
+  "dependencies": {
+    "uuid": "^7.0.3"
   }
 }
