@@ -1,0 +1,34 @@
+{
+  "userId": "user123",
+  "business": "N",
+  "username": "gioagugini",
+  "name": "Giovanni",
+  "surname": "Agugini Bassi",
+  "bio": "La vita é come un biscotto, ma se piove si scioglie.",
+  "noOfFollowers": "815",
+  "engagementRate": "0.137",
+  "noOfActiveCollaborations": "0",
+  "noOfTotalCollaborations": "0",
+  "profileImg":{
+    "bucketName": "Uploads",
+    "objectKey": "keytest"
+  },
+  "noOfPendingApplication": "0",
+  "categories": ["travel", "food"],
+  "remarkPosts":[
+    {
+      "postImages": [
+        {
+          "bucketName": "Uploads",
+          "obectKey": "keytest"
+        }
+      ],
+      "caption": "This is a test caption",
+      "tags": ["@giovanni", "@remark"],
+      "hashtags": ["food", "remarklife"],
+      "instagramURL": "instagram.com/p/CEj7iMyj2a5"
+    }
+  ],
+  "noOfComments": "1",
+  "noOfLikes": "134"
+}

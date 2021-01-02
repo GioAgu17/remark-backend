@@ -1,0 +1,37 @@
+{
+  "advFlg": "Y",
+  "isPost": "Y",
+  "title": "First Offer",
+  "description": "This is a first test offer description",
+  "address":{
+    "addressLocation1": "14 E 34th Street",
+    "addressLocation2": "Apt 302",
+    "city": "Chicago",
+    "state": "IL",
+    "country": "US",
+    "zipCode": "60608"
+  },
+  "coordinates":{
+    "latitude": "38.897957",
+    "longitude": "-77.036560"
+  },
+  "offerDescription": "This is an offer description",
+  "bucketName": "Uploads",
+  "offerImages": ["s3objectkey"],
+  "offerValue": "90",
+  "expiryDate": "12-NOV-20",
+  "noOfInfluencers": "2",
+  "noOfFollowers": "15000",
+  "ageRange": "18-30",
+  "influencerCategories": ["food", "beauty"],
+  "postCaption": "This is a caption for a post",
+  "postTags": ["@business", "@remark"],
+  "postHashtags": ["foodlove", "remarklife"],
+  "postImages": ["s3objectkey1", "s3objectkey2"] ,
+  "storyType": "storyTypeTest",
+  "storyDescription": "This is a story description test",
+  "noOfStories" : "3",
+  "storyVideoDescription": "This is a video description story",
+  "storyImages": ["s3objectkey"],
+  "storyHashtags": ["lovebiz", "remarklife"]
+}

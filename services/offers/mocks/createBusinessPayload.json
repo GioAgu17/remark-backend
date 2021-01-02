@@ -1,0 +1,19 @@
+{
+  "userId": "user321",
+  "companyName": "remark inc.",
+  "business" : "Y",
+  "instagramToken": "tokenTest",
+  "email": "usertest@remark-app.com",
+  "phone": "3127238050",
+  "category": ["food", "drink"],
+  "city": "Milan",
+  "country": "Italy",
+  "website": "thegiovannino.com",
+  "profileImg": {
+    "bucketName": "Uploads",
+    "objectKey": "keytest"
+  },
+  "activeCollaborations": "0",
+  "pastCollaborations": "0",
+  "noOfInstagramFollowers": "2345",
+}

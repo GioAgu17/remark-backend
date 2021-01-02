@@ -1,0 +1,8 @@
+{
+  "body": "{\r\n  \"username\" : \"remarkboss\",\r\n  \"firstName\" : \"Remark\",\r\n  \"lastName\": \"SRL\",\r\n  \"bio\" : \"Questa \u00E9 una bio prova\",\r\n  \"instagramURL\" : \"https:\/\/www.instagram.com\/gioagugini\/\",\r\n  \"followers\" : 14390,\r\n  \"activeCollaborations\" : 0,\r\n  \"totCollaborations\" : 0,\r\n  \"profileImage\" : \"objectS3Key\",\r\n  \"collabPerMonth\" : 2,\r\n  \"avgLikes\" : 1007,\r\n  \"categories\" : [\"beauty\", \"travel\"],\r\n  \"followersTrend\" : \"+12\",\r\n  \"postsForRemark\" : [\"https:\/\/www.instagram.com\/p\/B51HpdsJ8d5\/\", \"https:\/\/www.instagram.com\/p\/B1ENMfrIGr4\/\"],\r\n  \"age\" : \"35\",\r\n  \"country\": \"International\"\r\n}",
+  "requestContext": {
+    "identity": {
+      "cognitoIdentityId": "USER-SUB-1234"
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "body": "{\r\n  \"businessId\": \"USER-SUB-1234\",\r\n  \"advFlg\": \"Y\",\r\n  \"isPost\": \"Y\",\r\n  \"title\": \"Third Offer\",\r\n  \"description\": \"This is a fourth test offer description\",\r\n  \"address\":{\r\n    \"addressLocation1\": \"14 E 34th Street\",\r\n    \"addressLocation2\": \"Apt 302\",\r\n    \"city\": \"Chicago\",\r\n    \"state\": \"IL\",\r\n    \"country\": \"US\",\r\n    \"zipCode\": \"60608\"\r\n  },\r\n  \"coordinates\":{\r\n    \"latitude\": \"35.297957\",\r\n    \"longitude\": \"-75.036560\"\r\n  },\r\n  \"offerDescription\": \"This is a fourth offer description\",\r\n  \"bucketName\": \"Uploads\",\r\n  \"offerImages\": [\"s3objectkey\"],\r\n  \"offerValue\": \"90\",\r\n  \"expiryDate\": \"12-NOV-20\",\r\n  \"noOfInfluencers\": \"2\",\r\n  \"noOfFollowersRange\": \"100000-150000\",\r\n  \"ageRange\": \"30-45\",\r\n  \"influencerCategories\": [\"travel\", \"food\"],\r\n  \"postCaption\": \"This is a caption for a post\",\r\n  \"engagementRateRange\": \"5-10\",\r\n  \"postTags\": [\"@business\", \"@remark\"],\r\n  \"postHashtags\": [\"foodlove\", \"remarklife\"],\r\n  \"postImages\": [\"s3objectkey1\", \"s3objectkey2\"] ,\r\n  \"storyType\": \"storyTypeTest\",\r\n  \"storyDescription\": \"This is a story description test\",\r\n  \"noOfStories\" : \"3\",\r\n  \"storyVideoDescription\": \"This is a video description story\",\r\n  \"storyImages\": [\"s3objectkey\"],\r\n  \"storyHashtags\": [\"lovebiz\", \"remarklife\"]\r\n}",
+  "requestContext": {
+    "identity": {
+      "cognitoIdentityId": "USER-SUB-1234"
+    }
+  }
+}

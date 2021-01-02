@@ -1,0 +1,8 @@
+{
+  "body": "{\r\n  \"lat\": \"35.297957\",\r\n  \"long\": \"-75.036560\",\r\n  \"radius\": \"7000\"\r\n}",
+  "requestContext": {
+    "identity": {
+      "cognitoIdentityId": "1531f8b9-9a9d-4cc0-bf22-81fcb75b0adf"
+    }
+  }
+}

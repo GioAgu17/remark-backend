@@ -1,0 +1,35 @@
+Offers API test
+
+Template:
+
+npx aws-api-gateway-cli-test \
+--username='admin@example.com' \
+--password='Passw0rd!' \
+--user-pool-id='YOUR_COGNITO_USER_POOL_ID' \
+--app-client-id='YOUR_COGNITO_APP_CLIENT_ID' \
+--cognito-region='YOUR_COGNITO_REGION' \
+--identity-pool-id='YOUR_IDENTITY_POOL_ID' \
+--invoke-url='YOUR_API_GATEWAY_URL' \
+--api-gateway-region='YOUR_API_GATEWAY_REGION' \
+--path-template='/notes' \
+--method='POST' \
+--body='{"content":"hello world","attachment":"hello.jpg"}'
+
+DEV:
+
+YOUR_COGNITO_REGION : us-east-2
+YOUR_COGNITO_USER_POOL_ID: us-east-2_OQaPWe5UD
+YOUR_COGNITO_APP_CLIENT_ID: 1gokb9tpm13il68ecv9jiqg6jd
+YOUR_IDENTITY_POOL_ID: us-east-2:91f7362e-8290-413b-bea1-b17df3cd1be1
+YOUR_API_GATEWAY_URL: https://npmajqvjr5.execute-api.us-east-2.amazonaws.com/dev
+YOUR_API_GATEWAY_REGION: us-east-2
+
+
+PROD:
+
+YOUR_COGNITO_REGION : us-east-2
+YOUR_COGNITO_USER_POOL_ID: 
+YOUR_COGNITO_APP_CLIENT_ID: 
+YOUR_IDENTITY_POOL_ID: 
+YOUR_API_GATEWAY_URL: 
+YOUR_API_GATEWAY_REGION: us-east-2
