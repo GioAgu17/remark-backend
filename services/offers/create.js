@@ -7,6 +7,5 @@ export const main = handler(async (event, context) => {
   const data = JSON.parse(event.body);
   const offerID = uuid.v1();
   const businessID = event.requestContext.identity.cognitoIdentityId;
-  await geospatial.insertOffer(data, businessID, offerID);
-  console.log("Offer", offerID, "inserted");
+  geospatial.insertOffer(data, businessID, offerID);
 });

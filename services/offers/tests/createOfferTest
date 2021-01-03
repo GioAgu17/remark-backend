@@ -1,0 +1,49 @@
+npx aws-api-gateway-cli-test \
+--username='admin@example.com' \
+--password='Passw0rd!' \
+--user-pool-id='us-east-2_OQaPWe5UD' \
+--app-client-id='1gokb9tpm13il68ecv9jiqg6jd' \
+--cognito-region='us-east-2' \
+--identity-pool-id='us-east-2:91f7362e-8290-413b-bea1-b17df3cd1be1' \
+--invoke-url='https://npmajqvjr5.execute-api.us-east-2.amazonaws.com/dev' \
+--api-gateway-region='us-east-2' \
+--path-template='/offers' \
+--method='POST' \
+--body='{"businessId": "USER-SUB-1234",
+  "advFlg": "Y",
+  "isPost": "Y",
+  "title": "Third Offer",
+  "description": "This is a fourth test offer description",
+  "address":{
+    "addressLocation1": "14 E 34th Street",
+    "addressLocation2": "Apt 302",
+    "city": "Chicago",
+    "state": "IL",
+    "country": "US",
+    "zipCode": "60608"
+  },
+  "coordinates":{
+    "latitude": "35.297957",
+    "longitude": "-75.036560"
+  },
+  "offerDescription": "This is a fourth offer description",
+  "bucketName": "Uploads",
+  "offerImages": ["s3objectkey"],
+  "offerValue": "90",
+  "expiryDate": "12-NOV-20",
+  "noOfInfluencers": "2",
+  "noOfFollowersRange": "100000-150000",
+  "ageRange": "30-45",
+  "influencerCategories": ["travel", "food"],
+  "postCaption": "This is a caption for a post",
+  "engagementRateRange": "5-10",
+  "postTags": ["@business", "@remark"],
+  "postHashtags": ["foodlove", "remarklife"],
+  "postImages": ["s3objectkey1", "s3objectkey2"] ,
+  "storyType": "storyTypeTest",
+  "storyDescription": "This is a story description test",
+  "noOfStories" : "3",
+  "storyVideoDescription": "This is a video description story",
+  "storyImages": ["s3objectkey"],
+  "storyHashtags": ["lovebiz", "remarklife"]
+}'
