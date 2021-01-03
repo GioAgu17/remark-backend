@@ -3,10 +3,9 @@ import handler from "./libs/handler-lib";
 import * as geospatial from "./libs/geospatial-lib";
 
 export const main = handler(async (event, context) => {
-  // adding dummy change to deploy
   const data = JSON.parse(event.body);
   const offerID = uuid.v1();
   const businessID = event.requestContext.identity.cognitoIdentityId;
-  await geospatial.insertOffer(data, businessID, offerID);
+  geospatial.insertOffer(data, businessID, offerID);
   return data;
 });

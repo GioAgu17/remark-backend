@@ -12,7 +12,7 @@ npx aws-api-gateway-cli-test \
 --body='{"businessId": "USER-SUB-1234",
   "advFlg": "Y",
   "isPost": "Y",
-  "title": "Third Offer",
+  "title": "Dev Offer Test",
   "description": "This is a fourth test offer description",
   "address":{
     "addressLocation1": "14 E 34th Street",
@@ -23,8 +23,8 @@ npx aws-api-gateway-cli-test \
     "zipCode": "60608"
   },
   "coordinates":{
-    "latitude": "40.758896",
-    "longitude": "-73.985130"
+    "latitude": "41.8988",
+    "longitude": "-87.623"
   },
   "offerDescription": "This is a fourth offer description",
   "bucketName": "Uploads",
