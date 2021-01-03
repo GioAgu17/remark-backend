@@ -2,7 +2,7 @@ import AWS from "aws-sdk";
 import * as uuid from "uuid";
 
 const ddb = new AWS.DynamoDB();
-const ddbGeo = require('dynamodb-geo');
+const ddbGeo = require('dynamodb-geo-regevbr');
 const config = new ddbGeo.GeoDataManagerConfiguration(ddb, process.env.offersTableName);
 config.longitudeFirst = process.env.longitudeFirst;
 // 6 is optimal for a range between 1-10 km

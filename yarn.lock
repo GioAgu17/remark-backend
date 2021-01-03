@@ -2471,7 +2471,7 @@
   resolved "https://registry.yarnpkg.com/@types/json5/-/json5-0.0.29.tgz#ee28707ae94e11d2b827bcbe5270bcea7f3e71ee"
   integrity sha1-7ihweulOEdK4J7y+UnC86n8+ce4=
 
-"@types/long@>=3":
+"@types/long@>=3", "@types/long@^4.0.1":
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/@types/long/-/long-4.0.1.tgz#459c65fa1867dafe6a8f322c4c51695663cc55e9"
   integrity sha512-5tXH6Bx/kNGd3MgffdmP4dy2Z+G4eaXw0SE81Tq3BNadtnMR5/ySMzX4SLEzHJzSmPNn4HIdpQsBvXMUykr58w==
@@ -4675,6 +4675,14 @@ duplexify@^3.4.2, duplexify@^3.6.0:
     inherits "^2.0.1"
     readable-stream "^2.0.0"
     stream-shift "^1.0.0"
+
+dynamodb-geo-regevbr@^0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/dynamodb-geo-regevbr/-/dynamodb-geo-regevbr-0.4.1.tgz#a53e57e4105f027f69fc9c160b3b32515b6dd27a"
+  integrity sha512-2rOBRvjDn1FPTqXL52DcMP6zGU7jwC48PT6pov65XPn2tgKqhOF5P0li5XV3y228gX22l4ngBUHrefzQKfNDaA==
+  dependencies:
+    "@types/long" "^4.0.1"
+    nodes2ts "^2.0.0"
 
 dynamodb-geo@^0.4.0:
   version "0.4.0"
@@ -7402,6 +7410,11 @@ long@^3.2.0:
   resolved "https://registry.yarnpkg.com/long/-/long-3.2.0.tgz#d821b7138ca1cb581c172990ef14db200b5c474b"
   integrity sha1-2CG3E4yhy1gcFymQ7xTbIAtcR0s=
 
+long@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/long/-/long-4.0.0.tgz#9a7b71cfb7d361a194ea555241c92f7468d5bf28"
+  integrity sha512-XsP+KhQif4bjX1kbuSiySJFNAehNxgLb6hPRGJ9QsUr8ajHkuXGdrHmFUTUUXhDwVX2R5bY4JNZEwbUiMhV+MA==
+
 loose-envify@^1.0.0, loose-envify@^1.1.0, loose-envify@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/loose-envify/-/loose-envify-1.4.0.tgz#71ee51fa7be4caec1a63839f7e682d8132d30caf"
@@ -8074,6 +8087,13 @@ nodes2ts@^1.1.10:
   dependencies:
     decimal.js "^6.0.0"
     long "^3.2.0"
+
+nodes2ts@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/nodes2ts/-/nodes2ts-2.0.0.tgz#7ff815313257d9eba696eecb63482ed3754d1954"
+  integrity sha512-847uDvD2P19xsN7BNPbeUqaZCxA3OBmlHCIqpAsy/JCnGI90XZeZTFtHueK6GZjn/CNaBG2sA42aI0qQvLAJig==
+  dependencies:
+    long "^4.0.0"
 
 nofilter@^1.0.3:
   version "1.0.4"
