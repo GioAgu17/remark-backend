@@ -9,8 +9,7 @@ config.longitudeFirst = process.env.longitudeFirst;
 config.hashKeyLength = process.env.hashKeyLength;
 const myGeoTableManager = new ddbGeo.GeoDataManager(config);
 
-export function insertOffer(data, businessID, offerID){
-  (async () => {
+export async function insertOffer(data, businessID, offerID){
     await myGeoTableManager.putPoint({
           RangeKeyValue: { S: uuid.v4() }, // Use this to ensure uniqueness of the hash/range pairs.
           GeoPoint: { // An object specifying latitutde and longitude as plain numbers. Used to build the geohash, the hashkey and geojson data
@@ -55,8 +54,7 @@ export function insertOffer(data, businessID, offerID){
             },   // ... Anything else to pass through to `putItem`, eg ConditionExpression
           }
       });
-  })();
-  console.log("Offer", offerID, "inserted");
+      console.log("Offer", offerID, "inserted");
 }
 
 export function queryOffersByRadius(data){

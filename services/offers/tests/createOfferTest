@@ -23,8 +23,8 @@ npx aws-api-gateway-cli-test \
     "zipCode": "60608"
   },
   "coordinates":{
-    "latitude": "35.297957",
-    "longitude": "-75.036560"
+    "latitude": "40.758896",
+    "longitude": "-73.985130"
   },
   "offerDescription": "This is a fourth offer description",
   "bucketName": "Uploads",
