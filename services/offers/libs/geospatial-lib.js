@@ -4,9 +4,9 @@ import * as uuid from "uuid";
 const ddb = new AWS.DynamoDB();
 const ddbGeo = require('dynamodb-geo');
 const config = new ddbGeo.GeoDataManagerConfiguration(ddb, process.env.offersTableName);
-config.longitudeFirst = false;
+config.longitudeFirst = process.env.longitudeFirst;
 // 6 is optimal for a range between 1-10 km
-config.hashKeyLength = 6;
+config.hashKeyLength = process.env.hashKeyLength;
 const myGeoTableManager = new ddbGeo.GeoDataManager(config);
 
 export function insertOffer(data, businessID, offerID){

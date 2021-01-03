@@ -17,6 +17,8 @@ provider:
   runtime: nodejs12.x
   stage: dev
   region: us-east-2
+  apiGateway:
+    shouldStartNameWithService: true
   # To load environment variables externally
   # rename env.example to .env and uncomment
   # the following line. Also, make sure to not
@@ -31,6 +33,8 @@ provider:
     offerTableIndex: ${env:OFFER_TABLE_INDEX}
     userTableName: !ImportValue '${self:custom.sstApp}-ExtUserTableName'
     collaborationsTableName: !ImportValue '${self:custom.sstApp}-ExtCollaborationsTableName'
+    longitudeFirst: ${env:DYNAMODB_GEO_LONGITUDE_FIRST}
+    hashKeyLength: ${env:DYNAMODB_GEO_HASHKEY_LENGTH}
 
   iamRoleStatements:
     - Effect: Allow
