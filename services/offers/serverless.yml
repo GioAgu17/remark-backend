@@ -52,6 +52,7 @@ provider:
         - !ImportValue '${self:custom.sstApp}-ExtOffersTableArn'
         - !ImportValue '${self:custom.sstApp}-ExtUserTableArn'
         - !ImportValue '${self:custom.sstApp}-ExtCollaborationsTableArn'
+        - !ImportValue '${self:custom.sstApp}-ExtOfferTableArnIndex'
 functions:
   create:
     handler: create.main

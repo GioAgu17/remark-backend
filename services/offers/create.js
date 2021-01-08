@@ -6,6 +6,6 @@ export const main = handler(async (event, context) => {
   const data = JSON.parse(event.body);
   const offerID = uuid.v1();
   const businessID = event.requestContext.identity.cognitoIdentityId;
-  geospatial.insertOffer(data, businessID, offerID);
-  return data;
+  await geospatial.insertOffer(data, businessID, offerID);
+  return offerID;
 });

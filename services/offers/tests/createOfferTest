@@ -12,25 +12,25 @@ npx aws-api-gateway-cli-test \
 --body='{"businessId": "USER-SUB-1234",
   "advFlg": "Y",
   "isPost": "Y",
-  "title": "Dev Offer Test",
-  "description": "This is a fourth test offer description",
+  "title": "New Offer Test",
+  "description": "Hopefully this will go through",
   "address":{
-    "addressLocation1": "14 E 34th Street",
-    "addressLocation2": "Apt 302",
+    "addressLocation1": "201 E Randolph St",
+    "addressLocation2": "Apt 3",
     "city": "Chicago",
     "state": "IL",
     "country": "US",
-    "zipCode": "60608"
+    "zipCode": "60602"
   },
   "coordinates":{
-    "latitude": "41.8988",
-    "longitude": "-87.623"
+    "latitude": "41.882702",
+    "longitude": "-87.619392"
   },
-  "offerDescription": "This is a fourth offer description",
+  "offerDescription": "Let's see how it will go",
   "bucketName": "Uploads",
   "offerImages": ["s3objectkey"],
   "offerValue": "90",
-  "expiryDate": "12-NOV-20",
+  "expiryDate": "12-JAN-20",
   "noOfInfluencers": "2",
   "noOfFollowersRange": "100000-150000",
   "ageRange": "30-45",
@@ -45,5 +45,4 @@ npx aws-api-gateway-cli-test \
   "noOfStories" : "3",
   "storyVideoDescription": "This is a video description story",
   "storyImages": ["s3objectkey"],
-  "storyHashtags": ["lovebiz", "remarklife"]
-}'
+  "storyHashtags": ["lovebiz", "remarklife"]}'

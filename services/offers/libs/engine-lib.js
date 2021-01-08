@@ -1,8 +1,4 @@
 import AWS from "aws-sdk";
-const CATEGORY_WEIGHT = 4;
-const FOLLOWERS_WEIGHT = 3;
-const ENGAGEMENT_WEIGHT = 2;
-const AGE_WEIGHT = 1;
 export function rankOffers(offers, influencer){
   const categories = influencer.categories;
   console.log(categories);
@@ -19,7 +15,7 @@ export function rankOffers(offers, influencer){
     console.log(influCategories);
     influCategories.forEach(function(category,index){
       if(categories.indexOf(category) > -1){
-        unmarshalledItem.rank+=CATEGORY_WEIGHT;
+        unmarshalledItem.rank+=process.env.CATEGORY_WEIGHT;
         console.log("Inside category");
       }
     });
@@ -29,21 +25,21 @@ export function rankOffers(offers, influencer){
     const minNoOfFollowers = followerNums[0];
     const maxNoOfFollowers = followerNums[1];
     if(followers >= minNoOfFollowers && followers <= maxNoOfFollowers){
-      item.rank+=FOLLOWERS_WEIGHT;
+      item.rank+=process.env.FOLLOWERS_WEIGHT;
       console.log("Inside followers");
     }
     const erRange = item.engagementRateRange.toString().split("-");
     const minER = erRange[0];
     const maxER = erRange[1];
     if(engagement >= minER && engagement <= maxER){
-      item.rank+=ENGAGEMENT_WEIGHT;
+      item.rank+=process.env.ENGAGEMENT_WEIGHT;
       console.log("Inside engagement");
     }
     const ageRange = item.ageRange.toString().split("-");
     const minAge = ageRange[0];
     const maxAge = ageRange[1];
     if(age >= minAge && age <= maxAge){
-      item.rank+=AGE_WEIGHT;
+      item.rank+=process.env.AGE_WEIGHT;
       console.log("Inside age");
     }
   });
