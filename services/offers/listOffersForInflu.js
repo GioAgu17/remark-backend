@@ -16,7 +16,6 @@ export const main = handler(async (event, context) => {
       userId: influencerId
     }
   };
-
   const result = await dynamoDb.get(params);
   if ( ! result.Item) {
     throw new Error("Influencer not found.");

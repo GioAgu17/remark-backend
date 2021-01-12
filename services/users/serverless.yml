@@ -1,5 +1,4 @@
-# NOTE: update this with your service name
-service: offers
+service: users
 
 # Create an optimized package for our functions
 package:
@@ -24,18 +23,8 @@ provider:
   # the following line. Also, make sure to not
   # commit your .env.
   #
-  #environment:
-  #  SAMPLE_ENV_VAR: ${env:SAMPLE_ENV_VAR}
-
   environment:
-    stripeSecretKey: ${env:STRIPE_SECRET_KEY}
-    offersTableName: !ImportValue '${self:custom.sstApp}-ExtOffersTableName'
-    offerTableIndex: ${env:OFFER_TABLE_INDEX}
     userTableName: !ImportValue '${self:custom.sstApp}-ExtUserTableName'
-    collaborationsTableName: !ImportValue '${self:custom.sstApp}-ExtCollaborationsTableName'
-    longitudeFirst: ${env:DYNAMODB_GEO_LONGITUDE_FIRST}
-    hashKeyLength: ${env:DYNAMODB_GEO_HASHKEY_LENGTH}
-
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -49,40 +38,22 @@ provider:
       # Restrict our IAM role permissions to
       # the specific table for the stage
       Resource:
-        - !ImportValue '${self:custom.sstApp}-ExtOffersTableArn'
         - !ImportValue '${self:custom.sstApp}-ExtUserTableArn'
-        - !ImportValue '${self:custom.sstApp}-ExtCollaborationsTableArn'
-        - !ImportValue '${self:custom.sstApp}-ExtOfferTableArnIndex'
+
 functions:
   create:
     handler: create.main
     events:
       - http:
-          path: offers
+          path: users
           method: post
-          cors: true
-          authorizer: aws_iam
-  listOffersForInflu:
-    handler: listOffersForInflu.main
-    events:
-      - http:
-          path: offers/listOffersForInflu
-          method: get
-          cors: true
-          authorizer: aws_iam
-  listOffersForBusiness:
-    handler: listOffersForBusiness.main
-    events:
-      - http:
-          path: offers/listOffersForBusiness
-          method: get
           cors: true
           authorizer: aws_iam
   get:
     handler: get.main
     events:
       - http:
-          path: offers/{id}
+          path: users/{id}
           method: get
           cors: true
           authorizer: aws_iam
@@ -90,20 +61,26 @@ functions:
     handler: update.main
     events:
       - http:
-          path: offers
-          method: post
+          path: users/{id}
+          method: put
           cors: true
           authorizer: aws_iam
   delete:
     handler: delete.main
     events:
       - http:
-          path: offers/{id}
+          path: users/{id}
           method: delete
           cors: true
           authorizer: aws_iam
-# Create our resources with separate CloudFormation templates
-# Create our resources with separate CloudFormation templates
+  addInstagramCode:
+    handler: addInstagramCode.main
+    events:
+      - http:
+          path: addInstagramCode
+          method: post
+          cors: true
+          authorizer: aws_iam
 resources:
   # API Gateway Errors
   - ${file(resources/api-gateway-errors.yml)}

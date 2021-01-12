@@ -5,15 +5,14 @@ export const main = handler(async (event, context) => {
 /*  const data = JSON.parse(event.body);
   const paramsForGettingOffer = {
     TableName: process.env.offersTableName,
-    IndexName: process.env.offerTableIndex,
-    KeyConditionExpression: 'businessId = :businessId AND offerId = :offerId',
-    ExpressionAttributeValues: { ':businessId': { S: event.requestContext.identity.cognitoIdentityId },
-                                  ':offerId' : { S: event.pathParameters.id} }
+    Key: {
+      'hashKey': data.hashKey,
+      'rangeKey': data.rangeKey
+    }
   };
-
-  const offer = await dynamoDb.query(paramsForGettingOffer);
-
-  if(offer != null){
+  const offers = await dynamoDb.query(paramsForGettingOffer);
+  if(!offers.Items){
+    const offer =
     const params = {
       TableName: process.env.offersTableName,
       // 'Key' defines the partition key and sort key of the item to be updated
