@@ -20,6 +20,8 @@ export function insertOffer(data){
           },
           PutItemInput: {
             Item: {
+              businessId : {S: data.businessId},
+              offerId : {S: data.offerId},
               offerDetails: converted
             },// Passed through to the underlying DynamoDB.putItem request. TableName is filled in for you.
           }
