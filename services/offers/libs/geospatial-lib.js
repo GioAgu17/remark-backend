@@ -17,7 +17,9 @@ export function insertOffer(data){
               longitude: data.longitude *1
           },
           PutItemInput: { // Passed through to the underlying DynamoDB.putItem request. TableName is filled in for you.
-              Item: { // The primary key, geohash and geojson data is filled in for you
+              Item: {
+                offerId : data.offerId,
+                businessId: data.businessId, // The primary key, geohash and geojson data is filled in for you
                 offerDetails : data.offerDetails
             },   // ... Anything else to pass through to `putItem`, eg ConditionExpression
           }
