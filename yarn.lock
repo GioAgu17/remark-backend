@@ -4676,6 +4676,18 @@ duplexify@^3.4.2, duplexify@^3.6.0:
     readable-stream "^2.0.0"
     stream-shift "^1.0.0"
 
+dynamo-converters@^4.0.11:
+  version "4.0.11"
+  resolved "https://registry.yarnpkg.com/dynamo-converters/-/dynamo-converters-4.0.11.tgz#97c3d06c9b0a1f6e29694029d3b110b8455f6f9c"
+  integrity sha512-wPZIMM0hhy5+7soZOaQdhoW4sxurJgWvC4IV/Z4sw1CePbfDkPCSrwuccQ8+0ceCrbkklUpyyHvZPXz/OZCqSg==
+  dependencies:
+    tslib "^2.1.0"
+
+dynamodb-data-types@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/dynamodb-data-types/-/dynamodb-data-types-3.0.1.tgz#5568531574ce2e190bc27cc3a5895fbf37aefca5"
+  integrity sha1-VWhTFXTOLhkLwnzDpYlfvzeu/KU=
+
 dynamodb-geo-regevbr@^0.4.1:
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/dynamodb-geo-regevbr/-/dynamodb-geo-regevbr-0.4.1.tgz#a53e57e4105f027f69fc9c160b3b32515b6dd27a"
@@ -10668,6 +10680,11 @@ tslib@^1.9.0:
   version "1.13.0"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.13.0.tgz#c881e13cc7015894ed914862d276436fa9a47043"
   integrity sha512-i/6DQjL8Xf3be4K/E6Wgpekn5Qasl1usyw++dAA35Ue5orEn65VIxOA+YvNNl9HV3qv70T7CNwjODHZrLwvd1Q==
+
+tslib@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.1.0.tgz#da60860f1c2ecaa5703ab7d39bc05b6bf988b97a"
+  integrity sha512-hcVC3wYEziELGGmEEXue7D75zbwIIVUMWAVbHItGPx0ziyXxrOMQx4rQEVEV45Ut/1IotuEvwqPopzIOkDMf0A==
 
 tsutils@^3.17.1:
   version "3.17.1"

@@ -18,6 +18,8 @@
     "serverless-offline": "^5.3.3"
   },
   "dependencies": {
+    "dynamo-converters": "^4.0.11",
+    "dynamodb-data-types": "^3.0.1",
     "dynamodb-geo": "^0.4.0"
   }
 }

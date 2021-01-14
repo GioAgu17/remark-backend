@@ -10,18 +10,18 @@ config.hashKeyLength = process.env.hashKeyLength;
 const myGeoTableManager = new ddbGeo.GeoDataManager(config);
 
 export function insertOffer(data){
+    const converted = AWS.DynamoDB.Converter.input(data.offerDetails);
+    console.log(converted);
     return myGeoTableManager.putPoint({
           RangeKeyValue: { S: uuid.v4() }, // Use this to ensure uniqueness of the hash/range pairs.
           GeoPoint: { // An object specifying latitutde and longitude as plain numbers. Used to build the geohash, the hashkey and geojson data
-              latitude: data.latitude *1,
-              longitude: data.longitude *1
+              latitude: { N: data.latitude *1 },
+              longitude: { N: data.longitude *1 }
           },
-          PutItemInput: { // Passed through to the underlying DynamoDB.putItem request. TableName is filled in for you.
-              Item: {
-                offerId : data.offerId,
-                businessId: data.businessId, // The primary key, geohash and geojson data is filled in for you
-                offerDetails : data.offerDetails
-            },   // ... Anything else to pass through to `putItem`, eg ConditionExpression
+          PutItemInput: {
+            Item: {
+              offerDetails: converted
+            },// Passed through to the underlying DynamoDB.putItem request. TableName is filled in for you.
           }
       }).promise();
       //.then(function() { console.log('Done!'); });
