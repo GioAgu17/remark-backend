@@ -69,7 +69,7 @@ functions:
     handler: delete.main
     events:
       - http:
-          path: users/{id}
+          path: users
           method: delete
           cors: true
           authorizer: aws_iam

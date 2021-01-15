@@ -67,7 +67,7 @@ functions:
     events:
       - http:
           path: offers/listOffersForInflu
-          method: get
+          method: post
           cors: true
           authorizer: aws_iam
   listOffersForBusiness:

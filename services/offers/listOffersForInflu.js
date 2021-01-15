@@ -5,9 +5,6 @@ import * as engine from "./libs/engine-lib";
 
 export const main = handler(async (event, context) => {
   console.time("listOffersForInflu");
-  const data = JSON.parse(event.body);
-  const offers = await geospatial.queryOffersByRadius(data);
-  console.log(offers);
   // get the influencer for which we are going to show offers
   const influencerId = event.requestContext.identity.cognitoIdentityId;
   const params = {
@@ -22,5 +19,11 @@ export const main = handler(async (event, context) => {
   }
   const influencer = result.Item;
   console.log(influencer);
-  engine.rankOffers(offers, influencer);
+  // get the offers based on the location of the influencer
+  const data = JSON.parse(event.body);
+  const offers = await geospatial.queryOffersByRadius(data);
+  console.log(offers);
+  // rank close offers based on some weights
+  const offersRanked = await engine.rankOffers(offers, influencer);
+  return offersRanked;
 });
