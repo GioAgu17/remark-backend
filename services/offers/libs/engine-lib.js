@@ -1,10 +1,9 @@
 import AWS from "aws-sdk";
 export function rankOffers(offers, influencer){
-  const categories = influencer.categories;
-  console.log(categories);
+  const categories = influencer.influencerCategories;
   const followers = influencer.followers;
   console.log(followers);
-  const engagement = ((influencer.avgLikes *1) / (influencer.followers *1)) * 100;
+  const engagement = influencer.engagement * 1;
   console.log(engagement);
   const age = influencer.age;
   console.log(age);

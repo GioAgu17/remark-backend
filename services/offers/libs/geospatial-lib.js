@@ -30,11 +30,15 @@ export function insertOffer(data){
 }
 
 export function queryOffersByRadius(data){
-  return myGeoTableManager.queryRadius({
+  console.log(data.radius);
+  console.log(data.lat);
+  console.log(data.long);
+  const result = myGeoTableManager.queryRadius({
     RadiusInMeter: data.radius *1,
     CenterPoint: {
         latitude: data.lat *1,
         longitude: data.long *1
     }
   });
+  return result;
 }

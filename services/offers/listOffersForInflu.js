@@ -18,12 +18,13 @@ export const main = handler(async (event, context) => {
     throw new Error("Influencer not found.");
   }
   const influencer = result.Item;
-  console.log(influencer);
+  const userDetails = influencer.userDetails;
+  const categories = userDetails.influencerCategories;
+  console.log(categories);
   // get the offers based on the location of the influencer
   const data = JSON.parse(event.body);
   const offers = await geospatial.queryOffersByRadius(data);
-  console.log(offers);
   // rank close offers based on some weights
-  const offersRanked = await engine.rankOffers(offers, influencer);
+  const offersRanked = await engine.rankOffers(offers, userDetails);
   return offersRanked;
 });

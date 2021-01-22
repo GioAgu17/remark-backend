@@ -9,12 +9,11 @@
     "services/*"
   ],
   "devDependencies": {
-    "aws-sdk": "^2.793.0",
+    "aws-sdk": "^2.539.0",
     "lerna": "^3.22.1"
   },
   "dependencies": {
     "dynamo-converters": "^4.0.11",
-    "dynamodb-geo": "^0.4.0",
     "dynamodb-geo-regevbr": "^0.4.1",
     "uuid": "^7.0.3"
   }
