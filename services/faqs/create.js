@@ -5,14 +5,15 @@ import * as uuid from "uuid";
 export const main = handler(async (event, context) => {
   const data = JSON.parse(event.body);
   const faqId = uuid.v1();
+  console.log(faqId);
   const params = {
-    TableName: process.env.faqTableName,
+    TableName: process.env.faqsTableName,
     Item: {
       // The attributes of the item to be created
       category : data.category,
       faqId: faqId,
       body : data.body,
-      createdByUser: data.user,
+      createdByUser: event.requestContext.identity.cognitoIdentityId,
       createdAt: Date.now(),
     },
   };

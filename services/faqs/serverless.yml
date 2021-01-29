@@ -25,7 +25,7 @@ provider:
   #environment:
   #  SAMPLE_ENV_VAR: ${env:SAMPLE_ENV_VAR}
   environment:
-    faqsTableName: !ImportValue '${self:custom.sstApp}-ExtFaqTableName'
+    faqsTableName: !ImportValue '${self:custom.sstApp}-ExtUserTableName'
 
   iamRoleStatements:
     - Effect: Allow
@@ -40,7 +40,7 @@ provider:
       # Restrict our IAM role permissions to
       # the specific table for the stage
       Resource:
-        - !ImportValue '${self:custom.sstApp}-ExtFaqTableArn'
+        - !ImportValue '${self:custom.sstApp}-ExtUserTableArn'
 
 functions:
   create:
