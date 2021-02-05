@@ -2,12 +2,12 @@ import handler from "./libs/handler-lib";
 import dynamoDb from "./libs/dynamodb-lib";
 
 export const main = handler(async (event, context) => {
-  console.log("Inside get");
+  const data = JSON.parse(event.body);
   const params = {
     TableName: process.env.faqsTableName,
     Key : {
-      "category" : event.pathParameters.id,
-      "faqId" : event.requestContext.faqId
+      "category" : data.category,
+      "faqId" : data.faqId
     }
   };
   const result = await dynamoDb.get(params);

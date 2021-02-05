@@ -17,6 +17,8 @@ provider:
   runtime: nodejs12.x
   stage: dev
   region: us-east-2
+  apiGateway:
+    shouldStartNameWithService: true
   # To load environment variables externally
   # rename env.example to .env and uncomment
   # the following line. Also, make sure to not
@@ -25,7 +27,7 @@ provider:
   #environment:
   #  SAMPLE_ENV_VAR: ${env:SAMPLE_ENV_VAR}
   environment:
-    faqsTableName: !ImportValue '${self:custom.sstApp}-ExtUserTableName'
+    faqsTableName: !ImportValue '${self:custom.sstApp}-ExtFaqsTableName'
 
   iamRoleStatements:
     - Effect: Allow
@@ -40,14 +42,14 @@ provider:
       # Restrict our IAM role permissions to
       # the specific table for the stage
       Resource:
-        - !ImportValue '${self:custom.sstApp}-ExtUserTableArn'
+        - !ImportValue '${self:custom.sstApp}-ExtFaqsTableArn'
 
 functions:
   create:
     handler: create.main
     events:
       - http:
-          path: faqs
+          path: createFaq
           method: post
           cors: true
           authorizer: aws_iam
@@ -55,7 +57,7 @@ functions:
     handler: get.main
     events:
       - http:
-          path: faqs/{id}
+          path: getFaq
           method: get
           cors: true
           authorizer: aws_iam
@@ -63,7 +65,7 @@ functions:
     handler: update.main
     events:
       - http:
-          path: faqs/{id}
+          path: updateFaq/{id}
           method: put
           cors: true
           authorizer: aws_iam
@@ -71,7 +73,7 @@ functions:
     handler: delete.main
     events:
       - http:
-          path: faqs/{id}
+          path: deleteFaq/{id}
           method: delete
           cors: true
           authorizer: aws_iam
@@ -79,8 +81,8 @@ functions:
     handler: getByCategory.main
     events:
       - http:
-          path: faqsByCategory/{id}
-          method: get
+          path: getFaqsByCategory
+          method: post
           cors: true
           authorizer: aws_iam
 resources:

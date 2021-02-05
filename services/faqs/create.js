@@ -12,7 +12,7 @@ export const main = handler(async (event, context) => {
       // The attributes of the item to be created
       category : data.category,
       faqId: faqId,
-      body : data.body,
+      details : data.details,
       createdByUser: event.requestContext.identity.cognitoIdentityId,
       createdAt: Date.now(),
     },
