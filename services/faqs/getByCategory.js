@@ -6,14 +6,15 @@ export const main = handler(async (event, context) => {
   const data = JSON.parse(event.body);
   const params = {
     TableName: process.env.faqsTableName,
-    Key : {
-      "category" : data.category
+    KeyConditionExpression: 'category = :category',
+    ExpressionAttributeValues: {
+      ':category': data.category,
     }
   };
-  const result = await dynamoDb.get(params);
+  const result = await dynamoDb.query(params);
   console.log(result);
-  if ( ! result.Item) {
+  if ( ! result.Items) {
     throw new Error("Item not found.");
   }
-  return result.Item;
+  return result.Items;
 });

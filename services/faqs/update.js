@@ -11,9 +11,9 @@ export const main = handler(async (event, context) => {
       category: data.category,
       faqId: data.faqId
     },
-    UpdateExpression: "SET body = :body",
+    UpdateExpression: "SET details = :details",
     ExpressionAttributeValues: {
-      ":body": data.body
+      ":details": data.details
     },
     ReturnValues: "ALL_NEW"
   };

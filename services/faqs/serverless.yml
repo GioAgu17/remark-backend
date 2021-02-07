@@ -58,15 +58,15 @@ functions:
     events:
       - http:
           path: getFaq
-          method: get
+          method: post
           cors: true
           authorizer: aws_iam
   update:
     handler: update.main
     events:
       - http:
-          path: updateFaq/{id}
-          method: put
+          path: updateFaq
+          method: post
           cors: true
           authorizer: aws_iam
   delete:

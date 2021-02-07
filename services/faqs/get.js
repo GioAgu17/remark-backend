@@ -11,8 +11,8 @@ export const main = handler(async (event, context) => {
     }
   };
   const result = await dynamoDb.get(params);
-  if ( ! result.Items) {
+  if ( ! result.Item) {
     throw new Error("Item not found.");
   }
-  return result.Items[0];
+  return result.Item;
 });
