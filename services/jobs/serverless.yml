@@ -1,0 +1,18 @@
+service: jobs
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: us-east-2
+
+functions:
+  moveOffers:
+    handler: moveOffers.run
+    events:
+      # scheduled every day at 4 am
+      - schedule: cron(0 4 * * ? *)
+  listUsers:
+    handler: listUsers.run
+    events:
+      # scheduled every day at 3 AM
+      - schedule: cron(0 3 * * ? *)
