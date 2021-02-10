@@ -25,8 +25,6 @@ provider:
   #
   environment:
     userTableName: !ImportValue '${self:custom.sstApp}-ExtUserTableName'
-    uploadsBucketName: !ImportValue '${self:custom.sstApp}-ExtAttachmentsBucketName'
-    usersFileName: "users.txt"
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -37,14 +35,10 @@ provider:
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
         - dynamodb:DescribeTable
-        - s3:ListBucket
-        - s3:PutObject
-        - s3:GetObject
       # Restrict our IAM role permissions to
       # the specific table for the stage
       Resource:
         - !ImportValue '${self:custom.sstApp}-ExtUserTableArn'
-        - !ImportValue '${self:custom.sstApp}-ExtAttachmentsBucketArn'
 
 functions:
   create:

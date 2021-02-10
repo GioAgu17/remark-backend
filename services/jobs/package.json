@@ -1,7 +1,16 @@
 {
   "name": "jobs",
   "version": "1.0.0",
-  "description": "Example of creating a function that runs as a cron job using the serverless `schedule` event",
-  "author": "",
-  "license": "MIT"
+  "description": "Creating jobs for the Remark application",
+  "author": "Giovanni Agugini Bassi",
+  "license": "MIT",
+  "scripts": {
+    "test": "jest"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.13",
+    "@babel/preset-env": "^7.12.13",
+    "babel-jest": "^26.6.3",
+    "jest": "^26.6.3"
+  }
 }

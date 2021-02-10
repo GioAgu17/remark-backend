@@ -1,0 +1,23 @@
+[
+    {
+        "businessId": "business1",
+        "geoJson": "{\"type\":\"Point\",\"coordinates\":[{\"N\":11.18816},{\"N\":42.5352}]}",
+        "offerDetails": {
+            "expiryDate": "15-JAN-20"
+        }
+    },
+    {
+        "businessId": "business2",
+        "geoJson": "{\"type\":\"Point\",\"coordinates\":[{\"N\":11.253},{\"N\":41.5352}]}",
+        "offerDetails": {
+            "expiryDate": "13-APR-21"
+        }
+    },
+    {
+        "businessId": "business3",
+        "geoJson": "{\"type\":\"Point\",\"coordinates\":[{\"N\":11.253},{\"N\":41.5352}]}",
+        "offerDetails": {
+            "expiryDate": "13-FEB-20"
+        }
+    }
+]

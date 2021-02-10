@@ -1,18 +1,43 @@
 service: jobs
+package:
+  individually: true
 
+plugins:
+  - serverless-bundle # Package our functions with Webpack
+  - serverless-offline
+  - serverless-dotenv-plugin # Load .env as environment variables
+
+custom: ${file(../../serverless.common.yml):custom}
 provider:
   name: aws
   runtime: nodejs12.x
   region: us-east-2
-
+  environment:
+    userTableName: !ImportValue '${self:custom.sstApp}-ExtUserTableName'
+    offerTableName: !ImportValue '${self:custom.sstApp}-ExtOfferTableName'
+    offerTableIndex: ${env:OFFER_TABLE_INDEX}
+    expiredOffersTable: !ImportValue '${self:custom.sstApp}-ExtExpiredOffersTableName'
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Scan
+        - dynamodb:Query
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+        - dynamodb:DescribeTable
+        - dynamodb:BatchWriteItem
+        - dynamodb:BatchDeleteItem
+      # Restrict our IAM role permissions to
+      # the specific table for the stage
+      Resource:
+        - !ImportValue '${self:custom.sstApp}-ExtUserTableArn'
+        - !ImportValue '${self:custom.sstApp}-ExtOfferTableArn'
+        - !ImportValue '${self:custom.sstApp}-ExtExpiredOffersTableArn'
 functions:
   moveOffers:
-    handler: moveOffers.run
-    events:
+    handler: moveOffers.main
+    #events:
       # scheduled every day at 4 am
-      - schedule: cron(0 4 * * ? *)
-  listUsers:
-    handler: listUsers.run
-    events:
-      # scheduled every day at 3 AM
-      - schedule: cron(0 3 * * ? *)
+      #- schedule: cron(0 4 * * ? *)

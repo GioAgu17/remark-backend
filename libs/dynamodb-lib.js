@@ -10,4 +10,5 @@ export default {
   delete: (params) => client.delete(params).promise(),
   batchGet: (params) => client.batchGet(params).promise(),
   batchWrite: (params) => client.batchWrite(params).promise(),
+  scan : (params) => client.scan(params).promise(),
 };
