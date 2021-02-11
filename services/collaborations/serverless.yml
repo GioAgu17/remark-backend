@@ -1,0 +1,54 @@
+service: collaborations
+
+# Create an optimized package for our functions
+package:
+  individually: true
+
+plugins:
+  - serverless-bundle # Package our functions with Webpack
+  - serverless-offline
+  - serverless-dotenv-plugin # Load .env as environment variables
+
+custom: ${file(../../serverless.common.yml):custom}
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: dev
+  region: us-east-2
+  apiGateway:
+    shouldStartNameWithService: true
+
+  environment:
+    stripeSecretKey: ${env:STRIPE_SECRET_KEY}
+    collaborationsTableName: !ImportValue '${self:custom.sstApp}-ExtCollaborationsTableName'
+
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Scan
+        - dynamodb:Query
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+        - dynamodb:DescribeTable
+      # Restrict our IAM role permissions to
+      # the specific table for the stage
+      Resource:
+        - !ImportValue '${self:custom.sstApp}-ExtCollaborationsTableArn'
+functions:
+  create:
+    handler: create.main
+    events:
+      - http:
+          path: collaborations
+          method: post
+          cors: true
+          authorizer: aws_iam
+
+resources:
+  # API Gateway Errors
+  - ${file(resources/api-gateway-errors.yml)}
+  # Cognito Identity Pool Policy
+  - ${file(resources/cognito-policy.yml)}
