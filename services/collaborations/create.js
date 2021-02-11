@@ -4,7 +4,7 @@ import consts from "./constants.js";
 export const main = handler(async (event, context) => {
   const data = JSON.parse(event.body);
   if(!data){
-    throw new Error("Not receiving data to create collaboration");
+    throw new Error("Not getting data to create collaboration");
   }
   const influencerId = data.influencerId;
   const offer = data.offer;
