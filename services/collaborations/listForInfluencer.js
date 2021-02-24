@@ -3,17 +3,16 @@ import dynamoDb from "../../libs/dynamodb-lib";
 
 export const main = handler(async (event, context) => {
   const params = {
-    TableName: process.env.offersTableName,
-    IndexName: process.env.offerTableIndex,
-    KeyConditionExpression: 'businessId = :bus_id and offerId = :off_id',
+    TableName: process.env.collaborationsTableName,
+    IndexName: process.env.collaborationsTableIndex,
+    KeyConditionExpression: 'influencerId = :influencerId',
     ExpressionAttributeValues: {
-      ':bus_id': event.requestContext.identity.cognitoIdentityId,
-      ':off_id': event.pathParameters.id
+      ':influencerId': event.pathParameters.id,
     }
   };
   const result = await dynamoDb.query(params);
   if ( ! result.Items) {
     throw new Error("Item not found.");
   }
-  return result.Items[0];
+  return result.Items;
 });

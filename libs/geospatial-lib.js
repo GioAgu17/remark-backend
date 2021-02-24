@@ -10,6 +10,9 @@ config.hashKeyLength = process.env.hashKeyLength;
 const myGeoTableManager = new ddbGeo.GeoDataManager(config);
 
 export function insertOffer(data){
+    // inserting lat and long inside offer details as well
+    data.offerDetails.latitude = data.latitude *1;
+    data.offerDetails.longitude = data.longitude *1;
     const converted = AWS.DynamoDB.Converter.input(data.offerDetails);
     console.log(converted);
     return myGeoTableManager.putPoint({

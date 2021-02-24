@@ -1,6 +1,6 @@
-import handler from "./libs/handler-lib";
-import * as geospatial from "./libs/geospatial-lib";
-import dynamoDb from "./libs/dynamodb-lib";
+import handler from "../../libs/handler-lib";
+import * as geospatial from "../../libs/geospatial-lib";
+import dynamoDb from "../../libs/dynamodb-lib";
 import * as engine from "./libs/engine-lib";
 
 export const main = handler(async (event, context) => {

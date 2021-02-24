@@ -22,6 +22,8 @@ provider:
   environment:
     stripeSecretKey: ${env:STRIPE_SECRET_KEY}
     collaborationsTableName: !ImportValue '${self:custom.sstApp}-ExtCollaborationsTableName'
+    offersTableName: !ImportValue '${self:custom.sstApp}-ExtOfferTableName'
+    collaborationsTableIndex: ${env:COLLAB_TABLE_INDEX}
 
   iamRoleStatements:
     - Effect: Allow
@@ -37,6 +39,8 @@ provider:
       # the specific table for the stage
       Resource:
         - !ImportValue '${self:custom.sstApp}-ExtCollaborationsTableArn'
+        - !ImportValue '${self:custom.sstApp}-ExtCollaborationsTableArnIndex'
+        - !ImportValue '${self:custom.sstApp}-ExtOfferTableArn'
 functions:
   create:
     handler: create.main
@@ -44,6 +48,38 @@ functions:
       - http:
           path: collaborations
           method: post
+          cors: true
+          authorizer: aws_iam
+  relaunchOffer:
+    handler: relaunch.main
+    events:
+      - http:
+          path: relaunchOffer
+          method: post
+          cors: true
+          authorizer: aws_iam
+  get:
+    handler: get.main
+    events:
+      - http:
+          path: getCollaboration
+          method: post
+          cors: true
+          authorizer: aws_iam
+  listForBusiness:
+    handler: listForBusiness.main
+    events:
+      - http:
+          path: listForBusiness/{id}
+          method: get
+          cors: true
+          authorizer: aws_iam
+  listForInfluencer:
+    handler: listForInfluencer.main
+    events:
+      - http:
+          path: listForInfluencer/{id}
+          method: get
           cors: true
           authorizer: aws_iam
 

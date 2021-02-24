@@ -1,6 +1,7 @@
 import handler from "../../libs/handler-lib";
 import dynamoDb from "../../libs/dynamodb-lib";
-import consts from "./constants.js";
+import * as deleteOffer from "./libs/deleteOffer-lib";
+import * as consts from "./constants.js";
 export const main = handler(async (event, context) => {
   const data = JSON.parse(event.body);
   if(!data){
@@ -15,10 +16,11 @@ export const main = handler(async (event, context) => {
       offerId : offer.offerId,
       influencerId : influencerId,
       details: offer.offerDetails,
-      status: consts.INPROGRESS,
-      createdAt: new Date(),
+      status: consts.statuses.INPROGRESS,
+      createdAt: Date.now(),
     }
   };
   await dynamoDb.put(params);
+  await deleteOffer.main(offer);
   return { status: true };
 });
