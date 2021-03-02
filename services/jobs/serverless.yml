@@ -1,7 +1,7 @@
 service: jobs
 package:
   individually: true
-
+useDotenv: true
 plugins:
   - serverless-bundle # Package our functions with Webpack
   - serverless-offline

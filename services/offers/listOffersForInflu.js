@@ -1,7 +1,7 @@
 import handler from "../../libs/handler-lib";
 import * as geospatial from "../../libs/geospatial-lib";
 import dynamoDb from "../../libs/dynamodb-lib";
-import * as engine from "./libs/engine-lib";
+//import * as engine from "./libs/engine-lib";
 
 export const main = handler(async (event, context) => {
   console.time("listOffersForInflu");
@@ -25,6 +25,8 @@ export const main = handler(async (event, context) => {
   const data = JSON.parse(event.body);
   const offers = await geospatial.queryOffersByRadius(data);
   // rank close offers based on some weights
-  const offersRanked = await engine.rankOffers(offers, userDetails);
-  return offersRanked;
+  console.log(offers);
+  //const offersRanked = await engine.rankOffers(offers, userDetails);
+  //return offersRanked;
+  return offers;
 });

@@ -1,6 +1,6 @@
 # NOTE: update this with your service name
 service: offers
-
+useDotenv: true
 # Create an optimized package for our functions
 package:
   individually: true

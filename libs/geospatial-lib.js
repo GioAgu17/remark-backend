@@ -11,15 +11,17 @@ const myGeoTableManager = new ddbGeo.GeoDataManager(config);
 
 export function insertOffer(data){
     // inserting lat and long inside offer details as well
-    data.offerDetails.latitude = data.latitude *1;
-    data.offerDetails.longitude = data.longitude *1;
+    const latitude = parseFloat(data.latitude);
+    const longitude = parseFloat(data.longitude);
+    data.offerDetails.latitude = latitude;
+    data.offerDetails.longitude = longitude;
     const converted = AWS.DynamoDB.Converter.input(data.offerDetails);
     console.log(converted);
     return myGeoTableManager.putPoint({
           RangeKeyValue: { S: uuid.v4() }, // Use this to ensure uniqueness of the hash/range pairs.
           GeoPoint: { // An object specifying latitutde and longitude as plain numbers. Used to build the geohash, the hashkey and geojson data
-              latitude: { N: data.latitude *1 },
-              longitude: { N: data.longitude *1 }
+              latitude: { N: latitude },
+              longitude: { N: longitude }
           },
           PutItemInput: {
             Item: {
@@ -34,13 +36,15 @@ export function insertOffer(data){
 
 export function queryOffersByRadius(data){
   console.log(data.radius);
-  console.log(data.lat);
-  console.log(data.long);
+  const lat = parseFloat(data.lat);
+  const long = parseFloat(data.long);
+  console.log(lat);
+  console.log(long);
   const result = myGeoTableManager.queryRadius({
     RadiusInMeter: data.radius *1,
     CenterPoint: {
-        latitude: data.lat *1,
-        longitude: data.long *1
+        latitude: lat,
+        longitude: long
     }
   });
   return result;
