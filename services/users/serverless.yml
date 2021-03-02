@@ -1,4 +1,3 @@
-frameworkVersion: "2.11.1"
 service: users
 
 # Create an optimized package for our functions

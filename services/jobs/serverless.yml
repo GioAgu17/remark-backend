@@ -1,4 +1,3 @@
-frameworkVersion: "2.11.1"
 service: jobs
 package:
   individually: true
