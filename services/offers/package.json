@@ -16,9 +16,5 @@
     "serverless-bundle": "3.2.0",
     "serverless-dotenv-plugin": "^2.1.1",
     "serverless-offline": "^5.3.3"
-  },
-  "dependencies": {
-    "dynamo-converters": "^4.0.11",
-    "dynamodb-data-types": "^3.0.1"
   }
 }
