@@ -1,4 +1,5 @@
 # NOTE: update this with your service name
+frameworkVersion: "2.11.1"
 service: faqs
 
 # Create an optimized package for our functions
