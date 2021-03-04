@@ -22,8 +22,9 @@ provider:
   environment:
     stripeSecretKey: ${env:STRIPE_SECRET_KEY}
     collaborationsTableName: !ImportValue '${self:custom.sstApp}-ExtCollaborationsTableName'
-    offersTableName: !ImportValue '${self:custom.sstApp}-ExtOfferTableName'
+    newOfferTableName: !ImportValue '${self:custom.sstApp}-ExtNewOffersTableName'
     collaborationsTableIndex: ${env:COLLAB_TABLE_INDEX}
+    partitionKeyOffer: ${env:PARTITION_KEY_OFFER}
 
   iamRoleStatements:
     - Effect: Allow
@@ -40,7 +41,8 @@ provider:
       Resource:
         - !ImportValue '${self:custom.sstApp}-ExtCollaborationsTableArn'
         - !ImportValue '${self:custom.sstApp}-ExtCollaborationsTableArnIndex'
-        - !ImportValue '${self:custom.sstApp}-ExtOfferTableArn'
+        - !ImportValue '${self:custom.sstApp}-ExtNewOffersTableArn'
+        - !ImportValue '${self:custom.sstApp}-ExtNewOffersTableArnIndex'
 functions:
   create:
     handler: create.main

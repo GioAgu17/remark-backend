@@ -28,14 +28,18 @@ provider:
   #  SAMPLE_ENV_VAR: ${env:SAMPLE_ENV_VAR}
 
   environment:
-    stripeSecretKey: ${env:STRIPE_SECRET_KEY}
     offersTableName: !ImportValue '${self:custom.sstApp}-ExtOfferTableName'
     offerTableIndex: ${env:OFFER_TABLE_INDEX}
     userTableName: !ImportValue '${self:custom.sstApp}-ExtUserTableName'
     collaborationsTableName: !ImportValue '${self:custom.sstApp}-ExtCollaborationsTableName'
-    longitudeFirst: ${env:DYNAMODB_GEO_LONGITUDE_FIRST}
-    hashKeyLength: ${env:DYNAMODB_GEO_HASHKEY_LENGTH}
+    hashKeyLength: ${env:HASHKEY_LENGTH}
     expiredOffersTable: !ImportValue '${self:custom.sstApp}-ExtExpiredOffersTableName'
+    newOfferTableName: !ImportValue '${self:custom.sstApp}-ExtNewOffersTableName'
+    partitionKeyOffer: ${env:PARTITION_KEY_OFFER}
+    categoryWeight: ${env:CATEGORY_WEIGHT}
+    followersWeight: ${env:FOLLOWERS_WEIGHT}
+    ageWeight: ${env:AGE_WEIGHT}
+    engagementWeight: ${env:ENGAGEMENT_WEIGHT}
 
   iamRoleStatements:
     - Effect: Allow
@@ -55,6 +59,10 @@ provider:
         - !ImportValue '${self:custom.sstApp}-ExtCollaborationsTableArn'
         - !ImportValue '${self:custom.sstApp}-ExtOfferTableArnIndex'
         - !ImportValue '${self:custom.sstApp}-ExtExpiredOffersTableArn'
+        - !ImportValue '${self:custom.sstApp}-ExtNewOffersTableArn'
+        - !ImportValue '${self:custom.sstApp}-ExtNewOffersTableArnIndex'
+
+
 functions:
   create:
     handler: create.main

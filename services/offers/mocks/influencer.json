@@ -1,0 +1,22 @@
+{
+  "createdAt": 1611122538316,
+  "userDetails": {
+    "zipCode": "20129",
+    "country": "Italy",
+    "influencerCategories": [ "food", "travel" ],
+    "followers": "813",
+    "engagement": "13.7",
+    "address": "via Nino Bixio 37",
+    "city": "Milano",
+    "profileImage": "s3ObjectKey",
+    "age": "26",
+    "username": "gioagugini"
+  },
+  "loginInfo": {
+    "iva": "IVA12345",
+    "email": "gioagugini@gmail.com",
+    "instagramToken": "ertvst352fda!@R"
+  },
+  "userType": "business",
+  "userId": "us-east-2:4db770eb-7361-4490-abe6-fa8e9747820e"
+}

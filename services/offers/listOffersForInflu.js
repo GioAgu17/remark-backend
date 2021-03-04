@@ -1,7 +1,7 @@
 import handler from "../../libs/handler-lib";
-import * as geospatial from "../../libs/geospatial-lib";
 import dynamoDb from "../../libs/dynamodb-lib";
-//import * as engine from "./libs/engine-lib";
+import * as read from "./libs/readOffer-lib";
+import * as engine from "./libs/engine-lib";
 
 export const main = handler(async (event, context) => {
   console.time("listOffersForInflu");
@@ -19,14 +19,11 @@ export const main = handler(async (event, context) => {
   }
   const influencer = result.Item;
   const userDetails = influencer.userDetails;
-  const categories = userDetails.influencerCategories;
-  console.log(categories);
   // get the offers based on the location of the influencer
   const data = JSON.parse(event.body);
-  const offers = await geospatial.queryOffersByRadius(data);
+  const offers = await read.queryOffersByRadius(data);
   // rank close offers based on some weights
   console.log(offers);
-  //const offersRanked = await engine.rankOffers(offers, userDetails);
-  //return offersRanked;
-  return offers;
+  const offersRanked = await engine.rankOffers(offers, userDetails);
+  return offersRanked;
 });

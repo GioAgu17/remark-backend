@@ -1,0 +1,317 @@
+[
+    {
+        "hashKey": "remark-offer",
+        "offerDetails": {
+            "ageRange": "30-45",
+            "bucketName": "Uploads",
+            "influencerCategories": [
+                "travel",
+                "food"
+            ],
+            "postTags": [
+                "@business",
+                "@remark"
+            ],
+            "postHashtags": [
+                "foodlove",
+                "remarklife"
+            ],
+            "latitude": 45.46829555997972,
+            "description": "Testing new offers API",
+            "storyImages": [
+                "s3objectkey"
+            ],
+            "storyDescription": "This is a story description test",
+            "title": "Offer3",
+            "isPost": "Y",
+            "expiryDate": "18-MAY-21",
+            "advFlg": "Y",
+            "noOfFollowersRange": "500-1000",
+            "noOfInfluencers": "2",
+            "longitude": 9.187568503879136,
+            "noOfStories": "3",
+            "address": {
+                "country": "US",
+                "zipCode": "60602",
+                "state": "IL",
+                "addressLocation2": "Apt 3",
+                "addressLocation1": "201 E Randolph St",
+                "city": "Chicago"
+            },
+            "engagementRateRange": "5-10",
+            "offerValue": "90",
+            "postCaption": "This is a caption for a post",
+            "storyVideoDescription": "This is a video description story",
+            "storyHashtags": [
+                "lovebiz",
+                "remarklife"
+            ],
+            "offerDescription": "Let's see how it will go",
+            "offerImages": [
+                "s3objectkey"
+            ],
+            "storyType": "storyTypeTest",
+            "postImages": [
+                "s3objectkey1",
+                "s3objectkey2"
+            ]
+        },
+        "businessId": "us-east-2:4db770eb-7361-4490-abe6-fa8e9747820e",
+        "rangeKey": "556233ba-aa97-4e41-835c-74cfd4b131c5",
+        "offerId": "2364ce90-7bdd-11eb-b87c-89986492413c",
+        "geohash": "u0nd9j60j",
+        "createdAt": 1614747527674
+    },
+    {
+        "hashKey": "remark-offer",
+        "offerDetails": {
+            "ageRange": "20-30",
+            "bucketName": "Uploads",
+            "influencerCategories": [
+                "travel",
+                "food"
+            ],
+            "postTags": [
+                "@business",
+                "@remark"
+            ],
+            "postHashtags": [
+                "foodlove",
+                "remarklife"
+            ],
+            "latitude": 45.46829555997972,
+            "description": "Testing new offers API",
+            "storyImages": [
+                "s3objectkey"
+            ],
+            "storyDescription": "This is a story description test",
+            "title": "Offer2",
+            "isPost": "Y",
+            "expiryDate": "18-MAY-21",
+            "advFlg": "Y",
+            "noOfFollowersRange": "100000-150000",
+            "noOfInfluencers": "2",
+            "longitude": 9.187568503879136,
+            "noOfStories": "3",
+            "address": {
+                "country": "US",
+                "zipCode": "60602",
+                "state": "IL",
+                "addressLocation2": "Apt 3",
+                "addressLocation1": "201 E Randolph St",
+                "city": "Chicago"
+            },
+            "engagementRateRange": "5-10",
+            "offerValue": "90",
+            "postCaption": "This is a caption for a post",
+            "storyVideoDescription": "This is a video description story",
+            "storyHashtags": [
+                "lovebiz",
+                "remarklife"
+            ],
+            "offerDescription": "Let's see how it will go",
+            "offerImages": [
+                "s3objectkey"
+            ],
+            "storyType": "storyTypeTest",
+            "postImages": [
+                "s3objectkey1",
+                "s3objectkey2"
+            ]
+        },
+        "businessId": "us-east-2:4db770eb-7361-4490-abe6-fa8e9747820e",
+        "rangeKey": "ee58bb29-670b-4a50-bd50-ccc3bea06325",
+        "offerId": "18bcfe40-7bdd-11eb-b87c-89986492413c",
+        "geohash": "u0nd9j60j",
+        "createdAt": 1614747509796
+    },
+    {
+        "hashKey": "remark-offer",
+        "offerDetails": {
+            "ageRange": "30-45",
+            "bucketName": "Uploads",
+            "influencerCategories": [
+                "travel",
+                "food"
+            ],
+            "postTags": [
+                "@business",
+                "@remark"
+            ],
+            "postHashtags": [
+                "foodlove",
+                "remarklife"
+            ],
+            "latitude": 45.46739636742089,
+            "description": "Testing new offers API",
+            "storyImages": [
+                "s3objectkey"
+            ],
+            "storyDescription": "This is a story description test",
+            "title": "Offer6",
+            "isPost": "Y",
+            "expiryDate": "18-MAY-21",
+            "advFlg": "Y",
+            "noOfFollowersRange": "100000-150000",
+            "noOfInfluencers": "2",
+            "longitude": 9.192541330199143,
+            "noOfStories": "3",
+            "address": {
+                "country": "US",
+                "zipCode": "60602",
+                "state": "IL",
+                "addressLocation2": "Apt 3",
+                "addressLocation1": "201 E Randolph St",
+                "city": "Chicago"
+            },
+            "engagementRateRange": "10-15",
+            "offerValue": "90",
+            "postCaption": "This is a caption for a post",
+            "storyVideoDescription": "This is a video description story",
+            "storyHashtags": [
+                "lovebiz",
+                "remarklife"
+            ],
+            "offerDescription": "Let's see how it will go",
+            "offerImages": [
+                "s3objectkey"
+            ],
+            "storyType": "storyTypeTest",
+            "postImages": [
+                "s3objectkey1",
+                "s3objectkey2"
+            ]
+        },
+        "businessId": "us-east-2:4db770eb-7361-4490-abe6-fa8e9747820e",
+        "rangeKey": "43e5fa8c-7adb-4587-9d57-a8f98b5609f5",
+        "offerId": "abbbcac0-7c49-11eb-85cb-31562ed9a12a",
+        "geohash": "u0nd9jjfc",
+        "createdAt": 1614794142061
+    },
+    {
+        "hashKey": "remark-offer",
+        "offerDetails": {
+            "ageRange": "30-45",
+            "bucketName": "Uploads",
+            "influencerCategories": [
+                "travel",
+                "food"
+            ],
+            "postTags": [
+                "@business",
+                "@remark"
+            ],
+            "postHashtags": [
+                "foodlove",
+                "remarklife"
+            ],
+            "latitude": 45.46841594663028,
+            "description": "Testing new offers API",
+            "storyImages": [
+                "s3objectkey"
+            ],
+            "storyDescription": "This is a story description test",
+            "title": "Offer1",
+            "isPost": "Y",
+            "expiryDate": "18-MAY-21",
+            "advFlg": "Y",
+            "noOfFollowersRange": "100000-150000",
+            "noOfInfluencers": "2",
+            "longitude": 9.191023188855285,
+            "noOfStories": "3",
+            "address": {
+                "country": "US",
+                "zipCode": "60602",
+                "state": "IL",
+                "addressLocation2": "Apt 3",
+                "addressLocation1": "201 E Randolph St",
+                "city": "Chicago"
+            },
+            "engagementRateRange": "5-10",
+            "offerValue": "90",
+            "postCaption": "This is a caption for a post",
+            "storyVideoDescription": "This is a video description story",
+            "storyHashtags": [
+                "lovebiz",
+                "remarklife"
+            ],
+            "offerDescription": "Let's see how it will go",
+            "offerImages": [
+                "s3objectkey"
+            ],
+            "storyType": "storyTypeTest",
+            "postImages": [
+                "s3objectkey1",
+                "s3objectkey2"
+            ]
+        },
+        "businessId": "us-east-2:4db770eb-7361-4490-abe6-fa8e9747820e",
+        "rangeKey": "292c9747-3ec4-4249-8226-113efcf264a6",
+        "offerId": "4e350050-7bdc-11eb-b87c-89986492413c",
+        "geohash": "u0nd9jk8w",
+        "createdAt": 1614747170006
+    },
+    {
+        "hashKey": "remark-offer",
+        "offerDetails": {
+            "ageRange": "30-45",
+            "bucketName": "Uploads",
+            "influencerCategories": [
+                "travel",
+                "food"
+            ],
+            "postTags": [
+                "@business",
+                "@remark"
+            ],
+            "postHashtags": [
+                "foodlove",
+                "remarklife"
+            ],
+            "latitude": 45.4676183802796,
+            "description": "Testing new offers API",
+            "storyImages": [
+                "s3objectkey"
+            ],
+            "storyDescription": "This is a story description test",
+            "title": "Offer4",
+            "isPost": "Y",
+            "expiryDate": "18-MAY-21",
+            "advFlg": "Y",
+            "noOfFollowersRange": "1100-1500",
+            "noOfInfluencers": "2",
+            "longitude": 9.194477873831435,
+            "noOfStories": "3",
+            "address": {
+                "country": "US",
+                "zipCode": "60602",
+                "state": "IL",
+                "addressLocation2": "Apt 3",
+                "addressLocation1": "201 E Randolph St",
+                "city": "Chicago"
+            },
+            "engagementRateRange": "20-30",
+            "offerValue": "90",
+            "postCaption": "This is a caption for a post",
+            "storyVideoDescription": "This is a video description story",
+            "storyHashtags": [
+                "lovebiz",
+                "remarklife"
+            ],
+            "offerDescription": "Let's see how it will go",
+            "offerImages": [
+                "s3objectkey"
+            ],
+            "storyType": "storyTypeTest",
+            "postImages": [
+                "s3objectkey1",
+                "s3objectkey2"
+            ]
+        },
+        "businessId": "us-east-2:4db770eb-7361-4490-abe6-fa8e9747820e",
+        "rangeKey": "d96a35cf-2a78-492d-b432-5412e4310b16",
+        "offerId": "4870c130-7bdd-11eb-b87c-89986492413c",
+        "geohash": "u0nd9jphn",
+        "createdAt": 1614747589827
+    }
+]

@@ -1,7 +1,7 @@
 import handler from "../../libs/handler-lib";
 import dynamoDb from "../../libs/dynamodb-lib";
-import * as geospatial from "../../libs/geospatial-lib";
-import * as deleteCollab from "./libs/deleteCollab-lib.js";
+import * as insert from "../../libs/insertOffer-lib";
+import * as deleteCollab from "./libs/deleteCollab-lib";
 export const main = handler(async (event, context) => {
   const data = JSON.parse(event.body);
   if(!data){
@@ -26,7 +26,7 @@ export const main = handler(async (event, context) => {
     "latitude" : collaboration.details.latitude,
     "longitude" : collaboration.details.longitude
   };
-  await geospatial.insertOffer(offerParams);
+  await insert.insertOffer(offerParams);
   await deleteCollab.main(collaboration);
   return { status: true };
 });

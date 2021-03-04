@@ -14,7 +14,7 @@ provider:
   region: us-east-2
   environment:
     userTableName: !ImportValue '${self:custom.sstApp}-ExtUserTableName'
-    offerTableName: !ImportValue '${self:custom.sstApp}-ExtOfferTableName'
+    offerTableName: !ImportValue '${self:custom.sstApp}-ExtNewOffersTableName'
     offerTableIndex: ${env:OFFER_TABLE_INDEX}
     expiredOffersTable: !ImportValue '${self:custom.sstApp}-ExtExpiredOffersTableName'
   iamRoleStatements:
@@ -33,8 +33,9 @@ provider:
       # the specific table for the stage
       Resource:
         - !ImportValue '${self:custom.sstApp}-ExtUserTableArn'
-        - !ImportValue '${self:custom.sstApp}-ExtOfferTableArn'
         - !ImportValue '${self:custom.sstApp}-ExtExpiredOffersTableArn'
+        - !ImportValue '${self:custom.sstApp}-ExtNewOffersTableArn'
+        - !ImportValue '${self:custom.sstApp}-ExtNewOffersTableArnIndex'
 functions:
   moveOffers:
     handler: moveOffers.main
