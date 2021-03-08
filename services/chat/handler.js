@@ -162,8 +162,6 @@ async function sendMessagesToConnection(agma, connectionId, messages) {
         }
     }
 }
-
-
 const deleteConnection = connectionId => {
   const deleteParams = {
     TableName: process.env.CHATCONNECTION_TABLE,
