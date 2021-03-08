@@ -1,0 +1,62 @@
+# NOTE: update this with your service name
+service: chat
+
+# Create an optimized package for our functions
+package:
+  individually: true
+
+plugins:
+  - serverless-bundle # Package our functions with Webpack
+  - serverless-offline
+  - serverless-dotenv-plugin # Load .env as environment variables
+custom: ${file(../../serverless.common.yml):custom}
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: dev
+  region: us-east-2
+  logs:
+    websocket: true
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - "execute-api:ManageConnections"
+      Resource:
+        - "arn:aws:execute-api:*:*:**/@connections/*"
+    - Effect: Allow
+      Action:
+        - "dynamodb:PutItem"
+        - "dynamodb:GetItem"
+        - "dynamodb:UpdateItem"
+        - "dynamodb:DeleteItem"
+        - "dynamodb:Query"
+        - "dynamodb:Scan"
+      Resource:
+        - !ImportValue '${self:custom.sstApp}-ExtConnectionsChatTableArn'
+        - !ImportValue '${self:custom.sstApp}-ExtConversationsTableArn'
+        - !ImportValue '${self:custom.sstApp}-ExtConnectionsChatTableArnIndex'
+  environment:
+    CHATCONNECTION_TABLE: !ImportValue '${self:custom.sstApp}-ExtConnectionsChatTableName'
+    CONVERSATIONS_TABLE: !ImportValue '${self:custom.sstApp}-ExtConversationsTableName'
+
+  websocketApiName: websocket-chat-${self:custom.stage}
+  websocketApiRouteSelectionExpression: $request.body.action
+
+functions:
+  connectionManager:
+    handler: handler.connectionManager
+    events:
+      - websocket:
+          route: $connect
+      - websocket:
+          route: $disconnect
+  defaultMessages:
+    handler: handler.defaultMessage
+    events:
+      - websocket:
+          route: $default
+  sendMessage:
+    handler: handler.processMessage
+    events:
+      - websocket:
+          route: sendMessage
