@@ -1,0 +1,35 @@
+{
+  "firstTier" : [{
+  	"numberOfFollowers" : "2000-3000",
+  	"numberOfPosts": "1",
+  	"numberOfStories": "4"
+    },
+    {
+  	"numberOfFollowers": "1000-2000",
+  	"numberOfPosts": "2",
+  	"numberOfStories": "8"
+    }
+  ],
+  "secondTier" : [{
+  	"numberOfFollowers" : "3000-4000",
+  	"numberOfPosts": "1",
+  	"numberOfStories": "4"
+    },
+    {
+  	"numberOfFollowers": "2000-3000",
+  	"numberOfPosts": "2",
+  	"numberOfStories": "8"
+    }
+  ],
+  "thirdTier" : [{
+  	"numberOfFollowers" : "4000-5000",
+  	"numberOfPosts": "1",
+  	"numberOfStories": "4"
+    },
+    {
+  	"numberOfFollowers": "3000-4000",
+  	"numberOfPosts": "2",
+  	"numberOfStories": "8"
+    }
+  ]
+}

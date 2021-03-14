@@ -2,7 +2,7 @@
     {
         "hashKey": "remark-offer",
         "offerDetails": {
-            "ageRange": "30-45",
+            "ageRanges": ["30-45","20-30"],
             "bucketName": "Uploads",
             "influencerCategories": [
                 "travel",
@@ -65,7 +65,7 @@
     {
         "hashKey": "remark-offer",
         "offerDetails": {
-            "ageRange": "20-30",
+            "ageRanges": ["20-30"],
             "bucketName": "Uploads",
             "influencerCategories": [
                 "travel",
@@ -128,7 +128,7 @@
     {
         "hashKey": "remark-offer",
         "offerDetails": {
-            "ageRange": "30-45",
+            "ageRanges": ["30-45"],
             "bucketName": "Uploads",
             "influencerCategories": [
                 "travel",
@@ -191,7 +191,7 @@
     {
         "hashKey": "remark-offer",
         "offerDetails": {
-            "ageRange": "30-45",
+            "ageRanges": ["30-45"],
             "bucketName": "Uploads",
             "influencerCategories": [
                 "travel",
@@ -254,7 +254,7 @@
     {
         "hashKey": "remark-offer",
         "offerDetails": {
-            "ageRange": "30-45",
+            "ageRanges": ["30-45"],
             "bucketName": "Uploads",
             "influencerCategories": [
                 "travel",

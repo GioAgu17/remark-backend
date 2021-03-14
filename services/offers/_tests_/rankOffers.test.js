@@ -27,23 +27,14 @@ test('rank offer', () => {
     }else if(followers >= (minFollowers*0.7)){
       item.rank+=0.5;
     }
-    const erRange = item.offerDetails.engagementRateRange.split("-");
-    const minEr = parseFloat(erRange[0]);
-    const maxEr = parseFloat(erRange[1]);
-    if(engagement >= minEr && engagement <= maxEr){
-      item.rank+=2;
-    }else if(engagement > maxEr){
-      item.rank+=1;
-    }else if(engagement > (minEr*0.8)){
-      item.rank+=0.5;
-    }else if(engagement > (minEr*0.7)){
-      item.rank+=0.25;
-    }
-    const ageRange = item.offerDetails.ageRange.split("-");
-    const minAge = ageRange[0] *1;
-    const maxAge = ageRange[1] *1;
-    if(age >= minAge && age <= maxAge){
-      item.rank+=1
+    const ageRanges = item.offerDetails.ageRanges;
+    for(let ageRange of ageRanges){
+      ageRange = ageRange.split("-");
+      const minAge = ageRange[0] *1;
+      const maxAge = ageRange[1] *1;
+      if(age >= minAge && age <= maxAge){
+        item.rank+=2;
+      }
     }
     console.log(item.rank);
   }

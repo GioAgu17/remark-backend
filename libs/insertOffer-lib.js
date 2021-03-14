@@ -20,7 +20,7 @@ export async function insertOffer(data){
 
 async function persistOffer(geohashEncoded, data){
   const params = {
-    TableName: process.env.newOfferTableName,
+    TableName: process.env.offersTableName,
     Item: {
       hashKey: process.env.partitionKeyOffer,
       rangeKey: uuid.v4(),

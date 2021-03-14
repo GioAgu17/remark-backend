@@ -7,7 +7,7 @@ export const main = handler(async (event, context) => {
   const params = {
     TableName: process.env.offersTableName,
     Key: {
-      hashKey: data.hashKey*1,
+      hashKey: process.env.partitionKeyOffer,
       rangeKey: data.rangeKey
     },
     UpdateExpression: "SET offerDetails = :offerDetails",

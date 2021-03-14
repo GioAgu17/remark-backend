@@ -4,7 +4,7 @@ import dynamodb from "../../../libs/dynamodb-lib";
   const queryOutputs = [];
   async function nextQuery(lastEvaluatedKey){
     const params = {
-      TableName : process.env.newOfferTableName,
+      TableName : process.env.offersTableName,
       IndexName: "geohash-index",
       KeyConditionExpression: "hashKey = :hashKey AND begins_with(geohash, :geohash)",
       ExpressionAttributeValues: {
