@@ -3,19 +3,16 @@ import dynamoDb from "../../libs/dynamodb-lib";
 
 export const main = handler(async (event, context) => {
   const request = JSON.parse(event.body);
-  const offerId = request.offerId;
-  const businessId = request.businessId;
+  const rangeKey = request.rangeKey;
   const influencerId = request.influencerId;
   const params = {
     TableName: process.env.offersTableName,
-    IndexName: process.env.offerTableIndex,
-    KeyConditionExpression: 'businessId = :bus_id and offerId = :off_id',
-    ExpressionAttributeValues: {
-      ':bus_id': businessId,
-      ':off_id': offerId
+    Key: {
+      "hashKey" : process.env.partitionKeyOffer,
+      "rangeKey": rangeKey
     }
   };
-  const result = await dynamoDb.query(params);
+  const result = await dynamoDb.get(params);
   if ( ! result.Items) {
     throw new Error("Item not found.");
   }

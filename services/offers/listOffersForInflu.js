@@ -23,6 +23,7 @@ export const main = handler(async (event, context) => {
   const offers = await read.queryOffersByRadius(data);
   // rank close offers based on some weights
   console.log(offers);
+  console.log(influencer);
   const offersRanked = await engine.rankOffers(offers, influencer);
   return offersRanked;
 });
