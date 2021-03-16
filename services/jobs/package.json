@@ -12,7 +12,8 @@
     "@babel/preset-env": "^7.12.13",
     "babel-jest": "^26.6.3",
     "jest": "^26.6.3",
-    "serverless-bundle": "^4.2.2"
+    "serverless-bundle": "^4.2.2",
+    "serverless-offline": "^5.3.3"
   },
   "engines": {
     "yarn": "YARN NO LONGER USED - use npm instead."
