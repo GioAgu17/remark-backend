@@ -4,7 +4,8 @@ import dynamoDb from "../../libs/dynamodb-lib";
 export const main = handler(async (event, context) => {
   const request = JSON.parse(event.body);
   const rangeKey = request.rangeKey;
-  const influencerId = request.influencerId;
+  const remarkerId = request.remarkerId;
+  console.log(process.env.partitionKeyOffer);
   const params = {
     TableName: process.env.offersTableName,
     Key: {
@@ -20,7 +21,12 @@ export const main = handler(async (event, context) => {
   const offerDetails = offer.offerDetails;
   const applications = offerDetails.applications;
   console.log(applications);
-  applications.unselected.push(influencerId);
+  const unselected = applications.unselected;
+  const newObj = {
+    "remarkerId" : remarkerId,
+    "applicationData" : Date.now()
+  };
+  unselected.push(newObj);
   const updateParams = {
     TableName: process.env.offersTableName,
     Key: {
