@@ -17,5 +17,7 @@
     "serverless-dotenv-plugin": "^2.1.1",
     "serverless-offline": "^5.3.3"
   },
-  "dependencies": {}
+  "engines": {
+    "yarn": "YARN NO LONGER USED - use npm instead."
+  }
 }

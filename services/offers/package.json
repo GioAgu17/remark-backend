@@ -20,5 +20,8 @@
   },
   "dependencies": {
     "ngeohash": "^0.6.3"
+  },
+  "engines": {
+    "yarn": "YARN NO LONGER USED - use npm instead."
   }
 }
