@@ -14,10 +14,10 @@ export const main = handler(async (event, context) => {
     }
   };
   const result = await dynamoDb.get(params);
-  if ( ! result.Items) {
+  if ( ! result.Item) {
     throw new Error("Item not found.");
   }
-  const offer =  result.Items[0];
+  const offer =  result.Item;
   const offerDetails = offer.offerDetails;
   const applications = offerDetails.applications;
   console.log(applications);
@@ -27,6 +27,7 @@ export const main = handler(async (event, context) => {
     "applicationData" : Date.now()
   };
   unselected.push(newObj);
+  console.log(applications);
   const updateParams = {
     TableName: process.env.offersTableName,
     Key: {
@@ -39,5 +40,6 @@ export const main = handler(async (event, context) => {
     },
     ReturnValues: "ALL_NEW"
   };
-  dynamoDb.update(updateParams);
+  await dynamoDb.update(updateParams);
+  return { status: true };
 });
