@@ -5,7 +5,7 @@ export const main = handler(async (event, context) => {
   const paramsToDelete = {
     TableName: process.env.userTableName,
     Key: {
-      "userId": event.pathParameters.id
+      "userId": event.requestContext.identity.cognitoIdentityId
     }
   };
   await dynamoDb.delete(paramsToDelete);

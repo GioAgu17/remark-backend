@@ -7,7 +7,7 @@ useDotenv : true
 plugins:
   - serverless-bundle # Package our functions with Webpack
   - serverless-offline
-  - serverless-dotenv-plugin # Load .env as environment variables
+  - serverless-dotenv-plugin # Load .env as environment variables\
 
 custom: ${file(../../serverless.common.yml):custom}
 
@@ -53,7 +53,7 @@ functions:
     handler: get.main
     events:
       - http:
-          path: users/{id}
+          path: users
           method: get
           cors: true
           authorizer: aws_iam
@@ -61,7 +61,7 @@ functions:
     handler: update.main
     events:
       - http:
-          path: users/{id}
+          path: users
           method: put
           cors: true
           authorizer: aws_iam
@@ -69,7 +69,7 @@ functions:
     handler: delete.main
     events:
       - http:
-          path: users/{id}
+          path: users
           method: delete
           cors: true
           authorizer: aws_iam

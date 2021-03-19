@@ -4,15 +4,16 @@ export function rankOffers(offers, influencer){
   const followers = userDetails.followers;
   const age = userDetails.age;
   const influencerId = influencer.userId;
+  const offersToReturn = [];
   for(let item of offers){
     const offerDetails = item.offerDetails;
     const applications = offerDetails.applications;
     if(applications){
       const selected = applications.selected;
-      if(Array.isArray(selected) && !selected.length){
+      if(Array.isArray(selected) && selected.length != 0){
         const selectedIds = selected.map(x => x.remarkerId);
         if(selectedIds.includes(influencerId)){
-          console.log("Skipping offer "+item.offerId+" because influencerId "+ influencerId + " is among selected");
+          console.log("Skipping offer "+item.rangeKey+" because influencerId "+ influencerId + " is among selected");
           break;
         }
       }
@@ -42,7 +43,7 @@ export function rankOffers(offers, influencer){
       item.rank+=process.env.followersWeight - 2.5;
     }
     const ageRanges = offerDetails.ageRanges;
-    if(Array.isArray(ageRanges) && !ageRanges.length){
+    if(Array.isArray(ageRanges) && ageRanges.length != 0){
       for(let ageRange of ageRanges){
         ageRange = ageRange.split("-");
         const minAge = ageRange[0] *1;
@@ -52,7 +53,8 @@ export function rankOffers(offers, influencer){
         }
       }
     }
+    offersToReturn.push(item);
   }
-  offers.sort((a,b) => (a.rank < b.rank) ? 1 : -1);
-  return offers;
+  offersToReturn.sort((a,b) => (a.rank < b.rank) ? 1 : -1);
+  return offersToReturn;
 };

@@ -49,6 +49,7 @@ provider:
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
         - dynamodb:DescribeTable
+        - dynamodb:BatchGetItem
       # Restrict our IAM role permissions to
       # the specific table for the stage
       Resource:
@@ -76,6 +77,14 @@ functions:
       - http:
           path: offers/listOffersForInflu
           method: post
+          cors: true
+          authorizer: aws_iam
+  listOffersForInfluId:
+    handler: listOffersForInfluId.main
+    events:
+      - http:
+          path: offers/listOffersForInflu/{id}
+          method: get
           cors: true
           authorizer: aws_iam
   listOffersForBusiness:
@@ -130,11 +139,26 @@ functions:
     handler: markOffer.main
     events:
       - http:
-          path: markOffer
-          method: post
+          path: markOffer/{id}
+          method: get
           cors: true
           authorizer: aws_iam
-
+  saveOffer:
+    handler: saveOffer.main
+    events:
+      - http:
+          path: saveOffer/{id}
+          method: get
+          cors: true
+          authorizer: aws_iam
+  getSavedOffers:
+    handler: getSavedOffers.main
+    events:
+      - http:
+          path: getSavedOffers
+          method: get
+          cors: true
+          authorizer: aws_iam
 # Create our resources with separate CloudFormation templates
 # Create our resources with separate CloudFormation templates
 resources:

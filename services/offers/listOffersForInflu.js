@@ -4,7 +4,6 @@ import * as read from "./libs/readOffer-lib";
 import * as engine from "./libs/engine-lib";
 
 export const main = handler(async (event, context) => {
-  console.time("listOffersForInflu");
   // get the influencer for which we are going to show offers
   const influencerId = event.requestContext.identity.cognitoIdentityId;
   const params = {
@@ -22,8 +21,6 @@ export const main = handler(async (event, context) => {
   const data = JSON.parse(event.body);
   const offers = await read.queryOffersByRadius(data);
   // rank close offers based on some weights
-  console.log(offers);
-  console.log(influencer);
   const offersRanked = await engine.rankOffers(offers, influencer);
   return offersRanked;
 });

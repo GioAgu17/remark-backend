@@ -28,6 +28,5 @@ async function dispatchQueries(geohashes) {
     const point = geohash.encode(lat, long, 6);
     var neighbors = geohash.neighbors(point, 6);
     neighbors.push(point);
-    console.log(neighbors);
     return neighbors;
   }

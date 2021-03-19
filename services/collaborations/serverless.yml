@@ -20,7 +20,6 @@ provider:
     shouldStartNameWithService: true
 
   environment:
-    stripeSecretKey: ${env:STRIPE_SECRET_KEY}
     collaborationsTableName: !ImportValue '${self:custom.sstApp}-ExtCollaborationsTableName'
     offersTableName: !ImportValue '${self:custom.sstApp}-ExtNewOffersTableName'
     collaborationsTableIndex: ${env:COLLAB_TABLE_INDEX}

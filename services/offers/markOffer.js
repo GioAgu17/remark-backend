@@ -2,9 +2,11 @@ import handler from "../../libs/handler-lib";
 import dynamoDb from "../../libs/dynamodb-lib";
 
 export const main = handler(async (event, context) => {
-  const request = JSON.parse(event.body);
-  const rangeKey = request.rangeKey;
-  const remarkerId = request.remarkerId;
+  const rangeKey = event.pathParameters.id;
+  if(!rangeKey){
+    throw new Error("Cannot proceed without range key");
+  }
+  const remarkerId = event.requestContext.identity.cognitoIdentityId;
   console.log(process.env.partitionKeyOffer);
   const params = {
     TableName: process.env.offersTableName,
@@ -19,12 +21,17 @@ export const main = handler(async (event, context) => {
   }
   const offer =  result.Item;
   const offerDetails = offer.offerDetails;
-  const applications = offerDetails.applications;
-  console.log(applications);
+  var applications = offerDetails.applications;
+  if(!applications){
+    applications = {
+      "selected": [],
+      "unselected": []
+    };
+  }
   const unselected = applications.unselected;
   const newObj = {
     "remarkerId" : remarkerId,
-    "applicationData" : Date.now()
+    "applicationDate" : Date.now()
   };
   unselected.push(newObj);
   console.log(applications);
