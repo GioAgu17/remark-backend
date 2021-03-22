@@ -1,6 +1,10 @@
 import handler from "../../libs/handler-lib";
 import dynamoDb from "../../libs/dynamodb-lib";
 
+/*
+  Retrieving saved offers for a remarker, by reading the parameter savedOffers in user TableName
+  and then reading batch of items from offers table with the range keys obtained from first query
+*/
 export const main = handler(async (event, context) => {
   const remarkerId = event.requestContext.identity.cognitoIdentityId;
   const userParams = {
@@ -19,8 +23,8 @@ export const main = handler(async (event, context) => {
     const keys = [];
     for(let rangeKey of savedOffers){
       const obj = {
-        "hashKey" : process.env.partitionKeyOffer,
-        "rangeKey": rangeKey
+        hashKey : process.env.partitionKeyOffer,
+        rangeKey: rangeKey
       };
       keys.push(obj);
     }

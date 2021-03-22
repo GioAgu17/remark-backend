@@ -2,7 +2,9 @@ import handler from "../../libs/handler-lib";
 import dynamoDb from "../../libs/dynamodb-lib";
 import * as read from "./libs/readOffer-lib";
 import * as engine from "./libs/engine-lib";
-
+/*
+   this part is to show the closest offers
+*/
 export const main = handler(async (event, context) => {
   // get the influencer for which we are going to show offers
   const influencerId = event.requestContext.identity.cognitoIdentityId;

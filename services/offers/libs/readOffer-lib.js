@@ -25,8 +25,9 @@ async function dispatchQueries(geohashes) {
   }
 
   function calculateGeoHashes(lat, long){
-    const point = geohash.encode(lat, long, 6);
-    var neighbors = geohash.neighbors(point, 6);
+    const hashKeyLength = process.env.hashKeyLength*1;
+    const point = geohash.encode(lat, long, hashKeyLength);
+    var neighbors = geohash.neighbors(point, hashKeyLength);
     neighbors.push(point);
     return neighbors;
   }
