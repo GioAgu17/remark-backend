@@ -1,0 +1,85 @@
+service: statistics
+
+
+useDotenv: true
+# Create an optimized package for our functions
+package:
+  individually: true
+  exclude:
+    - node_modules/puppeteer/.local-chromium/**
+
+plugins:
+  - serverless-bundle # Package our functions with Webpack
+  - serverless-offline
+  - serverless-dotenv-plugin # Load .env as environment variables
+
+custom: ${file(../../serverless.common.yml):custom}
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: dev
+  region: us-east-2
+  apiGateway:
+    shouldStartNameWithService: true
+  # To load environment variables externally
+  # rename env.example to .env and uncomment
+  # the following line. Also, make sure to not
+  # commit your .env.
+  #
+  #environment:
+  #  SAMPLE_ENV_VAR: ${env:SAMPLE_ENV_VAR}
+
+  environment:
+    bucketName: !ImportValue '${self:custom.sstApp}-ExtAttachmentsBucketName'
+
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:GetObject
+        - s3:ListBucket
+        - s3:PutObject
+      Resource:
+        - !ImportValue '${self:custom.sstApp}-ExtAttachmentsBucketArn'
+functions:
+  checkUsername:
+    handler: api.checkUsername
+    events:
+      - http:
+          path: checkUsername/{id}
+          method: get
+          authorizer: aws_iam
+    #memorySize: 512 # RAM size for the function
+    #timeout: 15
+    #layers:
+       #- !Sub 'arn:aws:lambda:us-east-2:764866452798:layer:chrome-aws-lambda:20'
+  getProfilePic:
+    handler: api.getProfilePic
+    events:
+      - http:
+          path: getProfilePic/{id}
+          method: get
+          authorizer: aws_iam
+  userStatistics:
+    handler: api.userStatistics
+    events:
+      - http:
+          path: userStatistics/{id}
+          method: get
+          authorizer: aws_iam
+  hasBeenTagged:
+    handler: api.hasBeenTagged
+    events:
+      - http:
+          path: hasBeenTagged
+          method: post
+          authorizer: aws_iam
+
+
+# Create our resources with separate CloudFormation templates
+# Create our resources with separate CloudFormation templates
+resources:
+  # API Gateway Errors
+  - ${file(resources/api-gateway-errors.yml)}
+  # Cognito Identity Pool Policy
+  - ${file(resources/cognito-policy.yml)}

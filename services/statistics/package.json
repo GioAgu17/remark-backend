@@ -1,8 +1,8 @@
 {
-  "name": "chat",
+  "name": "notes-api",
   "version": "2.2.0",
   "description": "A Node.js starter for Serverless Framework with ES6 and TypeScript support",
-  "main": "handler.js",
+  "main": "api.js",
   "scripts": {
     "test": "serverless-bundle test"
   },
@@ -13,14 +13,16 @@
     "url": "https://github.com/AnomalyInnovations/serverless-nodejs-starter.git"
   },
   "devDependencies": {
-    "serverless-bundle": "3.2.0",
+    "aws-sdk": "^2.888.0",
+    "serverless-bundle": "^3.2.0",
     "serverless-dotenv-plugin": "^2.1.1",
-    "serverless-offline": "^6.8.0"
-  },
-  "engines": {
-    "yarn": "YARN NO LONGER USED - use npm instead."
+    "serverless-offline": "^5.3.3"
   },
   "dependencies": {
-    "wscat": "^4.0.1"
+    "chrome-aws-lambda": "^9.1.0",
+    "node-fetch": "^2.6.1",
+    "puppeteer": "^9.1.1",
+    "puppeteer-core": "^9.1.1",
+    "uuid": "^7.0.3"
   }
 }

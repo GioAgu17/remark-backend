@@ -141,11 +141,27 @@ functions:
           method: get
           cors: true
           authorizer: aws_iam
+  unmarkOffer:
+    handler: unmarkOffer.main
+    events:
+      - http:
+          path: unmarkOffer/{id}
+          method: get
+          cors: true
+          authorizer: aws_iam
   saveOffer:
     handler: saveOffer.main
     events:
       - http:
           path: saveOffer/{id}
+          method: get
+          cors: true
+          authorizer: aws_iam
+  unsaveOffer:
+    handler: unsaveOffer.main
+    events:
+      - http:
+          path: unsaveOffer/{id}
           method: get
           cors: true
           authorizer: aws_iam
@@ -157,6 +173,8 @@ functions:
           method: get
           cors: true
           authorizer: aws_iam
+
+
 # Create our resources with separate CloudFormation templates
 # Create our resources with separate CloudFormation templates
 resources:

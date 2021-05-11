@@ -19,6 +19,7 @@ export const main = handler(async (event, context) => {
   }
   const remarker = remarkerResult.Item;
   const savedOffers = remarker.userDetails.savedOffers;
+  console.log(savedOffers);
   if(Array.isArray(savedOffers) && savedOffers.length != 0){
     const keys = [];
     for(let rangeKey of savedOffers){
@@ -37,10 +38,10 @@ export const main = handler(async (event, context) => {
       Keys: keys
     };
     const result = await dynamoDb.batchGet(readParams);
-    if ( ! result.Items) {
+    if ( ! result.Responses) {
       throw new Error("Items not found.");
     }
-    return result.Items;
+    return result.Responses[offersTableName];
   }else {
     return [];
   }

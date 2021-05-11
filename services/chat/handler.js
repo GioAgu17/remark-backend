@@ -6,7 +6,7 @@ const successfullResponse = {
   statusCode: 200
 };
 
-module.exports.connectionManager = (event, context, callback) => {
+export const connectionManager = (event, context, callback) => {
     const eventType = event.requestContext.eventType;
     const connectionId = event.requestContext.connectionId;
     if(eventType == "DISCONNECT"){
@@ -17,7 +17,7 @@ module.exports.connectionManager = (event, context, callback) => {
     }else{
       callback(null, {
         statusCode: 500,
-        body: "Unknown event type " + eventType
+        body: JSON.stringify({msg : "Unknown event type " + eventType})
       });
     }
 };

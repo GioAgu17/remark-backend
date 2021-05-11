@@ -1,6 +1,9 @@
 export function rankOffers(offers, influencer){
   const userDetails = influencer.userDetails;
   const categories = userDetails.influencerCategories;
+  if(!categories){
+    throw new Error("Can't list offers for an user without influencer categories");
+  }
   const followers = userDetails.followers;
   const age = userDetails.age;
   const influencerId = influencer.userId;
