@@ -42,6 +42,7 @@ export function buildUrl(username){
 // }
 
 async function initChrome(){
+  console.log("Trying to do my best");
     const browser = await puppeteer.launch({
       // headless: false, // debug
       // slowMo: 50, // debug
