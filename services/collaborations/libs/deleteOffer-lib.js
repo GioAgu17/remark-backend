@@ -1,8 +1,8 @@
 import dynamoDb from "../../../libs/dynamodb-lib";
-const {newOfferTableName} = process.env;
+const {offersTableName} = process.env;
 export function main(offer){
   const params = {
-    TableName: newOfferTableName,
+    TableName: offersTableName,
     Key: {
       'hashKey' : offer.hashKey,
       'rangeKey' : offer.rangeKey

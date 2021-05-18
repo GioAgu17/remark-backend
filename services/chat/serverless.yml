@@ -51,12 +51,12 @@ functions:
       - websocket:
           route: $disconnect
   defaultMessages:
-    handler: handler.defaultMessage
+    handler: connect.defaultMessage
     events:
       - websocket:
           route: $default
   sendMessage:
-    handler: handler.processMessage
+    handler: sendMessage.main
     events:
       - websocket:
           route: sendMessage

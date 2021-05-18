@@ -173,7 +173,30 @@ functions:
           method: get
           cors: true
           authorizer: aws_iam
-
+  selectRemarker:
+    handler: selectRemarker.main
+    events:
+      - http:
+          path: selectRemarker/{id}
+          method: get
+          cors: true
+          authorizer: aws_iam
+  unselectRemarker:
+    handler: unselectRemarker.main
+    events:
+      - http:
+          path: unselectRemarker/{id}
+          method: get
+          cors: true
+          authorizer: aws_iam
+  offerWithRange:
+    handler: offerWithRange.main
+    events:
+      - http:
+          path: offerWithRange/{id}
+          method: get
+          cors: true
+          authorizer: aws_iam
 
 # Create our resources with separate CloudFormation templates
 # Create our resources with separate CloudFormation templates

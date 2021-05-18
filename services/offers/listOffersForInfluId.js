@@ -15,6 +15,7 @@ export const main = handler(async (event, context) => {
     throw new Error("Item not found.");
   }
   const businessOffers =  result.Items;
+  console.log(businessOffers);
   const remarkerId = event.requestContext.identity.cognitoIdentityId;
   const getParams = {
     TableName: process.env.userTableName,

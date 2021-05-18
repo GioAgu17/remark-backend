@@ -1,0 +1,6 @@
+{
+	"action" : "sendMessage",
+	"choice" : "init",
+	"room" : "mine",
+	"lang" : "ENG"
+}

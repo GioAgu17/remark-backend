@@ -29,3 +29,10 @@ function failedResponse(eventType){
     body: JSON.stringify({msg : "Unknown event type " + eventType})
   };
 };
+
+export const defaultMessage = handler(async (event, context) => {
+  return{
+    statusCOde : 200,
+    body: JSON.stringify({msg : "Default route"})
+  };
+});

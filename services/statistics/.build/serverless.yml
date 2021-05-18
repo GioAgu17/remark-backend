@@ -45,7 +45,7 @@ provider:
 functions:
   checkUsername:
     handler: api.checkUsername
-    memorySize: 1536
+    memorySize: 1536MB
     timeout: 30
     events:
       - http:

@@ -27,7 +27,7 @@ export const main = handler(async (event, context) => {
       throw new Error("range key " + rangeKey + " not found in saved offers");
     }
   }
-  /*const updateParams = {
+  const updateParams = {
       TableName: process.env.userTableName,
       Key: {
           "userId": remarkerId
@@ -40,6 +40,7 @@ export const main = handler(async (event, context) => {
           ":newSavedOffers": savedOffers
       },
       ReturnValues: 'ALL_NEW'
-  };*/
+  };
+  await dynamoDb.update(updateParams);
   return { status: true };
 });

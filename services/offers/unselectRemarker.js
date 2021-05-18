@@ -27,10 +27,10 @@ export const main = handler(async (event, context) => {
       "unselected": []
     };
   }
-  const unselected = applications.unselected;
+  const selected = applications.selected;
   var index = 0;
   var found = false;
-  for(let entry of unselected){
+  for(let entry of selected){
     if(entry.remarkerId === remarkerId){
       found = true;
       break;
@@ -38,24 +38,32 @@ export const main = handler(async (event, context) => {
       index++;
     }
   }
-  if(found){
-    unselected.splice(index,1);
+  if(!found){
+    throw new Error("Cannot find remarker among selected applicants in offer");
+  }else {
+    const obj = selected[index];
+    selected.splice(index,1);
+    if(!applications.unselected){
+      applications.unselected = [];
+    }
+    const unselected = applications.unselected;
+    unselected.push(obj);
+    const updateParams = {
+        TableName: process.env.offersTableName,
+        Key: {
+            hashKey : offer.hashKey,
+            rangeKey: offer.rangeKey
+        },
+        UpdateExpression: "SET offerDetails.#ri = :newApplications",
+        ExpressionAttributeNames: {
+            "#ri": "applications"
+        },
+        ExpressionAttributeValues: {
+            ":newApplications": applications
+        },
+        ReturnValues: 'ALL_NEW'
+    };
+    await dynamoDb.update(updateParams);
+    return { status: true };
   }
-  else {
-    throw new Error("RemarkerId " + remarkerId + " not found in unselected");
-  }
-  const updateParams = {
-    TableName: process.env.offersTableName,
-    Key: {
-      hashKey: offer.hashKey,
-      rangeKey: offer.rangeKey
-    },
-    UpdateExpression: "SET offerDetails = :offerDetails",
-    ExpressionAttributeValues: {
-      ":offerDetails": offerDetails
-    },
-    ReturnValues: "ALL_NEW"
-  };
-  await dynamoDb.update(updateParams);
-  return { status: true };
 });

@@ -38,24 +38,32 @@ export const main = handler(async (event, context) => {
       index++;
     }
   }
-  if(found){
+  if(!found){
+    throw new Error("Cannot find remarker among unselected applicants in offer");
+  }else {
+    const obj = unselected[index];
     unselected.splice(index,1);
+    if(!applications.selected){
+      applications.selected = [];
+    }
+    const selected = applications.selected;
+    selected.push(obj);
+    const updateParams = {
+        TableName: process.env.offersTableName,
+        Key: {
+            hashKey : offer.hashKey,
+            rangeKey: offer.rangeKey
+        },
+        UpdateExpression: "SET offerDetails.#ri = :newApplications",
+        ExpressionAttributeNames: {
+            "#ri": "applications"
+        },
+        ExpressionAttributeValues: {
+            ":newApplications": applications
+        },
+        ReturnValues: 'ALL_NEW'
+    };
+    await dynamoDb.update(updateParams);
+    return { status: true };
   }
-  else {
-    throw new Error("RemarkerId " + remarkerId + " not found in unselected");
-  }
-  const updateParams = {
-    TableName: process.env.offersTableName,
-    Key: {
-      hashKey: offer.hashKey,
-      rangeKey: offer.rangeKey
-    },
-    UpdateExpression: "SET offerDetails = :offerDetails",
-    ExpressionAttributeValues: {
-      ":offerDetails": offerDetails
-    },
-    ReturnValues: "ALL_NEW"
-  };
-  await dynamoDb.update(updateParams);
-  return { status: true };
 });
