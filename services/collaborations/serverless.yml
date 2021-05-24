@@ -23,6 +23,7 @@ provider:
     collaborationsTableName: !ImportValue '${self:custom.sstApp}-ExtCollaborationsTableName'
     offersTableName: !ImportValue '${self:custom.sstApp}-ExtNewOffersTableName'
     collaborationsTableIndex: ${env:COLLAB_TABLE_INDEX}
+    exploreIndex: ${env:EXPLORE_INDEX}
     partitionKeyOffer: ${env:PARTITION_KEY_OFFER}
 
   iamRoleStatements:
@@ -83,7 +84,14 @@ functions:
           method: get
           cors: true
           authorizer: aws_iam
-
+  explore:
+    handler: explore.main
+    events:
+      - http:
+          path: explore
+          method: get
+          cors: true
+          authorizer: aws_iam
 resources:
   # API Gateway Errors
   - ${file(resources/api-gateway-errors.yml)}

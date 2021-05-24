@@ -1,116 +1,70 @@
+import fetch from 'node-fetch';
 import handler from "../../libs/handler-lib";
-import s3 from "../../libs/s3-lib";
-//import puppeteer from "puppeteer-core";
-import chromium from "chrome-aws-lambda";
-const puppeteer = require('puppeteer');
-const { getChrome } = require('./chrome-script');
+import HttpsProxyAgent from "https-proxy-agent";
+import * as fs from 'fs'; // to get cookies from fs
 
-export const chrome_args = [ // Prevents detection
-    '--no-sandbox',
-    '--disable-setuid-sandbox',
-    '--disable-infobars',
-    '--window-position=0,0',
-    '--ignore-certifcate-errors',
-    '--ignore-certifcate-errors-spki-list',
-    '--user-agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3312.0 Safari/537.36"'
+const agents = [
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 11.3; rv:88.0) Gecko/20100101 Firefox/88.0"
 ];
 
-export const selectors = {
-    'notfound_str' : "Page Not Found", // not a DOM selector
-    'login_str' : 'Login', // not a DOM selector
-    'profilepic' : "header img",
-    'followers' : "main header section ul:nth-child(2) li a span",
-    'posts' : ".v1Nh3.kIKUG._bz0w",
-    'savelogininfo' : ".sqdOP.L3NKy.y3zKF",
-    'notnow' : ".aOOlW.HoLwm",
-    'post_likes' : ".qn-0x ul li:first-child span:first-child",
-    'post_comments' : ".qn-0x ul li:nth-child(2) span:first-child"
+let fetch_args = {
+    headers : {
+        'User-Agent' : agents[ Math.floor(Math.random() * agents.length) ],
+        'Cookie' : getCookies()
+    },
+    agent : new HttpsProxyAgent(process.env.HTTP_PROXY)
 };
 
-
 // HELPER FUNCTIONS
+
+export function getCookies(){
+    // This is compatible with the json cookie jar saved by the puppeteer scraper
+    // you can otherwise use the Cookie string of the req headers grabbed from the chrome devTools of a logged session
+    let raw_header_cookie = '';
+    const cookiesString = fs.readFileSync(process.env.COOKIES_PATH);
+    let cookie_jar = JSON.parse(cookiesString);
+    Object.keys(cookie_jar).forEach(function(key) {
+        var cookie = cookie_jar[key];
+        raw_header_cookie += cookie.name + '=' + cookie.value + '; ';
+    });
+    return raw_header_cookie;
+}
 
 export function buildUrl(username){
     // not sure how to handle the exeption
     // testing online i got a "Missing Authentication Token" not passing the param
     if(typeof username === "undefined")
         throw new Error('need a username');
-    return "https://www.instagram.com/" + username/*+ "/?__a=1"*/;
+    return "https://www.instagram.com/" + username + "/?__a=1";
+    // return 'https://httpbin.org/ip?json';
+    // return 'https://httpbin.org/user-agent?json';
+    // return 'https://httpbin.org/cookies?json';
 }
 
-// async function getProfileData(username){
-//       return await fetch( buildUrl(username) )
-//       .then(res => res.json());
-// }
-
-async function initChrome(){
-  console.log("Trying to do my best");
-    const browser = await puppeteer.launch({
-      // headless: false, // debug
-      // slowMo: 50, // debug
-      args: chrome_args,
-      defaultViewport: chromium.defaultViewport,
-      executablePath: await chromium.executablePath,
-      headless: chromium.headless,
-      ignoreHTTPSErrors: true,
-    });
-    return browser;
-}
-
-async function getCookies(){
-    const params = {
-      Bucket: process.env.bucketName,
-      Key: process.env.objectName
-    };
-    const cookiesString = await s3.getObject(params);
-    //const cookiesString = await fs.readFile(process.env.COOKIES_PATH);
-    return JSON.parse(cookiesString.Body.toString('utf-8'));
-}
-
-export function dePrettify(num){
-    num = num.replaceAll(',', '');
-    num = num.replaceAll('.', '');
-    if(num.endsWith('k'))
-        num = num.replace('k', '') + '000';
-    else if(num.endsWith('m'))
-        num = num.replace('m', '') + '000000';
-    return Number(num);
-}
-
-async function login(browser){
-    browser = typeof browser === "undefined" ? await initChrome() : browser;
-    let page = await browser.newPage();
-    await page.goto('https://www.instagram.com/accounts/login/');
-    await page.waitForSelector('button.bIiDR');
-    await page.click('button.bIiDR'); // accept cookies btn
-    await page.waitForSelector('input[name="username"]');
-    await page.waitForSelector('input[name="password"]');
-    await page.waitForSelector('button[type="submit"]');
-    await page.click('input[name="username"]');
-    await page.type('input[name="username"]', process.env.IG_USER);
-    await page.click('input[name="password"]');
-    await page.type('input[name="password"]', process.env.IG_PWD);
-    await Promise.all([
-        page.waitForNavigation(),
-        page.click('button[type="submit"]'),
-    ]);
-    await page.waitForSelector(selectors.savelogininfo);
-    await page.click(selectors.savelogininfo);
-    await page.waitForSelector(selectors.notnow);
-    await page.click(selectors.notnow);
-    // storing cookies to skip manual login next time
-    const cookies = await page.cookies();
-    const writeParams = {
-      Bucket: process.env.bucketName,
-      Key: process.env.objectName,
-      Body: cookies,
-      ContentType: "application/json"
-    };
-    await s3.putObject(writeParams);
-    //await fs.writeFile(process.env.COOKIES_PATH, JSON.stringify(cookies, null, 2));
-    // TODO: check for exceptions
-    console.log('logged');
-    return page;
+async function getProfileData(username){
+    return await fetch( buildUrl( username ), fetch_args )
+        .then( res => Promise.all([ res.status, res.redirected, res.url, res.text() ]) )
+        .then( ([ status, redirected, url, textResponse ]) => {
+            if( redirected && url.includes('login') ){
+                // log the exeption and inject cookies or change ip
+                console.log('asking to log in');
+                return -1;
+            } if(status == 404) {
+                // user not found
+                console.log('user not found');
+                return false;
+            } else {
+                try {
+                    return JSON.parse(textResponse);
+                } catch (e) {
+                    // cannot json parse, likely got an html response. TODO: log it out.
+                    console.log('error parsing');
+                    return -1;
+                }
+            }
+        });
 }
 
 
@@ -120,36 +74,16 @@ async function login(browser){
  * this checks if the given username is existing in Instagram
  */
 export const checkUsername = handler(async (event, context) => {
-    let title = null;
-    let chrome = await getChrome();
-    let browser = await puppeteer.connect({
-      browserWSEndpoint: chrome.endpoint,
-    });
-    // let page = await login(browser); // no need to be logged for this
-    let page = await browser.newPage();
-    await page.goto(buildUrl(event.pathParameters.id));
-    title = await page.title();
-    browser.close();
-    return !title.includes(selectors.notfound_str);
+    const data = await getProfileData(event.pathParameters.id);
+    return (data !== false && data != -1); // !! misleading false return !!
 });
 
 /**
  * returns the profile pic
  */
 export const getProfilePic = handler(async (event, context) => {
-    let browser = await initChrome();
-    let page = await browser.newPage();
-    await page.setCookie(...await getCookies());
-    await page.goto(buildUrl(event.pathParameters.id));
-    let title = await page.title();
-    if(title.includes(selectors.login_str)){
-        page = await login(browser);
-        await page.goto(buildUrl(event.pathParameters.id));
-    }
-    await page.waitForSelector(selectors.profilepic);
-    let link = await page.evaluate('document.querySelector("'+selectors.profilepic+'").getAttribute("src")');
-    browser.close();
-    return link;
+    const data = await getProfileData(event.pathParameters.id);
+    return data.graphql.user.profile_pic_url;
 });
 
 /**
@@ -162,46 +96,24 @@ export const getProfilePic = handler(async (event, context) => {
  *     - Engagement rate is (avg likes / total followers) * 100
  */
 export const userStatistics = handler(async (event, context) => {
-    let likes_sum = 0;
-    let comments_sum = 0;
-    let er_likes_sum = 0;
-    let post_map = [];
-
-    let browser = await initChrome();
-    let page = await browser.newPage();
-    await page.setCookie(...await getCookies());
-    await page.goto(buildUrl(event.pathParameters.id));
-    let title = await page.title();
-    if(title.includes(selectors.login_str)){
-        page = await login(browser);
-        await page.goto(buildUrl(event.pathParameters.id));
-    }
-
-    let followers = await page.evaluate('document.querySelector("'+selectors.followers+'").getAttribute("title")');
-    followers = dePrettify(followers);
-
-    let posts = await page.$$(selectors.posts);
-    for (let post of posts) {
-        let link = await post.$eval('img', (img) => img.src);
-        await post.hover();
-        let likes = await post.$eval(selectors.post_likes, (likes) => likes.innerText);
-        let comments = await post.$eval(selectors.post_comments, (likes) => likes.innerText);
-        post_map.push({'img': link, 'likes': dePrettify(likes), 'comments': dePrettify(comments)});
-    }
-    posts = post_map;
-    browser.close();
+    var likes_sum = 0;
+    var comments_sum = 0;
+    var er_likes_sum = 0;
+    const data = await getProfileData(event.pathParameters.id);
+    const followers = data.graphql.user.edge_followed_by.count;
+    const posts = data.graphql.user.edge_owner_to_timeline_media.edges;
     Object.keys(posts).forEach(function(key) {
         var post = posts[key];
         if(key < 2)
-            likes_sum += post.likes;
+            likes_sum += post.node.edge_liked_by.count;
         else if(key > 4 && key < 10)
-            er_likes_sum += post.likes;
-        comments_sum += post.comments;
+            er_likes_sum += post.node.edge_liked_by.count;
+        comments_sum += post.node.edge_media_to_comment.count;
     });
     return {
         'followers' : followers,
-        'avg_comments' : (comments_sum / posts.length),
-        'avg_likes' : (likes_sum / 2),
+        'avg_comments' : comments_sum / posts.length,
+        'avg_likes' : likes_sum / 2,
         'er' : (((er_likes_sum / 7) / followers) * 100).toFixed(1)
     };
 });
@@ -211,19 +123,19 @@ export const userStatistics = handler(async (event, context) => {
  * of the tagged. Response can be true or false. Checks if in the 12 first published posts of
  * the poster the tagged has been effectively tagged or not
  */
-// export const hasBeenTagged = handler(async (event, context) => {
-//     const data = await getProfileData(event.poster);
-//     var found_flag = false;
-//     const posts = data.graphql.user.edge_owner_to_timeline_media.edges;
-//     Object.keys(posts).forEach(function(key) {
-//         var post = posts[key];
-//         var tagged_users = post.node.edge_media_to_tagged_user.edges;
-//         if(typeof tagged_users !== 'undefined' && tagged_users.length)
-//             Object.keys(tagged_users).forEach(function(key) {
-//                 var tagged_user = tagged_users[key].node.user;
-//                 if(tagged_user.username == event.tagged)
-//                     found_flag = true;
-//             });
-//     });
-//     return found_flag;
-// });
+export const hasBeenTagged = handler(async (event, context) => {
+    const data = await getProfileData(event.poster);
+    var found_flag = false;
+    const posts = data.graphql.user.edge_owner_to_timeline_media.edges;
+    Object.keys(posts).forEach(function(key) {
+        var post = posts[key];
+        var tagged_users = post.node.edge_media_to_tagged_user.edges;
+        if(typeof tagged_users !== 'undefined' && tagged_users.length)
+            Object.keys(tagged_users).forEach(function(key) {
+                var tagged_user = tagged_users[key].node.user;
+                if(tagged_user.username == event.tagged)
+                    found_flag = true;
+            });
+    });
+    return found_flag;
+});

@@ -7,7 +7,8 @@ export async function queryOffersByRadius(data){
   const lat = parseFloat(data.lat);
   const long = parseFloat(data.long);
   const geohashes = calculateGeoHashes(lat,long);
-  const result = await dispatchQueries(geohashes);
+  const geohashesWithNoDuplicates = [...new Set(geohashes)];
+  const result = await dispatchQueries(geohashesWithNoDuplicates);
   var t1 = performance.now();
   console.log("Logging performance of query offers by radius: " + (t1-t0) + " ms");
   return result;

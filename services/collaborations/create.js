@@ -39,6 +39,10 @@ export const main = handler(async (event, context) => {
   const selected = applications.selected;
   const influencers = selected;
   const status = consts.INPROGRESS;
+  const date = new Date();
+  const month = date.getUTCMonth();
+  const year = date.getUTCFullYear();
+  const yearMonth = year+""+month;
   const details = {
     offerDetails: offerDetails,
     images: [],
@@ -55,8 +59,9 @@ export const main = handler(async (event, context) => {
       offerId: offerId,
       details: details,
       status : status,
+      yearMonth: yearMonth,
       influencers : influencers,
-      createdAt: Date.now(),
+      createdAt: new Date().toISOString(),
     }
   };
   await dynamoDb.put(insertParams);

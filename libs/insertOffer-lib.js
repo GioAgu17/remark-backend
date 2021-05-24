@@ -8,8 +8,10 @@ export async function insertOffer(data){
     var t0 = performance.now();
     const lat = parseFloat(data.latitude);
     const long = parseFloat(data.longitude);
+    console.log(data);
     data.offerDetails.latitude = lat;
     data.offerDetails.longitude = long;
+    console.log(data);
     const geohashEncoded = geohash.encode(lat,long);
     console.log(geohashEncoded);
     await persistOffer(geohashEncoded, data);
@@ -19,6 +21,7 @@ export async function insertOffer(data){
 
 
 async function persistOffer(geohashEncoded, data){
+  console.log(data);
   const params = {
     TableName: process.env.offersTableName,
     Item: {

@@ -19,13 +19,17 @@ export const main = handler(async (event, context) => {
     throw new Error("Item not found.");
   }
   const collaboration = result.Item;
+  const offerDetails = collaboration.details.offerDetails;
+  if(!offerDetails)
+    throw new Error("Offer details not present in collaboration, cannot determine lat and long");
   const offerParams = {
     "offerId" : data.offerId,
     "businessId" : data.businessId,
-    "offerDetails" : collaboration.details,
-    "latitude" : collaboration.details.latitude,
-    "longitude" : collaboration.details.longitude
+    "offerDetails" : offerDetails,
+    "latitude" : offerDetails.latitude,
+    "longitude" : offerDetails.longitude
   };
+  console.log(offerParams);
   await insert.insertOffer(offerParams);
   await deleteCollab.main(collaboration);
   return { status: true };

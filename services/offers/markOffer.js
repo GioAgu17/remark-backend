@@ -7,7 +7,6 @@ export const main = handler(async (event, context) => {
     throw new Error("Cannot proceed without range key");
   }
   const remarkerId = event.requestContext.identity.cognitoIdentityId;
-  console.log(process.env.partitionKeyOffer);
   const params = {
     TableName: process.env.offersTableName,
     Key: {
@@ -27,6 +26,7 @@ export const main = handler(async (event, context) => {
       "selected": [],
       "unselected": []
     };
+    offerDetails.applications = applications;
   }
   const unselected = applications.unselected;
   const newObj = {
@@ -34,7 +34,7 @@ export const main = handler(async (event, context) => {
     "applicationDate" : Date.now()
   };
   unselected.push(newObj);
-  console.log(applications);
+  console.log(offer);
   const updateParams = {
     TableName: process.env.offersTableName,
     Key: {

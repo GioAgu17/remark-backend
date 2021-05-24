@@ -2,11 +2,12 @@ import handler from "../../libs/handler-lib";
 import dynamoDb from "../../libs/dynamodb-lib";
 
 export const main = handler(async (event, context) => {
-  const rangeKey = event.pathParameters.id;
+  const body = JSON.parse(event.body);
+  const rangeKey = body.rangeKey;
   if(!rangeKey){
     throw new Error("Cannot proceed without range key");
   }
-  const remarkerId = event.requestContext.identity.cognitoIdentityId;
+  const remarkerId = body.remarkerId;
   const params = {
     TableName: process.env.offersTableName,
     Key: {

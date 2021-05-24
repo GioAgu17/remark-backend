@@ -177,16 +177,16 @@ functions:
     handler: selectRemarker.main
     events:
       - http:
-          path: selectRemarker/{id}
-          method: get
+          path: selectRemarker
+          method: post
           cors: true
           authorizer: aws_iam
   unselectRemarker:
     handler: unselectRemarker.main
     events:
       - http:
-          path: unselectRemarker/{id}
-          method: get
+          path: unselectRemarker
+          method: post
           cors: true
           authorizer: aws_iam
   offerWithRange:
