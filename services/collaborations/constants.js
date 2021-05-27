@@ -1,4 +1,4 @@
 export const statuses = {
-  INPROGRESS : 'IN-PROGRESS',
-  COMPLETED : 'COMPLETED',
+  INPROGRESS : "IN-PROGRESS",
+  COMPLETED : "COMPLETED",
 };

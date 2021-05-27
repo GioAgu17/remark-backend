@@ -38,11 +38,11 @@ export const main = handler(async (event, context) => {
   }
   const selected = applications.selected;
   const influencers = selected;
-  const status = consts.INPROGRESS;
+  const status = consts.statuses.INPROGRESS;
   const date = new Date();
-  const month = date.getUTCMonth();
+  const month = date.getUTCMonth() + 1;
   const year = date.getUTCFullYear();
-  const yearMonth = year+""+month;
+  const yearMonth = parseInt(year+""+month);
   const details = {
     offerDetails: offerDetails,
     images: [],

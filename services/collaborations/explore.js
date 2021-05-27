@@ -8,8 +8,8 @@ export const main = handler(async (event, context) => {
   console.log(month);
   const year = date.getUTCFullYear();
   console.log(year);
-  const yearMonth = year+month;
-  const status = consts.COMPLETED;
+  const yearMonth = parseInt(year+""+month);
+  const status = consts.statuses.COMPLETED;
   const params = {
     TableName: process.env.collaborationsTableName,
     IndexName: process.env.exploreIndex,
