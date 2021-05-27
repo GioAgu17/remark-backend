@@ -1,7 +1,7 @@
 import fetch from 'node-fetch';
 import handler from "../../libs/handler-lib";
 import HttpsProxyAgent from "https-proxy-agent";
-import * as fs from 'fs'; // to get cookies from fs
+import * as fs from 'fs'; // to get cookie jar from fs
 
 const agents = [
     "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36",
@@ -9,13 +9,27 @@ const agents = [
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 11.3; rv:88.0) Gecko/20100101 Firefox/88.0"
 ];
 
-let fetch_args = {
-    headers : {
-        'User-Agent' : agents[ Math.floor(Math.random() * agents.length) ],
-        'Cookie' : getCookies()
-    },
-    agent : new HttpsProxyAgent(process.env.HTTP_PROXY)
-};
+export function buildFetchArgs(randomAgent = true){
+
+    let fetch_args = { headers : {} };
+
+    if( typeof process.env.USER_AGENT !== 'undefined' )
+        fetch_args.headers = Object.assign(fetch_args.headers, {'User-Agent' : process.env.USER_AGENT} );
+    else if(randomAgent)
+        fetch_args.headers = Object.assign(fetch_args.headers, {'User-Agent' : agents[ Math.floor(Math.random() * agents.length) ]} );
+
+
+    if( typeof process.env.COOKIE_JAR_PATH !== 'undefined' )
+        fetch_args.headers = Object.assign( fetch_args.headers, {'Cookie' : getCookies()} );
+    else if( typeof process.env.RAW_COOKIE_STR !== 'undefined' )
+        fetch_args.headers = Object.assign( fetch_args.headers, {'Cookie' : process.env.RAW_COOKIE_STR} );
+
+    if( typeof process.env.HTTP_PROXY !== 'undefined' )
+        fetch_args = Object.assign(fetch_args, { agent: new HttpsProxyAgent(process.env.HTTP_PROXY) });
+
+    return fetch_args;
+}
+
 
 // HELPER FUNCTIONS
 
@@ -23,7 +37,7 @@ export function getCookies(){
     // This is compatible with the json cookie jar saved by the puppeteer scraper
     // you can otherwise use the Cookie string of the req headers grabbed from the chrome devTools of a logged session
     let raw_header_cookie = '';
-    const cookiesString = fs.readFileSync(process.env.COOKIES_PATH);
+    const cookiesString = fs.readFileSync(process.env.COOKIE_JAR_PATH);
     let cookie_jar = JSON.parse(cookiesString);
     Object.keys(cookie_jar).forEach(function(key) {
         var cookie = cookie_jar[key];
@@ -32,19 +46,19 @@ export function getCookies(){
     return raw_header_cookie;
 }
 
-export function buildUrl(username){
+export function buildUrl(username, unapi = true){
     // not sure how to handle the exeption
     // testing online i got a "Missing Authentication Token" not passing the param
     if(typeof username === "undefined")
         throw new Error('need a username');
-    return "https://www.instagram.com/" + username + "/?__a=1";
+    return "https://www.instagram.com/" + username + ( unapi ? "/?__a=1" : "" );
     // return 'https://httpbin.org/ip?json';
     // return 'https://httpbin.org/user-agent?json';
     // return 'https://httpbin.org/cookies?json';
 }
 
 async function getProfileData(username){
-    return await fetch( buildUrl( username ), fetch_args )
+    return await fetch( buildUrl( username ), buildFetchArgs() )
         .then( res => Promise.all([ res.status, res.redirected, res.url, res.text() ]) )
         .then( ([ status, redirected, url, textResponse ]) => {
             if( redirected && url.includes('login') ){
@@ -74,8 +88,11 @@ async function getProfileData(username){
  * this checks if the given username is existing in Instagram
  */
 export const checkUsername = handler(async (event, context) => {
-    const data = await getProfileData(event.pathParameters.id);
-    return (data !== false && data != -1); // !! misleading false return !!
+    // Not using the unofficial endpoit nor the global fetch args
+    return await fetch( buildUrl(event.pathParameters.id, false) )
+        .then( res => res.status ).then( status => {
+            return status != 404;
+        });
 });
 
 /**
@@ -83,7 +100,7 @@ export const checkUsername = handler(async (event, context) => {
  */
 export const getProfilePic = handler(async (event, context) => {
     const data = await getProfileData(event.pathParameters.id);
-    return data.graphql.user.profile_pic_url;
+    return data.graphql.user.profile_pic_url_hd;
 });
 
 /**
@@ -124,7 +141,8 @@ export const userStatistics = handler(async (event, context) => {
  * the poster the tagged has been effectively tagged or not
  */
 export const hasBeenTagged = handler(async (event, context) => {
-    const data = await getProfileData(event.poster);
+    const body = JSON.parse(event.body);
+    const data = await getProfileData(body.poster);
     var found_flag = false;
     const posts = data.graphql.user.edge_owner_to_timeline_media.edges;
     Object.keys(posts).forEach(function(key) {
@@ -133,7 +151,7 @@ export const hasBeenTagged = handler(async (event, context) => {
         if(typeof tagged_users !== 'undefined' && tagged_users.length)
             Object.keys(tagged_users).forEach(function(key) {
                 var tagged_user = tagged_users[key].node.user;
-                if(tagged_user.username == event.tagged)
+                if(tagged_user.username == body.tagged)
                     found_flag = true;
             });
     });
