@@ -13,7 +13,11 @@ export const main = handler(async (event, context) => {
   const params = {
     TableName: process.env.collaborationsTableName,
     IndexName: process.env.exploreIndex,
-    KeyConditionExpression: 'yearMonth = :yearMonth and status = :status',
+    KeyConditionExpression: '#ym = :yearMonth and #st = :status',
+    ExpressionAttributeNames: {
+      "#st" : "status",
+      "#ym" : "yearMonth"
+    },
     ExpressionAttributeValues: {
       ':yearMonth': yearMonth,
       ':status': status

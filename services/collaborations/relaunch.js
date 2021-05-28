@@ -10,7 +10,7 @@ export const main = handler(async (event, context) => {
   const params = {
     TableName: process.env.collaborationsTableName,
     Key : {
-      "businessId" : data.businessId,
+      "influencerId" : data.influencerId,
       "offerId" : data.offerId
     }
   };

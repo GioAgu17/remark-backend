@@ -20,7 +20,7 @@ provider:
     shouldStartNameWithService: true
 
   environment:
-    collaborationsTableName: !ImportValue '${self:custom.sstApp}-ExtCollaborationsTableName'
+    collaborationsTableName: !ImportValue '${self:custom.sstApp}-ExtNewCollaborationsTableName'
     offersTableName: !ImportValue '${self:custom.sstApp}-ExtNewOffersTableName'
     collaborationsTableIndex: ${env:COLLAB_TABLE_INDEX}
     exploreIndex: ${env:EXPLORE_INDEX}
@@ -39,8 +39,8 @@ provider:
       # Restrict our IAM role permissions to
       # the specific table for the stage
       Resource:
-        - !ImportValue '${self:custom.sstApp}-ExtCollaborationsTableArn'
-        - !ImportValue '${self:custom.sstApp}-ExtCollaborationsTableArnIndex'
+        - !ImportValue '${self:custom.sstApp}-ExtNewCollaborationsTableArn'
+        - !ImportValue '${self:custom.sstApp}-ExtNewCollaborationsTableArnIndex'
         - !ImportValue '${self:custom.sstApp}-ExtNewOffersTableArn'
         - !ImportValue '${self:custom.sstApp}-ExtNewOffersTableArnIndex'
 functions:

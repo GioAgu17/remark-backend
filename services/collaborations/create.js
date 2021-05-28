@@ -36,35 +36,37 @@ export const main = handler(async (event, context) => {
   if(!applications.selected){
     throw new Error("Selected applicants not present in applications field of offer. Failed to create collaboration");
   }
-  const selected = applications.selected;
-  const influencers = selected;
-  const status = consts.statuses.INPROGRESS;
-  const date = new Date();
-  const month = date.getUTCMonth() + 1;
-  const year = date.getUTCFullYear();
-  const yearMonth = parseInt(year+""+month);
-  const details = {
-    offerDetails: offerDetails,
-    images: [],
-    comments: 0,
-    hashtags: [],
-    caption: "",
-    impactScore: 0,
-    likes: 0
-  };
-  const insertParams = {
-    TableName: process.env.collaborationsTableName,
-    Item: {
-      businessId: businessId,
-      offerId: offerId,
-      details: details,
-      status : status,
-      yearMonth: yearMonth,
-      influencers : influencers,
-      createdAt: new Date().toISOString(),
-    }
-  };
-  await dynamoDb.put(insertParams);
-  await deleteOffer.main(offer);
+  const influencers = applications.selected.map(x => x.remarkerId);
+  console.log(influencers);
+  for(let influencerId of influencers){
+    const status = consts.statuses.INPROGRESS;
+    const date = new Date();
+    const month = date.getUTCMonth() + 1;
+    const year = date.getUTCFullYear();
+    const yearMonth = parseInt(year+""+month);
+    const details = {
+      offerDetails: offerDetails,
+      images: [],
+      comments: 0,
+      hashtags: [],
+      caption: "",
+      impactScore: 0,
+      likes: 0
+    };
+    const insertParams = {
+      TableName: process.env.collaborationsTableName,
+      Item: {
+        businessId: businessId,
+        offerId: offerId,
+        details: details,
+        status : status,
+        yearMonth: yearMonth,
+        influencerId : influencerId,
+        createdAt: new Date().toISOString(),
+      }
+    };
+    await dynamoDb.put(insertParams);
+    await deleteOffer.main(offer);
+  }
   return { status: true };
 });
