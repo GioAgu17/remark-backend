@@ -14,7 +14,18 @@ provider:
   runtime: nodejs12.x
   stage: dev
   region: us-east-2
+  
+environment:
+  bucketName: !ImportValue '${self:custom.sstApp}-ExtAttachmentsBucketName'
 
+iamRoleStatements:
+  - Effect: Allow
+    Action:
+      - s3:GetObject
+      - s3:ListBucket
+      - s3:PutObject
+    Resource:
+      - !ImportValue '${self:custom.sstApp}-ExtAttachmentsBucketArn'
 functions:
   checkUsername:
     handler: api.checkUsername
