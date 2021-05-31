@@ -1,5 +1,6 @@
 import handler from "./libs/handler-lib";
 import dynamoDb from "./libs/dynamodb-lib";
+import * as stats from "../statistics/api.js";
 
 export const main = handler(async (event, context) => {
   const params = {
@@ -12,5 +13,10 @@ export const main = handler(async (event, context) => {
   if(!result.Item){
     return "Item not found";
   }
+  // not sure where to get/store the IG username
+  let fakEvt = { 'pathParameters' : {'id' : 'chiaraferragni'} };
+  let statistics = await stats.userStatistics(fakEvt);
+  if( typeof statistics !== 'undefined' && Object.keys(statistics).length )
+    return Object.assign( {'ig_stats' : JSON.parse(statistics.body)}, result.Item );
   return result.Item;
 });

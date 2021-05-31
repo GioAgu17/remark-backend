@@ -100,6 +100,8 @@ export const checkUsername = handler(async (event, context) => {
  */
 export const getProfilePic = handler(async (event, context) => {
     const data = await getProfileData(event.pathParameters.id);
+    if( typeof data === 'undefined' || ! Object.keys(data).length )
+        return;
     return data.graphql.user.profile_pic_url_hd;
 });
 
@@ -117,6 +119,8 @@ export const userStatistics = handler(async (event, context) => {
     var comments_sum = 0;
     var er_likes_sum = 0;
     const data = await getProfileData(event.pathParameters.id);
+    if( typeof data === 'undefined' || ! Object.keys(data).length )
+        return;
     const followers = data.graphql.user.edge_followed_by.count;
     const posts = data.graphql.user.edge_owner_to_timeline_media.edges;
     Object.keys(posts).forEach(function(key) {
@@ -143,6 +147,8 @@ export const userStatistics = handler(async (event, context) => {
 export const hasBeenTagged = handler(async (event, context) => {
     const body = JSON.parse(event.body);
     const data = await getProfileData(body.poster);
+    if( typeof data === 'undefined' || ! Object.keys(data).length )
+        return;
     var found_flag = false;
     const posts = data.graphql.user.edge_owner_to_timeline_media.edges;
     Object.keys(posts).forEach(function(key) {
