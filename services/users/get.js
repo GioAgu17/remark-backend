@@ -17,6 +17,6 @@ export const main = handler(async (event, context) => {
   let fakEvt = { 'pathParameters' : {'id' : 'chiaraferragni'} };
   let statistics = await stats.userStatistics(fakEvt);
   if( typeof statistics !== 'undefined' && Object.keys(statistics).length )
-    return Object.assign( {'ig_stats' : JSON.parse(statistics.body)}, result.Item );
+    return Object.assign( result.Item, {'ig_stats' : JSON.parse(statistics.body)} );
   return result.Item;
 });
