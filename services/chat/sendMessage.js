@@ -97,7 +97,7 @@ async function sendMessageToRoom(agma, sourceConnectionId, message) {
     const connectionsData = await dynamoDb.query({
         TableName: process.env.CHATCONNECTION_TABLE,
         IndexName: 'roomIndex',
-        KeyConditionExpression: 'room = :room',
+        KeyConditionExpression: 'roomIndex = :room',
         ExpressionAttributeValues: {
             ':room': message.room
         }
@@ -124,6 +124,7 @@ async function sendMessagesToConnection(agma, connectionId, messages) {
     }
     catch (err) {
         if (err.statusCode === 410) {
+            console.log("Got the error " + err);
             await deleteConnection(connectionId);
         }
         else {
