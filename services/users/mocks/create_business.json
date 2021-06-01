@@ -1,0 +1,8 @@
+{
+    "body" : "{\"userType\":\"business\",\"username\":\"Bodeguita Coffee\",\"email\":\"bodeguita@cafe.com\",\"accountIG\":\"bodeguitaIG\",\"caption\":\"descrizione business\",\"influencerCategories\": [\"travel\"],\"website\":\"www.bodeguita.com\"}",
+    "requestContext": {
+      "identity": {
+        "cognitoIdentityId": "us-east-2:FAKEID10-950e-4d37-8480-df204be88bb3"
+      }
+    }
+}
