@@ -2,12 +2,47 @@ import fetch from 'node-fetch';
 import handler from "../../libs/handler-lib";
 import HttpsProxyAgent from "https-proxy-agent";
 import * as fs from 'fs'; // to get cookie jar from fs
+import { v4 as uuidv4 } from 'uuid';
+
+const AWS = require('aws-sdk');
+const s3 = new AWS.S3();
 
 const agents = [
     "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36",
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36",
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 11.3; rv:88.0) Gecko/20100101 Firefox/88.0"
 ];
+
+// HELPER FUNCTIONS
+
+async function storeProfilePic(image_url){
+    let fileKey = uuidv4();
+    // not using global fetch args as the profile pic url should be public
+    return await fetch(image_url)
+        .then((response) => {
+            if (response.ok) {
+                return response;
+            }
+            return Promise.reject(new Error(
+                `Failed to fetch ${response.url}: ${response.status} ${response.statusText}`));
+        })
+        .then(response => response.buffer())
+        .then(buffer => (
+            s3.putObject({
+                Bucket: process.env.BUCKET,
+                Key: 'public/' + fileKey,
+                Body: buffer,
+            }).promise()
+        ))
+        .then( res => {
+            if(res.ETag !== 'undefined')
+                return fileKey;
+            else{
+                console.log('Error storing pic to bucket');
+                return;
+            }
+        });
+}
 
 export function buildFetchArgs(randomAgent = true){
 
@@ -29,9 +64,6 @@ export function buildFetchArgs(randomAgent = true){
 
     return fetch_args;
 }
-
-
-// HELPER FUNCTIONS
 
 export function getCookies(){
     // This is compatible with the json cookie jar saved by the puppeteer scraper
@@ -102,7 +134,8 @@ export const getProfilePic = handler(async (event, context) => {
     const data = await getProfileData(event.pathParameters.id);
     if( typeof data === 'undefined' || ! Object.keys(data).length )
         return;
-    return data.graphql.user.profile_pic_url_hd;
+    // return data.graphql.user.profile_pic_url_hd;
+    return storeProfilePic(data.graphql.user.profile_pic_url_hd);
 });
 
 /**
