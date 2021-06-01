@@ -19,7 +19,7 @@ export const main = handler(async (event, context) => {
   if( typeof statistics !== 'undefined' && Object.keys(statistics).length ){
       result.Item.userDetails = Object.assign( result.Item.userDetails, {
           'followers' : statistics.followers,
-          'engagement' : statistics.er
+          'engagementRate' : statistics.er
       });
   }
   return result.Item;
