@@ -13,10 +13,14 @@ export const main = handler(async (event, context) => {
   if(!result.Item){
     return "Item not found";
   }
-  // not sure where to get/store the IG username
-  let fakEvt = { 'pathParameters' : {'id' : 'chiaraferragni'} };
+  let fakEvt = { 'pathParameters' : {'id' : result.Item.userDetails.accountIG} };
   let statistics = await stats.userStatistics(fakEvt);
-  if( typeof statistics !== 'undefined' && Object.keys(statistics).length )
-    return Object.assign( result.Item, {'ig_stats' : JSON.parse(statistics.body)} );
+  statistics = JSON.parse(statistics.body);
+  if( typeof statistics !== 'undefined' && Object.keys(statistics).length ){
+      result.Item.userDetails = Object.assign( result.Item.userDetails, {
+          'followers' : statistics.followers,
+          'engagement' : statistics.er
+      });
+  }
   return result.Item;
 });
