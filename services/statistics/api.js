@@ -156,6 +156,7 @@ export const userStatistics = handler(async (event, context) => {
         return;
     const followers = data.graphql.user.edge_followed_by.count;
     const posts = data.graphql.user.edge_owner_to_timeline_media.edges;
+    const website = data.graphql.user.external_url;
     Object.keys(posts).forEach(function(key) {
         var post = posts[key];
         if(key < 2)
@@ -168,7 +169,8 @@ export const userStatistics = handler(async (event, context) => {
         'followers' : followers,
         'avg_comments' : comments_sum / posts.length,
         'avg_likes' : likes_sum / 2,
-        'er' : (((er_likes_sum / 7) / followers) * 100).toFixed(1)
+        'er' : (((er_likes_sum / 7) / followers) * 100).toFixed(1),
+        'website' : website
     };
 });
 

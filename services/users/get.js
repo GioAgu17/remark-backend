@@ -19,7 +19,8 @@ export const main = handler(async (event, context) => {
   if( typeof statistics !== 'undefined' && Object.keys(statistics).length ){
       result.Item.userDetails = Object.assign( result.Item.userDetails, {
           'followers' : statistics.followers,
-          'engagementRate' : statistics.er
+          'engagementRate' : statistics.er,
+          'website' : result.Item.userType == 'business' ? statistics.website : null,
       });
   }
   return result.Item;
