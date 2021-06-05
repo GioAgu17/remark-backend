@@ -24,6 +24,33 @@ export const main = handler(async (event, context) => {
           'remarkRanking' : businesses.Count,
       });
   }
+  else if(result.Item.userType == 'influencer'){
+      let d = new Date();
+      d.setMonth(d.getMonth() - 4);
+      let dstr = d.toLocaleDateString('en-US');
+      dstr = dstr.split("/");
+      const yearMonth = parseInt(dstr[2] + dstr[0]);
+
+      const params = {
+        TableName: process.env.collaborationsTableName,
+        KeyConditionExpression: '#id = :id',
+        FilterExpression: '#ym > :yearMonth and #st = :status',
+        ExpressionAttributeNames: {
+          "#st" : "status",
+          "#ym" : "yearMonth",
+          "#id" : "influencerId"
+        },
+        ExpressionAttributeValues: {
+          ':yearMonth': yearMonth,
+          ':status': "COMPLETED",
+          ':id': result.Item.userId
+        }
+      };
+      const collabs = await dynamoDb.query(params);
+      result.Item.userDetails = Object.assign( result.Item.userDetails, {
+          'collaborations' : collabs.Count,
+      });
+  }
 
   let fakEvt = { 'pathParameters' : {'id' : result.Item.userDetails.accountIG} };
   let statistics = await stats.userStatistics(fakEvt);
