@@ -13,6 +13,18 @@ export const main = handler(async (event, context) => {
   if(!result.Item){
     return "Item not found";
   }
+
+  if(result.Item.userType == 'business'){
+      const businesses = await dynamoDb.scan({
+        TableName: process.env.userTableName,
+        FilterExpression: "userType = :b",
+        ExpressionAttributeValues: {":b": "business"}
+      });
+      result.Item.userDetails = Object.assign( result.Item.userDetails, {
+          'remarkRanking' : businesses.Count,
+      });
+  }
+
   let fakEvt = { 'pathParameters' : {'id' : result.Item.userDetails.accountIG} };
   let statistics = await stats.userStatistics(fakEvt);
   statistics = JSON.parse(statistics.body);
