@@ -10,6 +10,9 @@ export const main = handler(async (event, context) => {
     let profileImage = await stats.getProfilePic(fakEvt);
     profileImage = JSON.parse(profileImage.body);
 
+    let statistics = await stats.userStatistics(fakEvt);
+    statistics = JSON.parse(statistics.body);
+
     const params = {
         TableName: process.env.userTableName,
         Item: {
@@ -30,6 +33,13 @@ export const main = handler(async (event, context) => {
             createdAt: Date.now(),
         }
     };
+    if( typeof statistics !== 'undefined' && Object.keys(statistics).length ){
+        params.Item.userDetails = Object.assign( params.Item.userDetails, {
+            'followers' : statistics.followers,
+            'engagementRate' : statistics.er,
+            'website' : data.userType == 'business' ? statistics.website : null,
+        });
+    }
     await dynamoDb.put(params);
     return { status: true };
 });
