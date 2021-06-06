@@ -15,10 +15,13 @@ export const main = handler(async (event, context) => {
   }
 
   if(result.Item.userType == 'business'){
-      const businesses = await dynamoDb.scan({
-        TableName: process.env.userTableName,
-        FilterExpression: "userType = :b",
-        ExpressionAttributeValues: {":b": "business"}
+      const businesses = await dynamoDb.query({
+          TableName: process.env.userTableName,
+          IndexName: process.env.userTypeIndex,
+          KeyConditionExpression: 'userType = :userType',
+          ExpressionAttributeValues: {
+              ':userType': 'business'
+          }
       });
       result.Item.userDetails = Object.assign( result.Item.userDetails, {
           'remarkRanking' : businesses.Count,
