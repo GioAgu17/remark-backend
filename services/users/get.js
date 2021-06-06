@@ -31,7 +31,7 @@ export const main = handler(async (event, context) => {
       dstr = dstr.split("/");
       const yearMonth = parseInt(dstr[2] + dstr[0]);
 
-      const params = {
+      const recent_collabs = await dynamoDb.query({
         TableName: process.env.collaborationsTableName,
         KeyConditionExpression: '#id = :id',
         FilterExpression: '#ym > :yearMonth and #st = :status',
@@ -45,11 +45,38 @@ export const main = handler(async (event, context) => {
           ':status': "COMPLETED",
           ':id': result.Item.userId
         }
-      };
-      const collabs = await dynamoDb.query(params);
-      result.Item.userDetails = Object.assign( result.Item.userDetails, {
-          'collaborations' : collabs.Count,
       });
+      result.Item.userDetails = Object.assign( result.Item.userDetails, {
+          'collaborations' : recent_collabs.Count, // should be set and valorized to 0 if no results
+      });
+
+      const collabs = await dynamoDb.query({
+        TableName: process.env.collaborationsTableName,
+        KeyConditionExpression: '#id = :id', // we need a proper GSI id/status
+        FilterExpression: '#st = :status',
+        ExpressionAttributeNames: {
+          "#st" : "status",
+          "#id" : "influencerId"
+        },
+        ExpressionAttributeValues: {
+          ':status': "COMPLETED",
+          ':id': result.Item.userId
+        }
+      });
+      if(collabs.Items){
+          let cities = new Set();
+          Object.keys(collabs.Items).forEach(function(key) {
+              const collab = collabs.Items[key];
+              const city = collab.details.offerDetails.address.city;
+              if(city)
+                cities.add(city);
+          });
+          cities = Array.from(cities);
+          if(cities.length)
+            result.Item.userDetails = Object.assign( result.Item.userDetails, {
+                'citiesWithRemark' : JSON.stringify(cities)
+            });
+      }
   }
 
   let fakEvt = { 'pathParameters' : {'id' : result.Item.userDetails.accountIG} };
