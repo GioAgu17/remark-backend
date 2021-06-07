@@ -25,6 +25,8 @@ provider:
   #
   environment:
     userTableName: !ImportValue '${self:custom.sstApp}-ExtUserTableName'
+    collaborationsTableName: !ImportValue '${self:custom.sstApp}-ExtNewCollaborationsTableName'
+    bucketName: !ImportValue '${self:custom.sstApp}-ExtAttachmentsBucketName'
   iamRoleStatements:
     - Effect: Allow
       Action:
