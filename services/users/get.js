@@ -69,10 +69,9 @@ export const main = handler(async (event, context) => {
       if(collabs.Items){
           let cities = new Set();
           Object.keys(collabs.Items).forEach(function(key) {
-              const collab = collabs.Items[key];
-              const city = collab.details.offerDetails.address.city;
-              if(city)
-                cities.add(city);
+            const collab = collabs.Items[key];
+            if(collab.details.offerDetails.address && collab.details.offerDetails.address.city)
+                cities.add(collab.details.offerDetails.address.city);
           });
           cities = Array.from(cities);
           if(cities.length)
@@ -81,16 +80,17 @@ export const main = handler(async (event, context) => {
             });
       }
   }
-
-  let fakEvt = { 'pathParameters' : {'id' : result.Item.userDetails.accountIG} };
-  let statistics = await stats.userStatistics(fakEvt);
-  statistics = JSON.parse(statistics.body);
-  if( typeof statistics !== 'undefined' && Object.keys(statistics).length ){
-      result.Item.userDetails = Object.assign( result.Item.userDetails, {
-          'followers' : statistics.followers,
-          'engagementRate' : statistics.er,
-          'website' : result.Item.userType == 'business' ? statistics.website : null,
-      });
+  if( result.Item.userDetails.accountIG ){
+      const fakEvt = { 'pathParameters' : {'id' : result.Item.userDetails.accountIG} };
+      let statistics = await stats.userStatistics(fakEvt);
+      statistics = JSON.parse(statistics.body);
+      if( typeof statistics !== 'undefined' && Object.keys(statistics).length ){
+          result.Item.userDetails = Object.assign( result.Item.userDetails, {
+              'followers' : statistics.followers,
+              'engagementRate' : statistics.er,
+              'website' : result.Item.userType == 'business' ? statistics.website : null,
+          });
+      }
   }
   return result.Item;
 });
