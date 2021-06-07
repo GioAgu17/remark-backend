@@ -1,11 +1,10 @@
 import fetch from 'node-fetch';
 import handler from "../../libs/handler-lib";
+import s3 from "../../libs/s3-lib";
 import HttpsProxyAgent from "https-proxy-agent";
 import * as fs from 'fs'; // to get cookie jar from fs
 import { v4 as uuidv4 } from 'uuid';
 
-const AWS = require('aws-sdk');
-const s3 = new AWS.S3();
 
 const agents = [
     "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36",
@@ -28,11 +27,11 @@ async function storeProfilePic(image_url){
         })
         .then(response => response.buffer())
         .then(buffer => (
-            s3.putObject({
-                Bucket: process.env.BUCKET,
+            s3.put({
+                Bucket: process.env.bucketName,
                 Key: 'public/' + fileKey,
                 Body: buffer,
-            }).promise()
+            })
         ))
         .then( res => {
             if(res.ETag !== 'undefined')
