@@ -31,7 +31,6 @@ provider:
     offersTableName: !ImportValue '${self:custom.sstApp}-ExtNewOffersTableName'
     offerTableIndex: ${env:OFFER_TABLE_INDEX}
     userTableName: !ImportValue '${self:custom.sstApp}-ExtUserTableName'
-    collaborationsTableName: !ImportValue '${self:custom.sstApp}-ExtCollaborationsTableName'
     hashKeyLength: ${env:HASHKEY_LENGTH}
     expiredOffersTable: !ImportValue '${self:custom.sstApp}-ExtExpiredOffersTableName'
     partitionKeyOffer: ${env:PARTITION_KEY_OFFER}
@@ -54,7 +53,6 @@ provider:
       # the specific table for the stage
       Resource:
         - !ImportValue '${self:custom.sstApp}-ExtUserTableArn'
-        - !ImportValue '${self:custom.sstApp}-ExtCollaborationsTableArn'
         - !ImportValue '${self:custom.sstApp}-ExtExpiredOffersTableArn'
         - !ImportValue '${self:custom.sstApp}-ExtNewOffersTableArn'
         - !ImportValue '${self:custom.sstApp}-ExtNewOffersTableArnIndex'
