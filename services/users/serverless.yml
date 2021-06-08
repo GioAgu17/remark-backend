@@ -27,6 +27,7 @@ provider:
     userTableName: !ImportValue '${self:custom.sstApp}-ExtUserTableName'
     collaborationsTableName: !ImportValue '${self:custom.sstApp}-ExtNewCollaborationsTableName'
     bucketName: !ImportValue '${self:custom.sstApp}-ExtAttachmentsBucketName'
+    userTypeIndex: ${env:USER_TYPE_INDEX}
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -42,6 +43,7 @@ provider:
       Resource:
         - !ImportValue '${self:custom.sstApp}-ExtUserTableArn'
         - !ImportValue '${self:custom.sstApp}-ExtNewCollaborationsTableArn'
+        - !ImportValue '${self:custom.sstApp}-ExtUserTableArnIndex'
     - Effect: Allow
       Action:
         - s3:PutObject
