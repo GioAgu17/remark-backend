@@ -23,7 +23,7 @@ provider:
     collaborationsTableName: !ImportValue '${self:custom.sstApp}-ExtNewCollaborationsTableName'
     collaborationTableName: !ImportValue '${self:custom.sstApp}-ExtNewCollaborationTableName'
     offersTableName: !ImportValue '${self:custom.sstApp}-ExtNewOffersTableName'
-    collaborationsTableIndex: ${env:COLLAB_TABLE_INDEX}
+    collaborationTableIndex: ${env:COLLAB_TABLE_INDEX}
     exploreIndex: ${env:EXPLORE_INDEX}
     partitionKeyOffer: ${env:PARTITION_KEY_OFFER}
 
