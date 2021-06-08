@@ -11,7 +11,7 @@ export const main = handler(async (event, context) => {
     throw new Error("OfferId not present in request");
   const statusToUpdate = consts.statuses.COMPLETED;
   const updateParams = {
-      TableName: process.env.collaborationsTableName,
+      TableName: process.env.collaborationTableName,
       Key: {
           influencerId : remarkerId,
           offerId: offerId

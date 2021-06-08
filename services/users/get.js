@@ -36,8 +36,9 @@ export const main = handler(async (event, context) => {
 
       const recent_collabs = await dynamoDb.query({
         TableName: process.env.collaborationsTableName,
-        KeyConditionExpression: '#id = :id',
-        FilterExpression: '#ym > :yearMonth and #st = :status',
+        IndexName: process.env.collabCountIndex,
+        KeyConditionExpression: '#id = :id and #ym > :yearMonth',
+        FilterExpression: '#st = :status',
         ExpressionAttributeNames: {
           "#st" : "status",
           "#ym" : "yearMonth",

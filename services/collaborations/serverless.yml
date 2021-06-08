@@ -21,6 +21,7 @@ provider:
 
   environment:
     collaborationsTableName: !ImportValue '${self:custom.sstApp}-ExtNewCollaborationsTableName'
+    collaborationTableName: !ImportValue '${self:custom.sstApp}-ExtNewCollaborationTableName'
     offersTableName: !ImportValue '${self:custom.sstApp}-ExtNewOffersTableName'
     collaborationsTableIndex: ${env:COLLAB_TABLE_INDEX}
     exploreIndex: ${env:EXPLORE_INDEX}
@@ -40,7 +41,9 @@ provider:
       # the specific table for the stage
       Resource:
         - !ImportValue '${self:custom.sstApp}-ExtNewCollaborationsTableArn'
+        - !ImportValue '${self:custom.sstApp}-ExtNewCollaborationTableArn'
         - !ImportValue '${self:custom.sstApp}-ExtNewCollaborationsTableArnIndex'
+        - !ImportValue '${self:custom.sstApp}-ExtNewCollaborationTableArnIndex'
         - !ImportValue '${self:custom.sstApp}-ExtNewOffersTableArn'
         - !ImportValue '${self:custom.sstApp}-ExtNewOffersTableArnIndex'
 functions:
@@ -97,6 +100,14 @@ functions:
     events:
       - http:
           path: confirmRemarker
+          method: post
+          cors: true
+          authorizer: aws_iam
+  createCollabTest:
+    handler: createCollabTest.main
+    events:
+      - http:
+          path: createCollabTest
           method: post
           cors: true
           authorizer: aws_iam

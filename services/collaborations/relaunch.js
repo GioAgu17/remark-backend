@@ -8,7 +8,7 @@ export const main = handler(async (event, context) => {
     throw new Error("Not getting data to relaunch offer from collaboration");
   }
   const params = {
-    TableName: process.env.collaborationsTableName,
+    TableName: process.env.collaborationTableName,
     Key : {
       "influencerId" : data.influencerId,
       "offerId" : data.offerId

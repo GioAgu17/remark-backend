@@ -11,7 +11,7 @@ export const main = handler(async (event, context) => {
   const yearMonth = parseInt(year+""+month);
   const status = consts.statuses.COMPLETED;
   const params = {
-    TableName: process.env.collaborationsTableName,
+    TableName: process.env.collaborationTableName,
     IndexName: process.env.exploreIndex,
     KeyConditionExpression: '#ym = :yearMonth and #st = :status',
     ExpressionAttributeNames: {

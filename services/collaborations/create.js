@@ -54,7 +54,7 @@ export const main = handler(async (event, context) => {
       likes: 0
     };
     const insertParams = {
-      TableName: process.env.collaborationsTableName,
+      TableName: process.env.collaborationTableName,
       Item: {
         businessId: businessId,
         offerId: offerId,

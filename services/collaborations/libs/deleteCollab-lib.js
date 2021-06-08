@@ -1,8 +1,8 @@
 import dynamoDb from "../../../libs/dynamodb-lib";
-const {collaborationsTableName} = process.env;
+const {collaborationTableName} = process.env;
 export function main(collaboration){
   const params = {
-    TableName: collaborationsTableName,
+    TableName: collaborationTableName,
     Key: {
       'businessId' : collaboration.businessId,
       'offerId' : collaboration.offerId
