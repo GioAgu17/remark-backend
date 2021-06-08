@@ -1,0 +1,8 @@
+{
+    "body" : "{\"userType\":\"influencer\",\"username\":\"Mario Rossi\",\"email\":\"mariorossi@cafe.com\",\"accountIG\":\"chiaraferragni\",\"age\":23,\"caption\":\"descrizione influencer\",\"influencerCategories\":[\"travel\", \"art\"]}",
+    "requestContext": {
+      "identity": {
+        "cognitoIdentityId": "us-east-2:FAKEID11-950e-4d37-8480-df204be88bb3"
+      }
+    }
+}

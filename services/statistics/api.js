@@ -1,13 +1,47 @@
 import fetch from 'node-fetch';
 import handler from "../../libs/handler-lib";
+import s3 from "../../libs/s3-lib";
 import HttpsProxyAgent from "https-proxy-agent";
 import * as fs from 'fs'; // to get cookie jar from fs
+import { v4 as uuidv4 } from 'uuid';
+
 
 const agents = [
     "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36",
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36",
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 11.3; rv:88.0) Gecko/20100101 Firefox/88.0"
 ];
+
+// HELPER FUNCTIONS
+
+async function storeProfilePic(image_url){
+    let fileKey = uuidv4();
+    // not using global fetch args as the profile pic url should be public
+    return await fetch(image_url)
+        .then((response) => {
+            if (response.ok) {
+                return response;
+            }
+            return Promise.reject(new Error(
+                `Failed to fetch ${response.url}: ${response.status} ${response.statusText}`));
+        })
+        .then(response => response.buffer())
+        .then(buffer => (
+            s3.put({
+                Bucket: process.env.bucketName,
+                Key: 'public/' + fileKey,
+                Body: buffer,
+            })
+        ))
+        .then( res => {
+            if(res.ETag !== 'undefined')
+                return fileKey;
+            else{
+                console.log('Error storing pic to bucket');
+                return;
+            }
+        });
+}
 
 export function buildFetchArgs(randomAgent = true){
 
@@ -29,9 +63,6 @@ export function buildFetchArgs(randomAgent = true){
 
     return fetch_args;
 }
-
-
-// HELPER FUNCTIONS
 
 export function getCookies(){
     // This is compatible with the json cookie jar saved by the puppeteer scraper
@@ -100,7 +131,10 @@ export const checkUsername = handler(async (event, context) => {
  */
 export const getProfilePic = handler(async (event, context) => {
     const data = await getProfileData(event.pathParameters.id);
-    return data.graphql.user.profile_pic_url_hd;
+    if( typeof data === 'undefined' || ! Object.keys(data).length )
+        return;
+    // return data.graphql.user.profile_pic_url_hd;
+    return storeProfilePic(data.graphql.user.profile_pic_url_hd);
 });
 
 /**
@@ -117,8 +151,11 @@ export const userStatistics = handler(async (event, context) => {
     var comments_sum = 0;
     var er_likes_sum = 0;
     const data = await getProfileData(event.pathParameters.id);
+    if( typeof data === 'undefined' || ! Object.keys(data).length )
+        return;
     const followers = data.graphql.user.edge_followed_by.count;
     const posts = data.graphql.user.edge_owner_to_timeline_media.edges;
+    const website = data.graphql.user.external_url;
     Object.keys(posts).forEach(function(key) {
         var post = posts[key];
         if(key < 2)
@@ -131,7 +168,8 @@ export const userStatistics = handler(async (event, context) => {
         'followers' : followers,
         'avg_comments' : comments_sum / posts.length,
         'avg_likes' : likes_sum / 2,
-        'er' : (((er_likes_sum / 7) / followers) * 100).toFixed(1)
+        'er' : (((er_likes_sum / 7) / followers) * 100).toFixed(1),
+        'website' : website
     };
 });
 
@@ -143,6 +181,8 @@ export const userStatistics = handler(async (event, context) => {
 export const hasBeenTagged = handler(async (event, context) => {
     const body = JSON.parse(event.body);
     const data = await getProfileData(body.poster);
+    if( typeof data === 'undefined' || ! Object.keys(data).length )
+        return;
     var found_flag = false;
     const posts = data.graphql.user.edge_owner_to_timeline_media.edges;
     Object.keys(posts).forEach(function(key) {
