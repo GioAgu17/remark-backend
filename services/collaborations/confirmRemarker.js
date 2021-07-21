@@ -9,7 +9,7 @@ export const main = handler(async (event, context) => {
   const offerId = body.offerId;
   if(!offerId)
     throw new Error("OfferId not present in request");
-  const statusToUpdate = consts.statuses.COMPLETED;
+  const statusToUpdate = consts.statuses.POSTING;
   const updateParams = {
       TableName: process.env.collaborationTableName,
       Key: {

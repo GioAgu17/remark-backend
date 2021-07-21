@@ -1,0 +1,27 @@
+{
+  "first": {
+    "min": 40,
+    "max": 220
+  },
+  "second": {
+    "min": 220,
+    "max": 320
+  },
+  "third": {
+    "min": 320,
+    "max": 400
+  },
+  "fourth": {
+    "min": 400,
+    "max": 500
+  },
+  "fifth": {
+    "min": 500,
+    "max": 930
+  },
+  "sixth": {
+    "min": 930,
+    "max": 1500
+  },
+  "seventh": 1500
+}

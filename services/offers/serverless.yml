@@ -171,6 +171,14 @@ functions:
           method: get
           cors: true
           authorizer: aws_iam
+  expiredOffers:
+    handler: expiredOffers.main
+    events:
+      - http:
+          path: expiredOffers
+          method: get
+          cors: true
+          authorizer: aws_iam
   selectRemarker:
     handler: selectRemarker.main
     events:
@@ -195,7 +203,14 @@ functions:
           method: get
           cors: true
           authorizer: aws_iam
-
+  relaunch:
+    handler: relaunch.main
+    events:
+      - http:
+          path: relaunch
+          method: post
+          cors: true
+          authorizer: aws_iam
 # Create our resources with separate CloudFormation templates
 # Create our resources with separate CloudFormation templates
 resources:

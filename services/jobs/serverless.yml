@@ -39,9 +39,9 @@ provider:
 functions:
   moveOffers:
     handler: moveOffers.main
-    #events:
+    events:
       #scheduled every day at 4 am
-      #schedule: cron(0 4 * * ? *)
+      - schedule: cron(0 4 * * ? *)
   statistics:
     handler: statistics.main
     #events:

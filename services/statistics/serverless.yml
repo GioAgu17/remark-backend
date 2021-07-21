@@ -14,16 +14,14 @@ provider:
   runtime: nodejs12.x
   stage: dev
   region: us-east-2
-  
+
 environment:
   bucketName: !ImportValue '${self:custom.sstApp}-ExtAttachmentsBucketName'
 
 iamRoleStatements:
   - Effect: Allow
     Action:
-      - s3:GetObject
-      - s3:ListBucket
-      - s3:PutObject
+      - s3:*
     Resource:
       - !ImportValue '${self:custom.sstApp}-ExtAttachmentsBucketArn'
 functions:

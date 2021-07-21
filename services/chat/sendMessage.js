@@ -3,6 +3,8 @@ import dynamoDb from "../../libs/dynamodb-lib";
 import AWS from "aws-sdk";
 export const main = handler(async (event, context) => {
   const domainName = event.requestContext.domainName;
+  const userId = event.requestContext.identity.cognitoIdentityId;
+  console.log(userId);
   const stage = event.requestContext.stage;
   const connectionId = event.requestContext.connectionId;
   const agma = new AWS.ApiGatewayManagementApi({

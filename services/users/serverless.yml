@@ -27,8 +27,15 @@ provider:
     userTableName: !ImportValue '${self:custom.sstApp}-ExtUserTableName'
     collaborationsTableName: !ImportValue '${self:custom.sstApp}-ExtNewCollaborationTableName'
     bucketName: !ImportValue '${self:custom.sstApp}-ExtAttachmentsBucketName'
+    collabBusinessIndex: ${env:COLLAB_BUSINESS_INDEX}
     userTypeIndex: ${env:USER_TYPE_INDEX}
     collabCountIndex: ${env:COLLAB_COUNT_INDEX}
+    firstRange: ${env:FIRST_RNG_INFL_PRC}
+    secondRange: ${env:SECOND_RNG_INFL_PRC}
+    thirdRange: ${env:THIRD_RNG_INFL_PRC}
+    fourthRange: ${env:FOURTH_RNG_INFL_PRC}
+    fifthRange: ${env:FIFTH_RNG_INFL_PRC}
+    sixthRange: ${env:SIXTH_RNG_INFL_PRC}
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -39,6 +46,7 @@ provider:
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
         - dynamodb:DescribeTable
+        - s3:*
       # Restrict our IAM role permissions to
       # the specific table for the stage
       Resource:
@@ -46,10 +54,6 @@ provider:
         - !ImportValue '${self:custom.sstApp}-ExtNewCollaborationTableArn'
         - !ImportValue '${self:custom.sstApp}-ExtNewCollaborationTableArnIndex'
         - !ImportValue '${self:custom.sstApp}-ExtUserTableArnIndex'
-    - Effect: Allow
-      Action:
-        - s3:PutObject
-      Resource:
         - !ImportValue '${self:custom.sstApp}-ExtAttachmentsBucketArn'
 functions:
   create:

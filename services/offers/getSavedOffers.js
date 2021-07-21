@@ -29,13 +29,15 @@ export const main = handler(async (event, context) => {
       };
       keys.push(obj);
     }
-    console.log(keys);
+    var keySet = new Set(keys);
+    var keyArray = Array.from(keySet);
+    console.log(keySet);
     const { offersTableName } = process.env;
     const readParams = {
       RequestItems: {},
     };
     readParams.RequestItems[offersTableName] = {
-      Keys: keys
+      Keys: keyArray
     };
     const result = await dynamoDb.batchGet(readParams);
     if ( ! result.Responses) {

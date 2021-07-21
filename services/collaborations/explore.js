@@ -5,11 +5,9 @@ import * as consts from "./constants.js";
 export const main = handler(async (event, context) => {
   const date = new Date();
   const month = date.getUTCMonth() + 1;
-  console.log(month);
   const year = date.getUTCFullYear();
-  console.log(year);
   const yearMonth = parseInt(year+""+month);
-  const status = consts.statuses.COMPLETED;
+  const status = consts.statuses.POSTED;
   const params = {
     TableName: process.env.collaborationTableName,
     IndexName: process.env.exploreIndex,
