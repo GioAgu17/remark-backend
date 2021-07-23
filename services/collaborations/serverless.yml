@@ -20,14 +20,20 @@ provider:
     shouldStartNameWithService: true
 
   environment:
-    collaborationsTableName: !ImportValue '${self:custom.sstApp}-ExtNewCollaborationsTableName'
     collaborationTableName: !ImportValue '${self:custom.sstApp}-ExtNewCollaborationTableName'
     offersTableName: !ImportValue '${self:custom.sstApp}-ExtNewOffersTableName'
     collaborationTableIndex: ${env:COLLAB_TABLE_INDEX}
     exploreIndex: ${env:EXPLORE_INDEX}
     partitionKeyOffer: ${env:PARTITION_KEY_OFFER}
-
+    websocketApiId: ${env:WEBSOCKET_APP_ID}
+    connectionChatTableName: !ImportValue '${self:custom.sstApp}-ExtConnectionChatTableName'
+    stage: ${env:STAGE_ENV}
   iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - "execute-api:ManageConnections"
+      Resource:
+        - "arn:aws:execute-api:*:*:**/@connections/*"
     - Effect: Allow
       Action:
         - dynamodb:Scan
@@ -40,12 +46,11 @@ provider:
       # Restrict our IAM role permissions to
       # the specific table for the stage
       Resource:
-        - !ImportValue '${self:custom.sstApp}-ExtNewCollaborationsTableArn'
         - !ImportValue '${self:custom.sstApp}-ExtNewCollaborationTableArn'
-        - !ImportValue '${self:custom.sstApp}-ExtNewCollaborationsTableArnIndex'
         - !ImportValue '${self:custom.sstApp}-ExtNewCollaborationTableArnIndex'
         - !ImportValue '${self:custom.sstApp}-ExtNewOffersTableArn'
         - !ImportValue '${self:custom.sstApp}-ExtNewOffersTableArnIndex'
+        - !ImportValue '${self:custom.sstApp}-ExtConnectionChatTableArn'
 functions:
   create:
     handler: create.main

@@ -112,7 +112,7 @@ export const main = handler(async (event, context) => {
   else if(result.Item.userType == 'influencer'){
       const collabs = await dynamoDb.query({
         TableName: process.env.collaborationsTableName,
-        KeyConditionExpression: '#id = :id', // we need a proper GSI id/status
+        KeyConditionExpression: '#id = :id', 
         FilterExpression: '#st = :status',
         ExpressionAttributeNames: {
           "#st" : "status",
@@ -158,8 +158,8 @@ export const main = handler(async (event, context) => {
   if( result.Item.userDetails.accountIG ){
       const fakEvt = { 'pathParameters' : {'id' : result.Item.userDetails.accountIG} };
       let statistics = await stats.userStatistics(fakEvt);
-      statistics = JSON.parse(statistics.body);
       if( typeof statistics !== 'undefined' && Object.keys(statistics).length ){
+          statistics = JSON.parse(statistics.body);
           const averagePostValueNum = postValue.calculateAveragePostValue(statistics.followers, statistics.er);
           const averagePostValue = averagePostValueNum.toString() + "€";
           result.Item.userDetails = Object.assign( result.Item.userDetails, {

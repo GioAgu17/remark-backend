@@ -1,7 +1,9 @@
 import handler from "../../libs/handler-lib";
 import dynamoDb from "../../libs/dynamodb-lib";
 import * as deleteOffer from "./libs/deleteOffer-lib";
-import * as consts from "./constants.js";
+import * as insertCollab from "./libs/insertCollab-lib";
+import * as readCollab from "./libs/readCollab-lib";
+import * as chatHelper from "./libs/chatHelper-lib";
 export const main = handler(async (event, context) => {
   const data = JSON.parse(event.body);
   if(!data){
@@ -36,37 +38,37 @@ export const main = handler(async (event, context) => {
   if(!applications.selected){
     throw new Error("Selected applicants not present in applications field of offer. Failed to create collaboration");
   }
-  const influencers = applications.selected.map(x => x.remarkerId);
-  console.log(influencers);
-  for(let influencerId of influencers){
-    const status = consts.statuses.INPROGRESS;
-    const date = new Date();
-    const month = date.getUTCMonth() + 1;
-    const year = date.getUTCFullYear();
-    const yearMonth = parseInt(year+""+month);
-    const details = {
-      offerDetails: offerDetails,
-      images: [],
-      comments: 0,
-      hashtags: [],
-      caption: "",
-      impactScore: 0,
-      likes: 0
-    };
-    const insertParams = {
-      TableName: process.env.collaborationTableName,
-      Item: {
-        businessId: businessId,
-        offerId: offerId,
-        details: details,
-        status : status,
-        yearMonth: yearMonth,
-        influencerId : influencerId,
-        createdAt: new Date().toISOString(),
-      }
-    };
-    await dynamoDb.put(insertParams);
-    await deleteOffer.main(offer);
+  var userIds = applications.selected.map(x => x.remarkerId);
+  const users = await readCollab.main(userIds);
+  const members = [];
+  for(let user of users){
+    const member = {};
+    member.id = user.userId;
+    if(user.userDetails != "undefined"){
+      member.username = user.userDetails.username;
+      member.image = user.userDetails.profileImage;
+    }
+    members.push(member);
+    await insertCollab.main(offerDetails, businessId, offerId, user.userId, user.userDetails.username, user.userDetails.profileImage);
   }
+  // saving member also for business
+  const readBusinessInfoParams = {
+    TableName: process.env.userTableName,
+    Key:{
+      userId: businessId
+    }
+  };
+  const res = await dynamoDb.get(readBusinessInfoParams);
+  if(!res.Item)
+    throw new Error("Did not find any business information with businessId " + businessId);
+  const businessMember = {};
+  businessMember.id = businessId;
+  if(res.Item.userDetails != "undefined"){
+    businessMember.image = res.Item.userDetails.profileImage;
+    businessMember.username = res.Item.userDetails.username;
+  }
+  members.push(businessMember);
+  await chatHelper.newChat(userIds, businessId, members, offerId);
+  await deleteOffer.main(offer);
   return { status: true };
 });

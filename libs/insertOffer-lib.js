@@ -31,7 +31,7 @@ async function persistOffer(geohashEncoded, data){
       businessId : data.businessId,
       offerId : data.offerId,
       offerDetails: data.offerDetails,
-      createdAt: Date.now(),
+      createdAt: new Date().toISOString(),
     }
   };
   await dynamodb.put(params);
