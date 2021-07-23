@@ -35,8 +35,7 @@ export const main = handler(async (event, context) => {
 
   await updateMessagesInConversationChatTable(message, chatId);
   // send messages to all connections
-  const connections = conversation.connections;
-  await chatSender.sendAll(connections, message, domainName, stage);
+  await chatSender.sendAll(conversation.connections, message, domainName, stage);
 });
 
 async function updateMessagesInConversationChatTable(message, chatId){
