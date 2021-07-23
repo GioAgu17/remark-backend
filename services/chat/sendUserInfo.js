@@ -1,6 +1,6 @@
 import handler from "../../libs/handler-lib";
 import dynamoDb from "../../libs/dynamodb-lib";
-import arrayHelper from "../../libs/arrayHelper-lib";
+import * as arrayHelper from "../../libs/arrayHelper-lib";
 export const main = handler(async (event, context) => {
   const message = JSON.parse(event.body);
   if(!message || !message.userId)
