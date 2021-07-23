@@ -112,7 +112,7 @@ export const main = handler(async (event, context) => {
   else if(result.Item.userType == 'influencer'){
       const collabs = await dynamoDb.query({
         TableName: process.env.collaborationsTableName,
-        KeyConditionExpression: '#id = :id', 
+        KeyConditionExpression: '#id = :id',
         FilterExpression: '#st = :status',
         ExpressionAttributeNames: {
           "#st" : "status",
