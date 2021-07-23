@@ -1,13 +1,10 @@
 import dynamoDb from "../../../libs/dynamodb-lib";
 import * as uuid from "uuid";
-import AWS from "aws-sdk";
+import * as chatSender from "../../../libs/chatSender-lib";
 export async function newChat(userIds, businessId, members, offerId){
   const stage = process.env.stage;
+  const domainName = process.env.websocketApiId;
   var connections = [];
-  const endpoint = process.env.websocketApiId + '/' + stage;
-  const agma = new AWS.ApiGatewayManagementApi({
-    endpoint: endpoint
-  });
   const chatId = uuid.v1();
   const businessMessage = {
     isNewChat : true,
@@ -38,22 +35,10 @@ export async function newChat(userIds, businessId, members, offerId){
     const connectionId = result.Item.connectionId;
     connections.push(connectionId);
     await updateConnectionChatTable(userId, chatId);
-    try {
-        await agma.postToConnection({
-            ConnectionId: connectionId,
-            Data: JSON.stringify(remarkerMessage)
-        }).promise();
-    }
-    catch (err) {
-        if (err.statusCode === 410) {
-            console.log("Got the error " + err);
-            throw new Error(err);
-        }
-        else {
-            throw err;
-        }
-    }
   }
+  // write to all remarkers
+  await chatSender.sendAll(connections, remarkerMessage, domainName, stage);
+
   // now write to the business
   const readBizConnectionParams = {
     TableName: process.env.connectionChatTableName,
@@ -67,21 +52,9 @@ export async function newChat(userIds, businessId, members, offerId){
   const bizConnectionId = bizResult.Item.connectionId;
   connections.push(bizConnectionId);
   await updateConnectionChatTable(businessId, chatId);
-  try {
-      await agma.postToConnection({
-          ConnectionId: bizConnectionId,
-          Data: JSON.stringify(businessMessage)
-      }).promise();
-  }
-  catch (err) {
-      if (err.statusCode === 410) {
-          console.log("Got the error " + err);
-          throw new Error(err);
-      }
-      else {
-          throw err;
-      }
-  }
+
+  // sending message to business
+  await chatSender.send(bizConnectionId, businessMessage, domainName, stage);
 
   // insert new record inside conversationChatTable
   const insertParams = {

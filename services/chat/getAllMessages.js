@@ -1,6 +1,9 @@
 import handler from "../../libs/handler-lib";
 import dynamoDb from "../../libs/dynamodb-lib";
+import * as chatSender from "../../libs/chatSender-lib";
 export const main = handler(async (event, context) => {
+  const domainName = event.requestContext.domainName;
+  const stage = event.requestContext.stage;
   const connectionId = event.requestContext.connectionId;
   if(!connectionId){
     throw new Error("Cannot proceed without connectionId");
@@ -39,5 +42,6 @@ export const main = handler(async (event, context) => {
     message.members = conversationChatItem.members;
     allMessages = allMessages.concat(message);
   }
-  return allMessages;
+  await chatSender.send(connectionId, allMessages, domainName, stage);
+  return;
 });

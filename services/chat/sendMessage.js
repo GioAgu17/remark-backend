@@ -1,13 +1,10 @@
 import handler from "../../libs/handler-lib";
 import dynamoDb from "../../libs/dynamodb-lib";
-import AWS from "aws-sdk";
+import * as chatSender from "../../libs/chatSender-lib";
 export const main = handler(async (event, context) => {
+  const connectionId = event.requestContext.connectionId;
   const domainName = event.requestContext.domainName;
   const stage = event.requestContext.stage;
-  const connectionId = event.requestContext.connectionId;
-  const agma = new AWS.ApiGatewayManagementApi({
-    endpoint: domainName + '/' + stage
-  });
   console.log("Process message ", connectionId, event.body);
   const payload = JSON.parse(event.body);
   if(!payload.chatId || !payload.text || !payload.createdAt || !payload.senderId){
@@ -39,23 +36,7 @@ export const main = handler(async (event, context) => {
   await updateMessagesInConversationChatTable(message, chatId);
   // send messages to all connections
   const connections = conversation.connections;
-  for(let connectionId of connections){
-    try {
-        await agma.postToConnection({
-            ConnectionId: connectionId,
-            Data: JSON.stringify(message)
-        }).promise();
-    }
-    catch (err) {
-        if (err.statusCode === 410) {
-            console.log("Got the error " + err);
-            throw new Error(err);
-        }
-        else {
-            throw err;
-        }
-    }
-  }
+  await chatSender.sendAll(connections, message, domainName, stage);
 });
 
 async function updateMessagesInConversationChatTable(message, chatId){
