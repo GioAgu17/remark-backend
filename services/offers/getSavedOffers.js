@@ -31,7 +31,6 @@ export const main = handler(async (event, context) => {
     }
     var keySet = new Set(keys);
     var keyArray = Array.from(keySet);
-    console.log(keySet);
     const { offersTableName } = process.env;
     const readParams = {
       RequestItems: {},

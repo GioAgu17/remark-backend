@@ -52,10 +52,8 @@ export async function newChat(userIds, businessId, members, offerId){
   const bizConnectionId = bizResult.Item.connectionId;
   connections.push(bizConnectionId);
   await updateConnectionChatTable(businessId, chatId);
-
-  // sending message to business
+  // send message to business
   await chatSender.send(bizConnectionId, businessMessage, domainName, stage);
-
   // insert new record inside conversationChatTable
   const insertParams = {
     TableName: process.env.conversationChatTableName,

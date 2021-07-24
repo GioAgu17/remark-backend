@@ -1,40 +1,30 @@
 import handler from "../../libs/handler-lib";
 import dynamoDb from "../../libs/dynamodb-lib";
-
+import * as insert from "../../libs/insertOffer-lib";
+import * as deleteExpiredOffer from "./libs/deleteExpiredOffer-lib";
 export const main = handler(async (event, context) => {
   const data = JSON.parse(event.body);
-  if(!data.rangeKey){
-    throw new Error("Cannot proceed without rangeKey");
+  if(!data.offerId){
+    throw new Error("Cannot proceed without offerId");
   }
   if(!data.expiryDate){
     throw new Error("Cannot proceed without expiryDate");
   }
   const readParams = {
-    TableName: process.env.offersTableName,
+    TableName: process.env.expiredOffersTable,
     Key: {
-      "hashKey": process.env.partitionKeyOffer,
-      "rangeKey": data.rangeKey
+      "businessId": event.requestContext.identity.cognitoIdentityId,
+      "offerId": data.offerId
     }
   };
   const result = await dynamoDb.get(readParams);
   if(!result.Item){
     return "Item not found";
   }
-  var offerDetails = result.Item.offerDetails;
-  offerDetails.expiryDate = data.expiryDate;
-  offerDetails.applications.clear();
-  const updateParams = {
-    TableName: process.env.offersTableName,
-    Key: {
-      "hashKey": process.env.partitionKeyOffer,
-      "rangeKey": data.rangeKey
-    },
-    UpdateExpression: "SET offerDetails = :offerDetails",
-    ExpressionAttributeValues: {
-      ":offerDetails": offerDetails
-    },
-    ReturnValues: "ALL_NEW"
-  };
-  await dynamoDb.update(updateParams);
+  result.Item.offerDetails.expiryDate = data.expiryDate;
+  result.Item.latitude = result.Item.offerDetails.latitude;
+  result.Item.longitude = result.Item.offerDetails.longitude;
+  await insert.insertOffer(result.Item);
+  await deleteExpiredOffer.main(event.requestContext.identity.cognitoIdentityId, data.offerId);
   return { status: true };
 });

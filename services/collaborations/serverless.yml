@@ -27,6 +27,8 @@ provider:
     partitionKeyOffer: ${env:PARTITION_KEY_OFFER}
     websocketApiId: ${env:WEBSOCKET_APP_ID}
     connectionChatTableName: !ImportValue '${self:custom.sstApp}-ExtConnectionChatTableName'
+    conversationChatTableName: !ImportValue '${self:custom.sstApp}-ExtConversationChatTableName'
+    userTableName: !ImportValue '${self:custom.sstApp}-ExtUserTableName'
     stage: ${env:STAGE_ENV}
   iamRoleStatements:
     - Effect: Allow
@@ -43,6 +45,7 @@ provider:
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
         - dynamodb:DescribeTable
+        - dynamodb:BatchGetItem
       # Restrict our IAM role permissions to
       # the specific table for the stage
       Resource:
@@ -51,6 +54,8 @@ provider:
         - !ImportValue '${self:custom.sstApp}-ExtNewOffersTableArn'
         - !ImportValue '${self:custom.sstApp}-ExtNewOffersTableArnIndex'
         - !ImportValue '${self:custom.sstApp}-ExtConnectionChatTableArn'
+        - !ImportValue '${self:custom.sstApp}-ExtConversationChatTableArn'
+        - !ImportValue '${self:custom.sstApp}-ExtUserTableArn'
 functions:
   create:
     handler: create.main
