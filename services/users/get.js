@@ -1,8 +1,8 @@
 import handler from "./libs/handler-lib";
-import dynamoDb from "./libs/dynamodb-lib";
-import * as stats from "../statistics/api.js";
-import * as postValue from "./libs/postValue-lib";
 import * as consts from "./constants.js";
+import * as collabStats from "./libs/collabStats-lib";
+import dynamoDb from "./libs/dynamodb-lib";
+import * as instaCollabs from "./libs/instaCollab-lib";
 export const main = handler(async (event, context) => {
   const params = {
     TableName: process.env.userTableName,
@@ -81,21 +81,9 @@ export const main = handler(async (event, context) => {
       'recentCollabs' : recentCollabs, // should be set and valorized to 0 if no results
   });
 
+  // getting total and active collaboration
+  result.Item.userDetails = await collabStats.getCollabStats(event.requestContext.identity.cognitoIdentityId, result.Item.userType, result.Item.userDetails);
   if(result.Item.userType == 'business'){
-    // need to get collaborations Count
-    const collabParams = {
-      TableName : process.env.collaborationsTableName,
-      IndexName: process.env.collabBusinessIndex,
-      KeyConditionExpression: "businessId = :businessId",
-      ExpressionAttributeValues: {
-        ":businessId" : event.requestContext.identity.cognitoIdentityId
-      }
-    };
-    const businessCollabs = await dynamoDb.query(collabParams);
-    result.Item.userDetails = Object.assign(result.Item.userDetails, {
-      "totalCollabs" : businessCollabs.Count,
-      "activeCollabs" : calculateActiveCollabsCount(businessCollabs)
-    });
 
     const businesses = await dynamoDb.query({
         TableName: process.env.userTableName,
@@ -141,35 +129,9 @@ export const main = handler(async (event, context) => {
                 'citiesWithRemark' : citiesWithDetails
             });
       }
-      const influCollabsParams = {
-        TableName: process.env.collaborationsTableName,
-        KeyConditionExpression: 'influencerId = :influId',
-        ExpressionAttributeValues: {
-            ':influId': result.Item.userId
-        }
-      };
-      const influCollabs = await dynamoDb.query(influCollabsParams);
-      result.Item.userDetails = Object.assign(result.Item.userDetails, {
-        "totalCollabs" : influCollabs.Count,
-        "activeCollabs" : calculateActiveCollabsCount(influCollabs)
-      });
-
   }
-  if( result.Item.userDetails.accountIG ){
-      const fakEvt = { 'pathParameters' : {'id' : result.Item.userDetails.accountIG} };
-      let statistics = await stats.userStatistics(fakEvt);
-      if( typeof statistics !== 'undefined' && Object.keys(statistics).length ){
-          statistics = JSON.parse(statistics.body);
-          const averagePostValueNum = postValue.calculateAveragePostValue(statistics.followers, statistics.er);
-          const averagePostValue = averagePostValueNum.toString() + "€";
-          result.Item.userDetails = Object.assign( result.Item.userDetails, {
-              'followers' : statistics.followers,
-              'engagementRate' : statistics.er.toString() + "%",
-              'website' : result.Item.userType == 'business' ? statistics.website : null,
-              'averagePostValue' : result.Item.userType == 'influencer' ? averagePostValue : null,
-          });
-      }
-  }
+  // getting insta stats
+  result.Item.userDetails = await instaCollabs.getInstaStats(result.Item.userDetails, result.Item.userType);
   return result.Item;
 });
 
