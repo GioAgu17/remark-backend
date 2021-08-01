@@ -1,4 +1,4 @@
-import * as stats from "./../../statistics/api.js";
+//import * as stats from "./../../statistics/api.js";
 import * as postValue from "./postValue-lib";
 export async function getInstaStats(userDetails, userType){
   if( userDetails.accountIG ){
