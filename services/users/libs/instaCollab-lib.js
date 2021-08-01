@@ -5,7 +5,6 @@ export async function getInstaStats(userDetails, userType){
       const fakEvt = { 'pathParameters' : {'id' : userDetails.accountIG} };
       let statistics = await stats.userStatistics(fakEvt);
       if( typeof statistics !== 'undefined' && Object.keys(statistics).length ){
-          statistics = JSON.parse(statistics.body);
           const averagePostValueNum = postValue.calculateAveragePostValue(statistics.followers, statistics.er);
           const averagePostValue = averagePostValueNum.toString() + "€";
           userDetails = Object.assign( userDetails, {

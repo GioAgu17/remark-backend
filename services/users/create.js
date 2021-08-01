@@ -10,7 +10,6 @@ export const main = handler(async (event, context) => {
     profileImage = JSON.parse(profileImage.body);
     let statistics = await stats.userStatistics(fakEvt);
     statistics = JSON.parse(statistics.body);
-
     const params = {
         TableName: process.env.userTableName,
         Item: {
