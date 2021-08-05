@@ -37,7 +37,14 @@ export async function newChat(userIds, businessId, members, offerId){
     await updateConnectionChatTable(userId, chatId);
   }
   // write to all remarkers
-  await chatSender.sendAll(connections, remarkerMessage, domainName, stage);
+  try{
+    await chatSender.sendAll(connections, remarkerMessage, domainName, stage);
+  }catch(e){
+    if (e.statusCode === 410) {
+      console.log("Got the error " + e);
+    }
+  }
+ 
 
   // now write to the business
   const readBizConnectionParams = {

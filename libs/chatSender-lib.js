@@ -11,13 +11,7 @@ export async function sendAll(connections, message, domainName, stage){
         }).promise();
     }
     catch (err) {
-        if (err.statusCode === 410) {
-            console.log("Got the error " + err);
-            throw new Error(err);
-        }
-        else {
-            throw err;
-        }
+        throw err;     
     }
   }
 }
