@@ -11,11 +11,10 @@ export async function sendAll(connections, message, domainName, stage){
         }).promise();
     }
     catch (err) {
-        throw err;     
+        throw err;
     }
   }
 }
-
 export async function send(connectionId, message, domainName, stage){
   const agma = new AWS.ApiGatewayManagementApi({
     endpoint: domainName + '/' + stage

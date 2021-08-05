@@ -44,8 +44,6 @@ export async function newChat(userIds, businessId, members, offerId){
       console.log("Got the error " + e);
     }
   }
- 
-
   // now write to the business
   const readBizConnectionParams = {
     TableName: process.env.connectionChatTableName,
