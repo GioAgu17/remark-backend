@@ -10,6 +10,9 @@ export const main = handler(async (event, context) => {
     throw new Error("Not getting data to create collaboration");
   }
   const rangeKey = data.rangeKey;
+  if(!rangeKey){
+    throw new Error("Cannot proceed without rnage Key in offer");
+  }
   const readParams = {
     TableName: process.env.offersTableName,
     Key: {
@@ -68,7 +71,7 @@ export const main = handler(async (event, context) => {
     businessMember.username = res.Item.userDetails.username;
   }
   members.push(businessMember);
-  await chatHelper.newChat(userIds, businessId, members, offerId);
+  await chatHelper.newChat(userIds, businessId, members, rangeKey);
   await deleteOffer.main(offer);
   return { status: true };
 });

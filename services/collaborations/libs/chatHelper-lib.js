@@ -1,13 +1,12 @@
 import dynamoDb from "../../../libs/dynamodb-lib";
 import * as uuid from "uuid";
 import * as chatSender from "../../../libs/chatSender-lib";
-export async function newChat(userIds, businessId, members, offerId){
+export async function newChat(userIds, businessId, members, rangeKey){
   const stage = process.env.stage;
   const domainName = process.env.websocketApiId;
   var connections = [];
   const chatId = uuid.v1();
   const businessMessage = {
-    isNewChat : true,
     chatId: chatId,
     text: "Welcome to the chat! Write a nice welcome to the remarker and start scheduling your collaboration!",
     members: members,
@@ -15,7 +14,6 @@ export async function newChat(userIds, businessId, members, offerId){
     createdAt: new Date().toISOString()
   };
   const remarkerMessage = {
-    isNewChat : true,
     chatId: chatId,
     members: members,
     text: "Welcome to the collaboration chat! Here you get to know better the business, schedule the completion of the collab, and so on!",
@@ -37,13 +35,7 @@ export async function newChat(userIds, businessId, members, offerId){
     await updateConnectionChatTable(userId, chatId);
   }
   // write to all remarkers
-  try{
-    await chatSender.sendAll(connections, remarkerMessage, domainName, stage);
-  }catch(e){
-    if (e.statusCode === 410) {
-      console.log("Got the error " + e);
-    }
-  }
+  await chatSender.sendAll(connections, remarkerMessage, domainName, stage);
   // now write to the business
   const readBizConnectionParams = {
     TableName: process.env.connectionChatTableName,
@@ -67,13 +59,12 @@ export async function newChat(userIds, businessId, members, offerId){
       connections: connections,
       messages: [],
       members: members,
-      offerId : offerId,
+      offerRangeKey : rangeKey,
       createdAt: new Date().toISOString(),
     }
   };
   await dynamoDb.put(insertParams);
 }
-
 async function updateConnectionChatTable(userId, chatId){
   const updateParams = {
       TableName: process.env.connectionChatTableName,

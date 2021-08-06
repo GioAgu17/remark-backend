@@ -11,7 +11,10 @@ export async function sendAll(connections, message, domainName, stage){
         }).promise();
     }
     catch (err) {
-        throw err;
+      if (err.statusCode === 410) {
+        console.log("Connection is gone for connectionId " + connectionId);
+      }else
+        throw new Error(err);
     }
   }
 }
@@ -27,8 +30,7 @@ export async function send(connectionId, message, domainName, stage){
     }
     catch (err) {
         if (err.statusCode === 410) {
-            console.log("Got the error " + err);
-            throw new Error(err);
+            console.log("Connection is gone for connectionId " + connectionId);
         }
         else {
             throw err;

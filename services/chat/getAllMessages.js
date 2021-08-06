@@ -37,7 +37,7 @@ export const main = handler(async (event, context) => {
     const conversationChatItem = res.Item;
     var message = {};
     message.chatId = chatId;
-    message.offerId = conversationChatItem.offerId;
+    message.offerRangeKey = conversationChatItem.rangeKey;
     message.messages = conversationChatItem.messages;
     message.members = conversationChatItem.members;
     allMessages = allMessages.concat(message);
