@@ -5,7 +5,7 @@ export async function newChat(userIds, businessId, members, rangeKey){
   const stage = process.env.stage;
   const domainName = process.env.websocketApiId;
   var connections = [];
-  const introMessage = "Welcome to the chat of the collaboration! Here you can discuss on everything you may want to ask, and especially schedule your meeting!"
+  const introMessage = "Welcome to the chat of the collaboration! Here you can discuss on everything you may want to ask, and especially schedule your meeting!";
   const chatId = uuid.v1();
   const businessMessage = {
     chatId: chatId,
@@ -25,7 +25,7 @@ export async function newChat(userIds, businessId, members, rangeKey){
     text: introMessage,
     createdAt: new Date().toISOString(),
     senderId: "remark"
-  }
+  };
   for(let userId of userIds){
     const readConnectionParams = {
       TableName: process.env.connectionChatTableName,
