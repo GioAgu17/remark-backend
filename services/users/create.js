@@ -23,6 +23,7 @@ export const main = handler(async (event, context) => {
                 age : data.userType == 'influencer' ? data.age : null,
                 caption : data.caption,
                 influencerCategories : data.influencerCategories,
+                savedOffers: []
             },
             createdAt: Date.now(),
         }

@@ -5,10 +5,11 @@ export async function newChat(userIds, businessId, members, rangeKey){
   const stage = process.env.stage;
   const domainName = process.env.websocketApiId;
   var connections = [];
+  const introMessage = "Welcome to the chat of the collaboration! Here you can discuss on everything you may want to ask, and especially schedule your meeting!"
   const chatId = uuid.v1();
   const businessMessage = {
     chatId: chatId,
-    text: "Welcome to the chat! Write a nice welcome to the remarker and start scheduling your collaboration!",
+    text: introMessage,
     members: members,
     senderId: "remark",
     createdAt: new Date().toISOString()
@@ -16,10 +17,15 @@ export async function newChat(userIds, businessId, members, rangeKey){
   const remarkerMessage = {
     chatId: chatId,
     members: members,
-    text: "Welcome to the collaboration chat! Here you get to know better the business, schedule the completion of the collab, and so on!",
+    text: introMessage,
     senderId: "remark",
     createdAt: new Date().toISOString()
   };
+  const messageToSave = {
+    text: introMessage,
+    createdAt: new Date().toISOString(),
+    senderId: "remark"
+  }
   for(let userId of userIds){
     const readConnectionParams = {
       TableName: process.env.connectionChatTableName,
@@ -52,12 +58,14 @@ export async function newChat(userIds, businessId, members, rangeKey){
   // send message to business
   await chatSender.send(bizConnectionId, businessMessage, domainName, stage);
   // insert new record inside conversationChatTable
+  var messages = [];
+  messages.push(messageToSave);
   const insertParams = {
     TableName: process.env.conversationChatTableName,
     Item: {
       chatId: chatId,
       connections: connections,
-      messages: [],
+      messages: messages,
       members: members,
       offerRangeKey : rangeKey,
       createdAt: new Date().toISOString(),

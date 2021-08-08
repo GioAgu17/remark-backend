@@ -21,26 +21,30 @@ export const main = handler(async (event, context) => {
     throw new Error("Didn't find any user with connectionId "+connectionId);
   }
   const connection = result.Items[0];
-  const chatIds = connection.chatIds;
   var allMessages = [];
-  for(let chatId of chatIds){
-    const params = {
-      TableName: process.env.conversationChatTableName,
-      Key:{
-        chatId: chatId
+  if(!connection.chatIds){
+    console.log("No chats available for the connection: " + connectionId);
+  }else{
+    const chatIds = connection.chatIds;
+    for(let chatId of chatIds){
+      const params = {
+        TableName: process.env.conversationChatTableName,
+        Key:{
+          chatId: chatId
+        }
+      };
+      const res = await dynamoDb.get(params);
+      if(!res.Item){
+        throw new Error("No entry for chatId "+chatId);
       }
-    };
-    const res = await dynamoDb.get(params);
-    if(!res.Item){
-      throw new Error("No entry for chatId "+chatId);
+      const conversationChatItem = res.Item;
+      var message = {};
+      message.chatId = chatId;
+      message.offerRangeKey = conversationChatItem.rangeKey;
+      message.messages = conversationChatItem.messages;
+      message.members = conversationChatItem.members;
+      allMessages = allMessages.concat(message);
     }
-    const conversationChatItem = res.Item;
-    var message = {};
-    message.chatId = chatId;
-    message.offerRangeKey = conversationChatItem.rangeKey;
-    message.messages = conversationChatItem.messages;
-    message.members = conversationChatItem.members;
-    allMessages = allMessages.concat(message);
   }
   await chatSender.send(connectionId, allMessages, domainName, stage);
   return;
