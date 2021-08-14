@@ -24,21 +24,42 @@ export const main = handler(async (event, context) => {
   const conversation = result.Item;
   if(!conversation.members)
     throw new Error("Cannot send message to chat as there are no members in chat " + chatId);
+  // send messages to all connections but the one sending this message
+  var connectionsToSend = conversation.connections;
+  const indexConnection = connectionsToSend.indexOf(connectionId);
+  connectionsToSend.splice(indexConnection, 1);
+  const closedConnections = await chatSender.sendAll(connectionsToSend, message, domainName, stage);
+  const closedUserIds = closedConnections.map(
+    async function callbackFn(connId) {
+      const readParams = {
+        TableName: process.env.connectionChatTableName,
+        IndexName: process.env.connectionIdIndex,
+        KeyConditionExpression: '#cd = :connId',
+        ExpressionAttributeNames: {
+          "#cd" : "connectionId"
+        },
+        ExpressionAttributeValues: {
+          ':connId': connId
+        }
+      };
+      const res = await dynamoDb.query(readParams);
+      if(!res.Items){
+        return "";
+      }
+      return res.Items[0];
+    }
+  );
   const message = {
     chatId: chatId,
     text: payload.text,
     senderId: payload.senderId,
     createdAt: payload.createdAt,
-    members: conversation.members,
-    isNewChat: false
+    members: conversation.members
   };
-
-  await updateMessagesInConversationChatTable(message, chatId);
-  // send messages to all connections
-  await chatSender.sendAll(conversation.connections, message, domainName, stage);
+  await updateMessagesInConversationChatTable(message, chatId, closedUserIds);
 });
 
-async function updateMessagesInConversationChatTable(message, chatId){
+async function updateMessagesInConversationChatTable(message, chatId, isNew){
   const messageToSave = {
     text: message.text,
     createdAt: message.createdAt,
@@ -49,12 +70,14 @@ async function updateMessagesInConversationChatTable(message, chatId){
       Key: {
           chatId : chatId
       },
-      UpdateExpression: "SET #ms = list_append(#ms, :vals)",
+      UpdateExpression: "SET #ms = list_append(#ms, :vals), #in = :isNew",
       ExpressionAttributeValues: {
-          ":vals": [messageToSave]
+          ":vals": [messageToSave],
+          ":isNew" : isNew
       },
       ExpressionAttributeNames: {
-        "#ms" : "messages"
+        "#ms" : "messages",
+        "#in" : "isNew"
       },
       ReturnValues: 'ALL_NEW'
   };

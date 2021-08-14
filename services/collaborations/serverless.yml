@@ -129,6 +129,14 @@ functions:
           method: post
           cors: true
           authorizer: aws_iam
+  close:
+    handler: close.main
+    events:
+      - http:
+          path: close
+          method: post
+          cors: true
+          authorizer: aws_iam
 resources:
   # API Gateway Errors
   - ${file(resources/api-gateway-errors.yml)}

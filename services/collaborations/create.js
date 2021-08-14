@@ -1,5 +1,6 @@
 import handler from "../../libs/handler-lib";
 import dynamoDb from "../../libs/dynamodb-lib";
+import * as uuid from "uuid";
 import * as deleteOffer from "./libs/deleteOffer-lib";
 import * as insertCollab from "./libs/insertCollab-lib";
 import * as readCollab from "./libs/readCollab-lib";
@@ -13,6 +14,7 @@ export const main = handler(async (event, context) => {
   if(!rangeKey){
     throw new Error("Cannot proceed without rnage Key in offer");
   }
+  const chatId = uuid.v1();
   const readParams = {
     TableName: process.env.offersTableName,
     Key: {
@@ -52,7 +54,7 @@ export const main = handler(async (event, context) => {
       member.image = user.userDetails.profileImage;
     }
     members.push(member);
-    await insertCollab.main(offerDetails, businessId, offerId, user.userId, user.userDetails.username, user.userDetails.profileImage);
+    await insertCollab.main(offerDetails, businessId, offerId, user.userId, user.userDetails.username, user.userDetails.profileImage, chatId);
   }
   // saving member also for business
   const readBusinessInfoParams = {
@@ -71,7 +73,7 @@ export const main = handler(async (event, context) => {
     businessMember.username = res.Item.userDetails.username;
   }
   members.push(businessMember);
-  await chatHelper.newChat(userIds, businessId, members, rangeKey);
+  await chatHelper.newChat(userIds, businessId, members, offerDetails, offerId, chatId);
   await deleteOffer.main(offer);
   return { status: true };
 });

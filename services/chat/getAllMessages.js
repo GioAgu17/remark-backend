@@ -20,9 +20,10 @@ export const main = handler(async (event, context) => {
   if(!result.Items){
     throw new Error("Didn't find any user with connectionId "+connectionId);
   }
+  console.log(result.Items);
   const connection = result.Items[0];
   var allMessages = [];
-  if(!connection.chatIds){
+  if(typeof connection.chatIds === 'undefined' || !connection.chatIds){
     console.log("No chats available for the connection: " + connectionId);
   }else{
     const chatIds = connection.chatIds;
@@ -40,12 +41,15 @@ export const main = handler(async (event, context) => {
       const conversationChatItem = res.Item;
       var message = {};
       message.chatId = chatId;
-      message.offerRangeKey = conversationChatItem.rangeKey;
       message.messages = conversationChatItem.messages;
       message.members = conversationChatItem.members;
+      if(typeof conversationChatItem.offerDetails === 'undefined')
+        message.offerDetails = {};
+      else
+        message.offerDetails = conversationChatItem.offerDetails;
       allMessages = allMessages.concat(message);
     }
   }
-  await chatSender.send(connectionId, allMessages, domainName, stage);
+  await chatSender.sendAll([connectionId], allMessages, domainName, stage);
   return;
 });

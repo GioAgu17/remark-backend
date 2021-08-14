@@ -1,23 +1,14 @@
 import dynamoDb from "../../../libs/dynamodb-lib";
-import * as uuid from "uuid";
 import * as chatSender from "../../../libs/chatSender-lib";
-export async function newChat(userIds, businessId, members, rangeKey){
+export async function newChat(userIds, businessId, members, offerDetails, offerId, chatId){
   const stage = process.env.stage;
   const domainName = process.env.websocketApiId;
-  var connections = [];
   const introMessage = "Welcome to the chat of the collaboration! Here you can discuss on everything you may want to ask, and especially schedule your meeting!";
-  const chatId = uuid.v1();
-  const businessMessage = {
+  const messageToSend = {
     chatId: chatId,
     text: introMessage,
+    offerDetails: offerDetails,
     members: members,
-    senderId: "remark",
-    createdAt: new Date().toISOString()
-  };
-  const remarkerMessage = {
-    chatId: chatId,
-    members: members,
-    text: introMessage,
     senderId: "remark",
     createdAt: new Date().toISOString()
   };
@@ -26,6 +17,8 @@ export async function newChat(userIds, businessId, members, rangeKey){
     createdAt: new Date().toISOString(),
     senderId: "remark"
   };
+  userIds.push(businessId);
+  var connectionsAndUsers = new Map();
   for(let userId of userIds){
     const readConnectionParams = {
       TableName: process.env.connectionChatTableName,
@@ -37,37 +30,28 @@ export async function newChat(userIds, businessId, members, rangeKey){
     if(!result.Item)
       throw new Error("Connection not found in connection chat table for userId " + userId);
     const connectionId = result.Item.connectionId;
-    connections.push(connectionId);
+    connectionsAndUsers.set(connectionId, userId);
     await updateConnectionChatTable(userId, chatId);
   }
-  // write to all remarkers
-  await chatSender.sendAll(connections, remarkerMessage, domainName, stage);
-  // now write to the business
-  const readBizConnectionParams = {
-    TableName: process.env.connectionChatTableName,
-    Key: {
-      userId: businessId
-    }
-  };
-  const bizResult = await dynamoDb.get(readBizConnectionParams);
-  if(!bizResult.Item)
-    throw new Error("Cannot find business connection chat for businessId " + businessId);
-  const bizConnectionId = bizResult.Item.connectionId;
-  connections.push(bizConnectionId);
-  await updateConnectionChatTable(businessId, chatId);
-  // send message to business
-  await chatSender.send(bizConnectionId, businessMessage, domainName, stage);
+  // write to all participants in the chat
+  const closedConnections = await chatSender.sendAll(connectionsAndUsers.keys(), messageToSend, domainName, stage);
   // insert new record inside conversationChatTable
+  var userIdsNotRead = [];
+  for(let connId of closedConnections){
+    userIdsNotRead.push(connectionsAndUsers.get(connId));
+  }
   var messages = [];
   messages.push(messageToSave);
   const insertParams = {
     TableName: process.env.conversationChatTableName,
     Item: {
       chatId: chatId,
-      connections: connections,
+      connections: connectionsAndUsers.keys(),
       messages: messages,
+      isNew: userIdsNotRead,
       members: members,
-      offerRangeKey : rangeKey,
+      offerDetails : offerDetails,
+      offerId: offerId,
       createdAt: new Date().toISOString(),
     }
   };

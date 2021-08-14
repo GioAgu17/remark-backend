@@ -2,7 +2,7 @@ import dynamoDb from "../../../libs/dynamodb-lib";
 import * as consts from "./../constants.js";
 const {collaborationTableName} = process.env;
 export async function main(offerDetails, businessId, offerId, influencerId,
-   remarkerUsername, remarkerProfileImage){
+   remarkerUsername, remarkerProfileImage, chatId){
   const status = consts.statuses.INPROGRESS;
   const date = new Date();
   const month = date.getUTCMonth() + 1;
@@ -17,7 +17,8 @@ export async function main(offerDetails, businessId, offerId, influencerId,
     hashtags: [],
     caption: "",
     impactScore: 0,
-    likes: 0
+    likes: 0,
+    chatId: chatId
   };
   const insertParams = {
     TableName: collaborationTableName,
