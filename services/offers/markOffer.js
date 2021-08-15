@@ -31,7 +31,7 @@ export const main = handler(async (event, context) => {
   const unselected = applications.unselected;
   const newObj = {
     "remarkerId" : remarkerId,
-    "applicationDate" : Date.now()
+    "applicationDate" : new Date().toISOString()
   };
   unselected.push(newObj);
   console.log(offer);

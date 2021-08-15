@@ -33,8 +33,9 @@ export async function newChat(userIds, businessId, members, offerDetails, offerI
     connectionsAndUsers.set(connectionId, userId);
     await updateConnectionChatTable(userId, chatId);
   }
+  const connectionIds = Array.from( connectionsAndUsers.keys());
   // write to all participants in the chat
-  const closedConnections = await chatSender.sendAll(connectionsAndUsers.keys(), messageToSend, domainName, stage);
+  const closedConnections = await chatSender.sendAll(connectionIds, messageToSend, domainName, stage);
   // insert new record inside conversationChatTable
   var userIdsNotRead = [];
   for(let connId of closedConnections){
@@ -46,7 +47,7 @@ export async function newChat(userIds, businessId, members, offerDetails, offerI
     TableName: process.env.conversationChatTableName,
     Item: {
       chatId: chatId,
-      connections: connectionsAndUsers.keys(),
+      connections: connectionIds,
       messages: messages,
       isNew: userIdsNotRead,
       members: members,

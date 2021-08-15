@@ -85,9 +85,10 @@ export const main = handler(async (event, context) => {
         Keys: keys
     };
     const res = await dynamoDb.batchGet(batchReadParams);
-    if(!res.Items)
+    if(!res.Responses)
         throw new Error("Didn't find connection information for userIds " + userIds);
-    const connections = res.Items;
+    const connections = res.Responses[process.env.connectionChatTableName];
+    console.log(connections);
     const connIds = [];
     for(let connection of connections){
         connIds.push(connection.connectionId);
@@ -98,14 +99,7 @@ export const main = handler(async (event, context) => {
             Key: {
                 userId : connection.userId
             },
-            UpdateExpression: "REMOVE #ci[:index]",
-            ExpressionAttributeValues: {
-                "ci": chatIds,
-                ":index" : index
-            },
-            ExpressionAttributeNames: {
-            "#ci" : "chatIds"
-            }
+            UpdateExpression: "REMOVE chatIds[" + index + "]"
         };
         await dynamoDb.update(updateParams);
     }

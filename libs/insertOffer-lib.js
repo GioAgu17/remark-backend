@@ -11,6 +11,10 @@ export async function insertOffer(data){
     console.log(data);
     data.offerDetails.latitude = lat;
     data.offerDetails.longitude = long;
+    data.offerDetails.applications = {
+      unselected: [],
+      selected: []
+    };
     console.log(data);
     const geohashEncoded = geohash.encode(lat,long);
     console.log(geohashEncoded);

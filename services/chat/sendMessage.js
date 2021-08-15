@@ -28,27 +28,6 @@ export const main = handler(async (event, context) => {
   var connectionsToSend = conversation.connections;
   const indexConnection = connectionsToSend.indexOf(connectionId);
   connectionsToSend.splice(indexConnection, 1);
-  const closedConnections = await chatSender.sendAll(connectionsToSend, message, domainName, stage);
-  const closedUserIds = closedConnections.map(
-    async function callbackFn(connId) {
-      const readParams = {
-        TableName: process.env.connectionChatTableName,
-        IndexName: process.env.connectionIdIndex,
-        KeyConditionExpression: '#cd = :connId',
-        ExpressionAttributeNames: {
-          "#cd" : "connectionId"
-        },
-        ExpressionAttributeValues: {
-          ':connId': connId
-        }
-      };
-      const res = await dynamoDb.query(readParams);
-      if(!res.Items){
-        return "";
-      }
-      return res.Items[0];
-    }
-  );
   const message = {
     chatId: chatId,
     text: payload.text,
@@ -56,6 +35,28 @@ export const main = handler(async (event, context) => {
     createdAt: payload.createdAt,
     members: conversation.members
   };
+  const closedConnections = await chatSender.sendAll(connectionsToSend, message, domainName, stage);
+  var closedUserIds = [];
+  for(let connId of closedConnections){
+    const readParams = {
+      TableName: process.env.connectionChatTableName,
+      IndexName: process.env.connectionIdIndex,
+      KeyConditionExpression: '#cd = :connId',
+      ExpressionAttributeNames: {
+        "#cd" : "connectionId"
+      },
+      ExpressionAttributeValues: {
+        ':connId': connId
+      }
+    };
+    const res = await dynamoDb.query(readParams);
+    if(!res.Items){
+      throw new Error("No record found in connection table for connectionId " + connId);
+    }
+    const connRecord = res.Items[0];
+    closedUserIds.push(connRecord.userId);
+  }
+  console.log(closedUserIds);
   await updateMessagesInConversationChatTable(message, chatId, closedUserIds);
 });
 

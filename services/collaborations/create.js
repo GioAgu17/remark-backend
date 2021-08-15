@@ -14,7 +14,6 @@ export const main = handler(async (event, context) => {
   if(!rangeKey){
     throw new Error("Cannot proceed without rnage Key in offer");
   }
-  const chatId = uuid.v1();
   const readParams = {
     TableName: process.env.offersTableName,
     Key: {
@@ -45,18 +44,7 @@ export const main = handler(async (event, context) => {
   }
   var userIds = applications.selected.map(x => x.remarkerId);
   const users = await readCollab.main(userIds);
-  const members = [];
-  for(let user of users){
-    const member = {};
-    member.id = user.userId;
-    if(user.userDetails != "undefined"){
-      member.username = user.userDetails.username;
-      member.image = user.userDetails.profileImage;
-    }
-    members.push(member);
-    await insertCollab.main(offerDetails, businessId, offerId, user.userId, user.userDetails.username, user.userDetails.profileImage, chatId);
-  }
-  // saving member also for business
+  // adding business as member
   const readBusinessInfoParams = {
     TableName: process.env.userTableName,
     Key:{
@@ -72,8 +60,20 @@ export const main = handler(async (event, context) => {
     businessMember.image = res.Item.userDetails.profileImage;
     businessMember.username = res.Item.userDetails.username;
   }
-  members.push(businessMember);
-  await chatHelper.newChat(userIds, businessId, members, offerDetails, offerId, chatId);
+  for(let user of users){
+    const chatId = uuid.v1();
+    const members = [];
+    const member = {};
+    member.id = user.userId;
+    if(user.userDetails != "undefined"){
+      member.username = user.userDetails.username;
+      member.image = user.userDetails.profileImage;
+    }
+    members.push(businessMember);
+    members.push(member);
+    await insertCollab.main(offerDetails, businessId, offerId, user.userId, user.userDetails.username, user.userDetails.profileImage, chatId);
+    await chatHelper.newChat(userIds, businessId, members, offerDetails, offerId, chatId);
+  }
   await deleteOffer.main(offer);
   return { status: true };
 });

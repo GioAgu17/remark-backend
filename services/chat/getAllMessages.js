@@ -23,9 +23,11 @@ export const main = handler(async (event, context) => {
   console.log(result.Items);
   const connection = result.Items[0];
   var allMessages = [];
+  var chatIdsIsNewAndIndexes = new Map();
   if(typeof connection.chatIds === 'undefined' || !connection.chatIds){
     console.log("No chats available for the connection: " + connectionId);
   }else{
+    const userId = connection.userId;
     const chatIds = connection.chatIds;
     for(let chatId of chatIds){
       const params = {
@@ -43,6 +45,12 @@ export const main = handler(async (event, context) => {
       message.chatId = chatId;
       message.messages = conversationChatItem.messages;
       message.members = conversationChatItem.members;
+      message.isNew = conversationChatItem.isNew;
+      const isNewUsers = conversationChatItem.isNew;
+      if(isNewUsers.includes(userId)){
+          const index = isNewUsers.indexOf(userId);
+          chatIdsIsNewAndIndexes.set(chatId, index);
+      }
       if(typeof conversationChatItem.offerDetails === 'undefined')
         message.offerDetails = {};
       else
@@ -51,5 +59,16 @@ export const main = handler(async (event, context) => {
     }
   }
   await chatSender.sendAll([connectionId], allMessages, domainName, stage);
+  for(let chatId of chatIdsIsNewAndIndexes.keys()){
+    const index = chatIdsIsNewAndIndexes.get(chatId);
+    const updateParams = {
+      TableName: process.env.conversationChatTableName,
+      Key: {
+          chatId : chatId
+      },
+      UpdateExpression: "REMOVE isNew[" + index + "]"
+    };
+    await dynamoDb.update(updateParams);
+  }
   return;
 });
