@@ -3,7 +3,7 @@ import dynamoDb from "../../libs/dynamodb-lib";
 import * as uuid from "uuid";
 import * as deleteOffer from "./libs/deleteOffer-lib";
 import * as insertCollab from "./libs/insertCollab-lib";
-import * as readCollab from "./libs/readCollab-lib";
+import * as readUsers from "./libs/readUsers-lib";
 import * as chatHelper from "./libs/chatHelper-lib";
 export const main = handler(async (event, context) => {
   const data = JSON.parse(event.body);
@@ -43,7 +43,7 @@ export const main = handler(async (event, context) => {
     throw new Error("Selected applicants not present in applications field of offer. Failed to create collaboration");
   }
   var userIds = applications.selected.map(x => x.remarkerId);
-  const users = await readCollab.main(userIds);
+  const users = await readUsers.main(userIds);
   // adding business as member
   const readBusinessInfoParams = {
     TableName: process.env.userTableName,
@@ -62,7 +62,7 @@ export const main = handler(async (event, context) => {
   }
   for(let user of users){
     const chatId = uuid.v1();
-    const members = [];
+    var members = [];
     const member = {};
     member.id = user.userId;
     if(user.userDetails != "undefined"){
@@ -72,7 +72,7 @@ export const main = handler(async (event, context) => {
     members.push(businessMember);
     members.push(member);
     await insertCollab.main(offerDetails, businessId, offerId, user.userId, user.userDetails.username, user.userDetails.profileImage, chatId);
-    await chatHelper.newChat(userIds, businessId, members, offerDetails, offerId, chatId);
+    await chatHelper.newChat([user.userId], businessId, members, offerDetails, offerId, chatId);
   }
   await deleteOffer.main(offer);
   return { status: true };

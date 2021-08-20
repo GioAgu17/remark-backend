@@ -39,7 +39,10 @@ export async function newChat(userIds, businessId, members, offerDetails, offerI
   // insert new record inside conversationChatTable
   var userIdsNotRead = [];
   for(let connId of closedConnections){
-    userIdsNotRead.push(connectionsAndUsers.get(connId));
+    const obj = {};
+    obj.userId = connectionsAndUsers.get(connId);
+    obj.unread = 1;
+    userIdsNotRead.push(obj);
   }
   var messages = [];
   messages.push(messageToSave);

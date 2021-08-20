@@ -56,32 +56,73 @@ export const main = handler(async (event, context) => {
     const connRecord = res.Items[0];
     closedUserIds.push(connRecord.userId);
   }
-  console.log(closedUserIds);
   await updateMessagesInConversationChatTable(message, chatId, closedUserIds);
 });
 
-async function updateMessagesInConversationChatTable(message, chatId, isNew){
+async function updateMessagesInConversationChatTable(message, chatId, closedUserIds){
   const messageToSave = {
     text: message.text,
     createdAt: message.createdAt,
     senderId: message.senderId
   };
-  const updateParams = {
+  const readParams = {
+    TableName: process.env.conversationChatTableName,
+    Key: {
+      chatId: chatId
+    }
+  };
+  const res = await dynamoDb.get(readParams);
+  if(!res.Item){
+    throw new Error("Record not found in conversation table with chat " + chatId);
+  }
+  const isNewArray = res.Item.isNew;
+  console.log(isNewArray);
+  const isNewArrayExistingUsers = isNewArray.filter( u => closedUserIds.includes(u.userId));
+  console.log(isNewArrayExistingUsers);
+  const isNewArrayExistingUsersIds = isNewArrayExistingUsers.map(u => u.userId);
+  console.log(isNewArrayExistingUsersIds);
+  const isNewArrayNewUsersIds = closedUserIds.filter(clId => !isNewArrayExistingUsersIds.includes(clId));
+  console.log(isNewArrayNewUsersIds);
+  const isNewArrayNewUsers = isNewArrayNewUsersIds.map(id => ({userId : id, unread : 1}));
+  console.log(isNewArrayNewUsers);
+  var indexes = [];
+  for(let existingUserId of isNewArrayExistingUsersIds){
+    const index = isNewArray.map(e => e.userId).indexOf(existingUserId);
+    if(index != -1)
+      indexes.push(index);
+  }
+  console.log(indexes);
+  for(let index of indexes){
+    const updateExistingParams = {
       TableName: process.env.conversationChatTableName,
       Key: {
           chatId : chatId
       },
-      UpdateExpression: "SET #ms = list_append(#ms, :vals), #in = :isNew",
+      UpdateExpression: "SET isNew["+index+"].#ur = isNew["+index+"].#ur + :val",
+      ExpressionAttributeValues: {
+        ":val": 1
+      },
+      ExpressionAttributeNames: {
+        "#ur" : "unread"
+      }
+    };
+    await dynamoDb.update(updateExistingParams);
+  }
+  const updateMessageAndNewParams = {
+      TableName: process.env.conversationChatTableName,
+      Key: {
+          chatId : chatId
+      },
+      UpdateExpression: "SET #ms = list_append(#ms, :vals), #in = list_append(#in, :isNew)",
       ExpressionAttributeValues: {
           ":vals": [messageToSave],
-          ":isNew" : isNew
+          ":isNew" : isNewArrayNewUsers
       },
       ExpressionAttributeNames: {
         "#ms" : "messages",
         "#in" : "isNew"
       },
-      ReturnValues: 'ALL_NEW'
   };
-  await dynamoDb.update(updateParams);
+  await dynamoDb.update(updateMessageAndNewParams);
   return;
 }

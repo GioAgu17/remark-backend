@@ -70,3 +70,8 @@ functions:
     events:
       - websocket:
           route: getAllMessages
+  read:
+    handler: messageRead.main
+    events:
+      - websocket:
+          route: read
