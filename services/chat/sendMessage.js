@@ -35,9 +35,9 @@ export const main = handler(async (event, context) => {
     createdAt: payload.createdAt,
     members: conversation.members
   };
-  const closedConnections = await chatSender.sendAll(connectionsToSend, message, domainName, stage);
-  var closedUserIds = [];
-  for(let connId of closedConnections){
+  await chatSender.sendAll(connectionsToSend, message, domainName, stage);
+  var userIds = [];
+  for(let connId of connectionsToSend){
     const readParams = {
       TableName: process.env.connectionChatTableName,
       IndexName: process.env.connectionIdIndex,
@@ -54,12 +54,12 @@ export const main = handler(async (event, context) => {
       throw new Error("No record found in connection table for connectionId " + connId);
     }
     const connRecord = res.Items[0];
-    closedUserIds.push(connRecord.userId);
+    userIds.push(connRecord.userId);
   }
-  await updateMessagesInConversationChatTable(message, chatId, closedUserIds);
+  await updateMessagesInConversationChatTable(message, chatId, userIds);
 });
 
-async function updateMessagesInConversationChatTable(message, chatId, closedUserIds){
+async function updateMessagesInConversationChatTable(message, chatId, userIds){
   const messageToSave = {
     text: message.text,
     createdAt: message.createdAt,
@@ -77,11 +77,11 @@ async function updateMessagesInConversationChatTable(message, chatId, closedUser
   }
   const isNewArray = res.Item.isNew;
   console.log(isNewArray);
-  const isNewArrayExistingUsers = isNewArray.filter( u => closedUserIds.includes(u.userId));
+  const isNewArrayExistingUsers = isNewArray.filter( u => userIds.includes(u.userId));
   console.log(isNewArrayExistingUsers);
   const isNewArrayExistingUsersIds = isNewArrayExistingUsers.map(u => u.userId);
   console.log(isNewArrayExistingUsersIds);
-  const isNewArrayNewUsersIds = closedUserIds.filter(clId => !isNewArrayExistingUsersIds.includes(clId));
+  const isNewArrayNewUsersIds = userIds.filter(clId => !isNewArrayExistingUsersIds.includes(clId));
   console.log(isNewArrayNewUsersIds);
   const isNewArrayNewUsers = isNewArrayNewUsersIds.map(id => ({userId : id, unread : 1}));
   console.log(isNewArrayNewUsers);

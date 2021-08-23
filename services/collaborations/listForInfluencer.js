@@ -1,16 +1,21 @@
 import handler from "../../libs/handler-lib";
 import dynamoDb from "../../libs/dynamodb-lib";
 export const main = handler(async (event, context) => {
-  const params = {
+  const collabs = await dynamoDb.query({
     TableName: process.env.collaborationTableName,
-    KeyConditionExpression: 'influencerId = :influencerId',
+    KeyConditionExpression: '#id = :id',
+    FilterExpression: '#st = :status',
+    ExpressionAttributeNames: {
+      "#st" : "status",
+      "#id" : "influencerId"
+    },
     ExpressionAttributeValues: {
-      ':influencerId': event.pathParameters.id,
+      ':status': "POSTED",
+      ':id': event.pathParameters.id
     }
-  };
-  const result = await dynamoDb.query(params);
-  if ( ! result.Items) {
+  });
+  if ( ! collabs.Items) {
     throw new Error("Item not found.");
   }
-  return result.Items;
+  return collabs.Items;
 });

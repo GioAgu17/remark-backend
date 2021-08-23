@@ -46,6 +46,18 @@ export const main = handler(async (event, context) => {
   };
   var messageToSend = messageToSave;
   messageToSend.action = "confirm";
+  messageToSend.chatId = chatId;
+  const readMembersParams = {
+    TableName: process.env.conversationChatTableName,
+    Key: {
+      chatId: chatId
+    }
+  };
+  const convResult = await dynamoDb.get(readMembersParams);
+  if(!convResult.Item)
+    throw new Error("No conversation record found for chat " + chatId);
+  const members = convResult.Item.members;
+  messageToSend.members = members;
   const users = [];
   users.push(remarkerId);
   users.push(event.requestContext.identity.cognitoIdentityId);
