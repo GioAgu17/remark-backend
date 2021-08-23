@@ -1,0 +1,40 @@
+service: instagram
+
+plugins:
+  - serverless-bundle
+  - serverless-offline
+
+custom: ${file(../../serverless.common.yml):custom}
+
+package:
+  individually: true
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: dev
+  region: us-east-2
+  tracing:
+    lambda: true
+
+  apiGateway:
+    restApiId: !ImportValue ${self:custom.stage}-ExtApiGatewayRestApiId
+    restApiRootResourceId: !ImportValue ${self:custom.stage}-ExtApiGatewayRestApiRootResourceId
+    restApiResources:
+      /userStatistics/{id}: !ImportValue ${self:custom.stage}-ExtApiGatewayResourceStatsIdVarId
+
+  environment:
+    stage: ${self:custom.stage}
+
+  iamRoleStatements:
+    - ${file(../../serverless.common.yml):lambdaPolicyXRay}
+
+functions:
+  like:
+    handler: instagram.main
+    events:
+      - http:
+          path: /userStatistics/{id}/instagram
+          method: post
+          cors: true
+          authorizer: aws_iam

@@ -14,10 +14,13 @@ provider:
   runtime: nodejs12.x
   stage: dev
   region: us-east-2
+  tracing:
+    apiGateway: true
+    lambda: true
 
 environment:
   bucketName: !ImportValue '${self:custom.sstApp}-ExtAttachmentsBucketName'
-
+  stage: ${self:custom.stage}
 iamRoleStatements:
   - Effect: Allow
     Action:
@@ -54,3 +57,23 @@ resources:
   - ${file(resources/api-gateway-errors.yml)}
   # Cognito Identity Pool Policy
   - ${file(resources/cognito-policy.yml)}
+
+  - Outputs:
+      ApiGatewayRestApiId:
+        Value:
+          Ref: StatsApiGatewayRestApi
+        Export:
+          Name: ${self:custom.stage}-ExtStatsApiGatewayRestApiId
+    
+      ApiGatewayRestApiRootResourceId:
+        Value:
+           Fn::GetAtt:
+            - StatsApiGatewayRestApi
+            - RootResourceId 
+        Export:
+          Name: ${self:custom.stage}-ExtStatsApiGatewayRestApiRootResourceId
+      ApiGatewayResourceStatsIdVarId:
+        Value:
+          Ref: ApiGatewayResourceStatsIdVar
+        Export:
+          Name: ${self:custom.stage}-ExtApiGatewayResourceStatsIdVarId
