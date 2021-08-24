@@ -1,5 +1,5 @@
 import dynamoDb from "../../../libs/dynamodb-lib";
-import arrayHelper from "../../../libs/arrayHelper-lib";
+import * as arrayHelper from "../../../libs/arrayHelper-lib";
 export async function handleUserConnection(userId, connectionId){
     const readParams = {
         TableName: process.env.connectionChatTableName,
