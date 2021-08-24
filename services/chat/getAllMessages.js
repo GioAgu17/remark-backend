@@ -1,7 +1,7 @@
 import handler from "../../libs/handler-lib";
 import dynamoDb from "../../libs/dynamodb-lib";
 import * as chatSender from "../../libs/chatSender-lib";
-import connectionHelper from "./libs/userConnection-lib";
+import * as connectionHelper from "./libs/userConnection-lib";
 export const main = handler(async (event, context) => {
   const payload = JSON.parse(event.body);
   if(!payload || !payload.userId)
