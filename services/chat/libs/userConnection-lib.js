@@ -9,10 +9,10 @@ export async function handleUserConnection(userId, connectionId){
       };
       const result = await dynamoDb.get(readParams);
       if(!result.Item || result.Item === "undefined")
-        createConnection(userId, connectionId)
+        await createConnection(userId, connectionId);
       else{
-        updateConnectionTable(userId, connectionId);
-        updateConversationTable(connectionId, result.Item.connectionId, result.Item.chatIds);
+        await updateConnectionTable(userId, connectionId);
+        await updateConversationTable(connectionId, result.Item.connectionId, result.Item.chatIds);
       }
       return;
 }
@@ -68,12 +68,11 @@ async function updateConversationTable(newConnectionId, oldConnectionId, chatIds
         const connections = result.Item.connections;
         arrayHelper.remove(connections, oldConnectionId);
         connections.push(newConnectionId);
-  
         // adding updated connections
         const updateConnectionParams = {
           TableName: process.env.conversationChatTableName,
           Key: {
-            chatId: chatID
+            chatId: chatId
           },
           UpdateExpression: "SET #cn = :vals",
           ExpressionAttributeValues: {
