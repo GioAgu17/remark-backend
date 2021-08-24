@@ -1,10 +1,15 @@
 import handler from "../../libs/handler-lib";
 import dynamoDb from "../../libs/dynamodb-lib";
 import * as chatSender from "../../libs/chatSender-lib";
+import connectionHelper from "./libs/userConnection-lib";
 export const main = handler(async (event, context) => {
+  const payload = JSON.parse(event.body);
+  if(!payload || !payload.userId)
+    throw new Error("Can't proceed without userId");
+  const connectionId = event.requestContext.connectionId;
+  await connectionHelper.handleUserConnection(payload.userId, connectionId);
   const domainName = event.requestContext.domainName;
   const stage = event.requestContext.stage;
-  const connectionId = event.requestContext.connectionId;
   if(!connectionId){
     throw new Error("Cannot proceed without connectionId");
   }

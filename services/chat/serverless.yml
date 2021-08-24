@@ -60,11 +60,6 @@ functions:
     events:
       - websocket:
           route: sendMessage
-  sendUserInfo:
-    handler: sendUserInfo.main
-    events:
-      - websocket:
-          route: sendUserInfo
   getAllMessages:
     handler: getAllMessages.main
     events:
