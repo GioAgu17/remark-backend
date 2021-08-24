@@ -49,6 +49,7 @@ export const main = handler(async (event, context) => {
       message.messages = conversationChatItem.messages;
       message.members = conversationChatItem.members;
       message.isNew = conversationChatItem.isNew;
+      message.collaborationStatus = conversationChatItem.collaborationStatus;
       if(typeof conversationChatItem.offerDetails === 'undefined')
         message.offerDetails = {};
       else

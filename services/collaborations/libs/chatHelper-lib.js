@@ -1,5 +1,6 @@
 import dynamoDb from "../../../libs/dynamodb-lib";
 import * as chatSender from "../../../libs/chatSender-lib";
+import * as consts from "./../constants.js";
 export async function newChat(userIds, businessId, members, offerDetails, offerId, chatId){
   const stage = process.env.stage;
   const domainName = process.env.websocketApiId;
@@ -54,6 +55,7 @@ export async function newChat(userIds, businessId, members, offerDetails, offerI
       messages: messages,
       isNew: userIdsNotRead,
       members: members,
+      collaborationStatus: consts.statuses.INPROGRESS,
       offerDetails : offerDetails,
       offerId: offerId,
       createdAt: new Date().toISOString(),

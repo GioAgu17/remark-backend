@@ -47,6 +47,7 @@ export const main = handler(async (event, context) => {
   var messageToSend = messageToSave;
   messageToSend.action = "confirm";
   messageToSend.chatId = chatId;
+  messageToSend.collaborationStatus = statusToUpdate;
   const readMembersParams = {
     TableName: process.env.conversationChatTableName,
     Key: {
@@ -86,14 +87,16 @@ export const main = handler(async (event, context) => {
     Key: {
         chatId : chatId
     },
-    UpdateExpression: "SET #ms = list_append(#ms, :vals), #in = :isNew",
+    UpdateExpression: "SET #ms = list_append(#ms, :vals), #in = :isNew, #cs = :status",
     ExpressionAttributeValues: {
         ":vals": [messageToSave],
-        ":isNew" : userIdsNotRead
+        ":isNew" : userIdsNotRead,
+        ":status" : statusToUpdate
     },
     ExpressionAttributeNames: {
       "#ms" : "messages",
-      "#in" : "isNew"
+      "#in" : "isNew",
+      "#cs" : "collaborationStatus"
     },
   };
   await dynamoDb.update(updateParams);

@@ -33,7 +33,8 @@ export const main = handler(async (event, context) => {
     text: payload.text,
     senderId: payload.senderId,
     createdAt: payload.createdAt,
-    members: conversation.members
+    members: conversation.members,
+    collaborationStatus: conversation.collaborationStatus
   };
   await chatSender.sendAll(connectionsToSend, message, domainName, stage);
   var userIds = [];
