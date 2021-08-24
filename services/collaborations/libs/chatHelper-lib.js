@@ -36,10 +36,10 @@ export async function newChat(userIds, businessId, members, offerDetails, offerI
   }
   const connectionIds = Array.from( connectionsAndUsers.keys());
   // write to all participants in the chat
-  const closedConnections = await chatSender.sendAll(connectionIds, messageToSend, domainName, stage);
+  await chatSender.sendAll(connectionIds, messageToSend, domainName, stage);
   // insert new record inside conversationChatTable
   var userIdsNotRead = [];
-  for(let connId of closedConnections){
+  for(let connId of connectionIds){
     const obj = {};
     obj.userId = connectionsAndUsers.get(connId);
     obj.unread = 1;
