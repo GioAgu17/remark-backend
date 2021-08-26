@@ -6,8 +6,7 @@ export const main = handler(async (event, context) => {
     const data = JSON.parse(event.body);
     const userID = event.requestContext.identity.cognitoIdentityId;
     const fakEvt = { 'pathParameters' : {'id' : data.accountIG} };
-    let profileImage = await stats.getProfilePic(fakEvt);
-    console.log(profileImage);
+    let profileImage =  stats.getProfilePic(fakEvt);
     const params = {
         TableName: process.env.userTableName,
         Item: {

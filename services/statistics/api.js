@@ -24,8 +24,9 @@ async function storeProfilePic(image_url){
             Key: 'public/' + fileKey,
             Body: buffer,
         });
-        if(s3Resp.ETag!== 'undefined')
+        if(s3Resp.ETag !== 'undefined'){
             return fileKey;
+        }
         else{
             console.log('Error storing pic to bucket');
             return;
@@ -150,7 +151,8 @@ export const getProfilePic = handler(async (event, context) => {
     const data = await getProfileData(event.pathParameters.id);
     if( typeof data === 'undefined' || ! Object.keys(data).length )
         return;
-    return storeProfilePic(data.graphql.user.profile_pic_url_hd);
+    const res = await storeProfilePic(data.graphql.user.profile_pic_url_hd);
+    return res;
 });
 
 /**
