@@ -3,15 +3,7 @@ import handler from "../../libs/handler-lib";
 import HttpsProxyAgent from "https-proxy-agent";
 import * as fs from 'fs'; // to get cookie jar from fs
 import { v4 as uuidv4 } from 'uuid';
-import AWS from "aws-sdk";
-import config from "../../libs/config";
-const ssm = new AWS.SSM();
-const accessKeyIdPromise = ssm
-  .getParameter({
-    Name: config.accessKeyId,
-    WithDecryption: true
-  })
-  .promise();
+import s3 from "../../libs/s3-lib";
 
 const agents = [
     "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36",
@@ -22,13 +14,6 @@ const agents = [
 // HELPER FUNCTIONS
 
 async function storeProfilePic(image_url){
-    const accessKeyIdParam = await accessKeyIdPromise;
-    console.log(accessKeyIdParam.Parameter.Value);
-    const client = new AWS.S3();
-    const s3 =  {
-        get   : (params) => client.getObject(params).promise(),
-        put   : (params) => client.putObject(params).promise(),
-    };
     let fileKey = uuidv4();
     // not using global fetch args as the profile pic url should be public
     const response = await fetch(image_url);
