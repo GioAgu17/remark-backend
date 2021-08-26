@@ -4,7 +4,7 @@ import HttpsProxyAgent from "https-proxy-agent";
 import * as fs from 'fs'; // to get cookie jar from fs
 import { v4 as uuidv4 } from 'uuid';
 import AWS from "aws-sdk";
-import config from "../../config";
+import config from "../../libs/config";
 const ssm = new AWS.SSM();
 const accessKeyIdPromise = ssm
   .getParameter({

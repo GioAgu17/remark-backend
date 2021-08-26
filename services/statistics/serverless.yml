@@ -28,10 +28,10 @@ iamRoleStatements:
     Resource:
       - !ImportValue '${self:custom.sstApp}-ExtAttachmentsBucketArn'
   - Effect: Allow
-      Action:
-        - ssm:GetParameter
-      Resource:
-        !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/accessKeyId/*'
+    Action:
+      - ssm:GetParameter
+    Resource:
+      !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/accessKeyId/*'
 functions:
   checkUsername:
     handler: api.checkUsername
