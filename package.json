@@ -14,6 +14,7 @@
     "lerna": "^3.22.1"
   },
   "dependencies": {
+    "@aws-sdk/s3-request-presigner": "^3.27.0",
     "dynamo-converters": "^4.0.11",
     "dynamodb-data-types": "^3.0.1",
     "dynamodb-geo-regevbr": "^0.4.1",
