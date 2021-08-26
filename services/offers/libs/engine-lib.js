@@ -6,22 +6,9 @@ export function rankOffers(offers, influencer){
   }
   const followers = userDetails.followers;
   const age = userDetails.age;
-  const influencerId = influencer.userId;
   const offersToReturn = [];
   for(let item of offers){
-    var insert = true;
     const offerDetails = item.offerDetails;
-    const applications = offerDetails.applications;
-    if(applications){
-      const selected = applications.selected;
-      if(Array.isArray(selected) && selected.length != 0){
-        const selectedIds = selected.map(x => x.remarkerId);
-        if(selectedIds.includes(influencerId)){
-          console.log("Skipping offer "+item.rangeKey+" because influencerId "+ influencerId + " is among selected");
-          insert = false;
-        }
-      }
-    }
     item.rank = 0;
     const influCategories = offerDetails.influencerCategories;
     if(!influCategories || influCategories.length == 0){
@@ -69,8 +56,8 @@ export function rankOffers(offers, influencer){
         }
       }
     }
-    if(insert)
-      offersToReturn.push(item);
+    offersToReturn.push(item);
+    console.log(offersToReturn);
   }
   offersToReturn.sort((a,b) => (a.rank < b.rank) ? 1 : -1);
   return offersToReturn;

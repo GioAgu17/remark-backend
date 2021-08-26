@@ -78,10 +78,36 @@ export const main = handler(async (event, context) => {
   const stage = process.env.stage;
   const domainName = process.env.websocketApiId;
   const connectionIds = Array.from(connectionsAndUsers.keys());
-  const closedConnections = await chatSender.sendAll(connectionIds, messageToSend, domainName, stage);
-  console.log(closedConnections);
-  const userIdsNotRead = closedConnections.map( connId => connectionsAndUsers.get(connId));
-  console.log(userIdsNotRead);
+  await chatSender.sendAll(connectionIds, messageToSend, domainName, stage);
+  const userIdsNotRead = connectionIds.map( connId => connectionsAndUsers.get(connId));
+  const isNewArray = convResult.Item.isNew;
+  const isNewArrayExistingUsers = isNewArray.filter( u => userIdsNotRead.includes(u.userId));
+  const isNewArrayExistingUsersIds = isNewArrayExistingUsers.map(u => u.userId);
+  const isNewArrayNewUsersIds = userIdsNotRead.filter(clId => !isNewArrayExistingUsersIds.includes(clId));
+  const isNewArrayNewUsers = isNewArrayNewUsersIds.map(id => ({userId : id, unread : 1}));
+  var indexes = [];
+  for(let existingUserId of isNewArrayExistingUsersIds){
+    const index = isNewArray.map(e => e.userId).indexOf(existingUserId);
+    if(index != -1)
+      indexes.push(index);
+  }
+  console.log(indexes);
+  for(let index of indexes){
+    const updateExistingParams = {
+      TableName: process.env.conversationChatTableName,
+      Key: {
+          chatId : chatId
+      },
+      UpdateExpression: "SET isNew["+index+"].#ur = isNew["+index+"].#ur + :val",
+      ExpressionAttributeValues: {
+        ":val": 1
+      },
+      ExpressionAttributeNames: {
+        "#ur" : "unread"
+      }
+    };
+    await dynamoDb.update(updateExistingParams);
+  }
   const updateParams = {
     TableName: process.env.conversationChatTableName,
     Key: {
@@ -90,7 +116,7 @@ export const main = handler(async (event, context) => {
     UpdateExpression: "SET #ms = list_append(#ms, :vals), #in = :isNew, #cs = :status",
     ExpressionAttributeValues: {
         ":vals": [messageToSave],
-        ":isNew" : userIdsNotRead,
+        ":isNew" : isNewArrayNewUsers,
         ":status" : statusToUpdate
     },
     ExpressionAttributeNames: {

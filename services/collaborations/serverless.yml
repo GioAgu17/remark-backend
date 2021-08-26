@@ -93,8 +93,8 @@ functions:
     handler: listForInfluencer.main
     events:
       - http:
-          path: listForInfluencer/{id}
-          method: get
+          path: listForInfluencer
+          method: post
           cors: true
           authorizer: aws_iam
   explore:

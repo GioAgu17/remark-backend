@@ -45,6 +45,13 @@ export async function newChat(userIds, businessId, members, offerDetails, offerI
     obj.unread = 1;
     userIdsNotRead.push(obj);
   }
+  var isNewArray = [];
+  for(let userId of userIdsNotRead){
+    const obj = {};
+    obj.userId = userId;
+    obj.unread = 1;
+    isNewArray.push(obj);
+  }
   var messages = [];
   messages.push(messageToSave);
   const insertParams = {
@@ -53,7 +60,7 @@ export async function newChat(userIds, businessId, members, offerDetails, offerI
       chatId: chatId,
       connections: connectionIds,
       messages: messages,
-      isNew: userIdsNotRead,
+      isNew: isNewArray,
       members: members,
       collaborationStatus: consts.statuses.INPROGRESS,
       offerDetails : offerDetails,

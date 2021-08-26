@@ -77,15 +77,10 @@ async function updateMessagesInConversationChatTable(message, chatId, userIds){
     throw new Error("Record not found in conversation table with chat " + chatId);
   }
   const isNewArray = res.Item.isNew;
-  console.log(isNewArray);
   const isNewArrayExistingUsers = isNewArray.filter( u => userIds.includes(u.userId));
-  console.log(isNewArrayExistingUsers);
   const isNewArrayExistingUsersIds = isNewArrayExistingUsers.map(u => u.userId);
-  console.log(isNewArrayExistingUsersIds);
   const isNewArrayNewUsersIds = userIds.filter(clId => !isNewArrayExistingUsersIds.includes(clId));
-  console.log(isNewArrayNewUsersIds);
   const isNewArrayNewUsers = isNewArrayNewUsersIds.map(id => ({userId : id, unread : 1}));
-  console.log(isNewArrayNewUsers);
   var indexes = [];
   for(let existingUserId of isNewArrayExistingUsersIds){
     const index = isNewArray.map(e => e.userId).indexOf(existingUserId);

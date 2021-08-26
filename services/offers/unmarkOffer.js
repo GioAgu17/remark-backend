@@ -28,9 +28,10 @@ export const main = handler(async (event, context) => {
     };
   }
   const unselected = applications.unselected;
+  const selected = applications.selected;
   var index = 0;
   var found = false;
-  for(let entry of unselected){
+  for(let entry of applications.unselected){
     if(entry.remarkerId === remarkerId){
       found = true;
       break;
@@ -42,7 +43,20 @@ export const main = handler(async (event, context) => {
     unselected.splice(index,1);
   }
   else {
-    throw new Error("RemarkerId " + remarkerId + " not found in unselected");
+    index = 0;
+    for(let applicant of selected){
+      if(applicant.remarkerId === remarkerId){
+        found = true;
+        break;
+      }else{
+        index++;
+      }
+    }
+    if(found){
+      selected.splice(index,1);
+    }else{
+      throw new Error("Remarker "+remarkerId+" not found among selected and unselected applicants of the offer " + offer.offerId);
+    }
   }
   const updateParams = {
     TableName: process.env.offersTableName,
