@@ -102,7 +102,6 @@ async function getProfileData(username){
                 return false;
             } else {
                 try {
-                    console.log(textResponse);
                     return JSON.parse(textResponse);
                 } catch (e) {
                     // cannot json parse, likely got an html response. TODO: log it out.
