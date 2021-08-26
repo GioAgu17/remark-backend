@@ -1,9 +1,9 @@
 import fetch from 'node-fetch';
 import handler from "../../libs/handler-lib";
-//import s3 from "../../libs/s3-lib";
+import s3 from "../../libs/s3-lib";
 import HttpsProxyAgent from "https-proxy-agent";
 import * as fs from 'fs'; // to get cookie jar from fs
-//import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 
 
 const agents = [
@@ -14,34 +14,34 @@ const agents = [
 
 // HELPER FUNCTIONS
 
-// async function storeProfilePic(image_url){
-//     let fileKey = uuidv4();
-//     // not using global fetch args as the profile pic url should be public
-//     return await fetch(image_url)
-//         .then((response) => {
-//             if (response.ok) {
-//                 return response;
-//             }
-//             return Promise.reject(new Error(
-//                 `Failed to fetch ${response.url}: ${response.status} ${response.statusText}`));
-//         })
-//         .then(response => response.buffer())
-//         .then(buffer => (
-//             s3.put({
-//                 Bucket: process.env.bucketName,
-//                 Key: 'public/' + fileKey,
-//                 Body: buffer,
-//             })
-//         ))
-//         .then( res => {
-//             if(res.ETag !== 'undefined')
-//                 return fileKey;
-//             else{
-//                 console.log('Error storing pic to bucket');
-//                 return;
-//             }
-//         });
-// }
+async function storeProfilePic(image_url){
+    let fileKey = uuidv4();
+    // not using global fetch args as the profile pic url should be public
+    return await fetch(image_url)
+        .then((response) => {
+            if (response.ok) {
+                return response;
+            }
+            return Promise.reject(new Error(
+                `Failed to fetch ${response.url}: ${response.status} ${response.statusText}`));
+        })
+        .then(response => response.buffer())
+        .then(buffer => (
+            s3.put({
+                Bucket: process.env.bucketName,
+                Key: 'public/' + fileKey,
+                Body: buffer,
+            })
+        ))
+        .then( res => {
+            if(res.ETag !== 'undefined')
+                return fileKey;
+            else{
+                console.log('Error storing pic to bucket');
+                return;
+            }
+        });
+}
 
 export function buildFetchArgs(randomAgent = true){
 
@@ -102,6 +102,7 @@ async function getProfileData(username){
                 return false;
             } else {
                 try {
+                    console.log(textResponse);
                     return JSON.parse(textResponse);
                 } catch (e) {
                     // cannot json parse, likely got an html response. TODO: log it out.
@@ -133,9 +134,7 @@ export const getProfilePic = handler(async (event, context) => {
     const data = await getProfileData(event.pathParameters.id);
     if( typeof data === 'undefined' || ! Object.keys(data).length )
         return;
-    // return data.graphql.user.profile_pic_url_hd;
-    return "profilePicFerragni.jpg";
-    //return storeProfilePic(data.graphql.user.profile_pic_url_hd);
+    return storeProfilePic(data.graphql.user.profile_pic_url_hd);
 });
 
 /**

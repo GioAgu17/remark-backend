@@ -1,12 +1,12 @@
 import handler from "./libs/handler-lib";
 import dynamoDb from "./libs/dynamodb-lib";
-//import * as stats from "../statistics/api.js";
+import * as stats from "../statistics/api.js";
 import * as instaCollabs from "./libs/instaCollab-lib";
 export const main = handler(async (event, context) => {
     const data = JSON.parse(event.body);
     const userID = event.requestContext.identity.cognitoIdentityId;
-    //const fakEvt = { 'pathParameters' : {'id' : data.accountIG} };
-    //let profileImage = await stats.getProfilePic(fakEvt);
+    const fakEvt = { 'pathParameters' : {'id' : data.accountIG} };
+    let profileImage = await stats.getProfilePic(fakEvt);
     const params = {
         TableName: process.env.userTableName,
         Item: {
@@ -19,7 +19,7 @@ export const main = handler(async (event, context) => {
             userDetails: {
                 username : data.username,
                 accountIG : data.accountIG,
-                profileImage : "profilePicFerragni.jpg",
+                profileImage : profileImage,
                 age : data.userType == 'influencer' ? data.age : null,
                 caption : data.caption,
                 influencerCategories : data.influencerCategories,
