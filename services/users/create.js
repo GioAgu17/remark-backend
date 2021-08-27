@@ -19,7 +19,7 @@ export const main = handler(async (event, context) => {
             userDetails: {
                 username : data.username,
                 accountIG : data.accountIG,
-                profileImage : profileImage,
+                profileImage : JSON.parse(profileImage.body),
                 age : data.userType == 'influencer' ? data.age : null,
                 caption : data.caption,
                 influencerCategories : data.influencerCategories,

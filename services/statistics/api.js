@@ -35,30 +35,6 @@ async function storeProfilePic(image_url){
         return Promise.reject(new Error(
             `Failed to fetch ${response.url}: ${response.status} ${response.statusText}`));
     }
-    // return await fetch(image_url)
-    //     .then((response) => {
-    //         if (response.ok) {
-    //             return response;
-    //         }
-    //         return Promise.reject(new Error(
-    //             `Failed to fetch ${response.url}: ${response.status} ${response.statusText}`));
-    //     })
-    //     .then(response => response.buffer())
-    //     .then(buffer => (
-    //         s3.put({
-    //             Bucket: process.env.bucketName,
-    //             Key: 'public/' + fileKey,
-    //             Body: buffer,
-    //         })
-    //     ))
-    //     .then( res => {
-    //         if(res.ETag !== 'undefined')
-    //             return fileKey;
-    //         else{
-    //             console.log('Error storing pic to bucket');
-    //             return;
-    //         }
-    //     });
 }
 
 export function buildFetchArgs(randomAgent = true){
