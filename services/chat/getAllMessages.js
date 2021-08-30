@@ -2,6 +2,8 @@ import handler from "../../libs/handler-lib";
 import dynamoDb from "../../libs/dynamodb-lib";
 import * as chatSender from "../../libs/chatSender-lib";
 import * as connectionHelper from "./libs/userConnection-lib";
+import convTableHelper from "../../libs/convTableHelper-lib";
+
 export const main = handler(async (event, context) => {
   const payload = JSON.parse(event.body);
   if(!payload || !payload.userId)
@@ -25,7 +27,6 @@ export const main = handler(async (event, context) => {
   if(!result.Items){
     throw new Error("Didn't find any user with connectionId "+connectionId);
   }
-  console.log(result.Items);
   const connection = result.Items[0];
   var allMessages = [];
   if(typeof connection.chatIds === 'undefined' || !connection.chatIds){
@@ -33,27 +34,15 @@ export const main = handler(async (event, context) => {
   }else{
     const chatIds = connection.chatIds;
     for(let chatId of chatIds){
-      const params = {
-        TableName: process.env.conversationChatTableName,
-        Key:{
-          chatId: chatId
-        }
+      const conversationChatItem = convTableHelper.readFromConvTable(process.env.conversationChatTableName, chatId);
+      var message = {
+        chatId : chatId,
+        messages: conversationChatItem.messages,
+        members : conversationChatItem.members,
+        isNew: conversationChatItem.isNew,
+        collaborationStatus : conversationChatItem.collaborationStatus,
+        offerDetails: (typeof conversationChatItem.offerDetails === 'undefined') ? {} : conversationChatItem.offerDetails
       };
-      const res = await dynamoDb.get(params);
-      if(!res.Item){
-        throw new Error("No entry for chatId "+chatId);
-      }
-      const conversationChatItem = res.Item;
-      var message = {};
-      message.chatId = chatId;
-      message.messages = conversationChatItem.messages;
-      message.members = conversationChatItem.members;
-      message.isNew = conversationChatItem.isNew;
-      message.collaborationStatus = conversationChatItem.collaborationStatus;
-      if(typeof conversationChatItem.offerDetails === 'undefined')
-        message.offerDetails = {};
-      else
-        message.offerDetails = conversationChatItem.offerDetails;
       allMessages = allMessages.concat(message);
     }
   }

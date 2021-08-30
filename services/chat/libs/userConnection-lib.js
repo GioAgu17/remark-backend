@@ -1,5 +1,7 @@
 import dynamoDb from "../../../libs/dynamodb-lib";
+import convTableHelper from "../../../libs/convTableHelper-lib";
 import * as arrayHelper from "../../../libs/arrayHelper-lib";
+
 export async function handleUserConnection(userId, connectionId){
     const readParams = {
         TableName: process.env.connectionChatTableName,
@@ -54,18 +56,9 @@ async function updateConnectionTable(userId, connectionId){
 
 async function updateConversationTable(newConnectionId, oldConnectionId, chatIds){
     for(let chatId of chatIds){
-        const readParams = {
-          TableName: process.env.conversationChatTableName,
-          Key: {
-            chatId: chatId
-          }
-        };
-        const result = await dynamoDb.get(readParams);
-        if(!result.Item){
-          throw new Error("Did not find any result in conversationChatTable for chatId " + chatId);
-        }
+        const conversationChatRecord = convTableHelper.readFromConvTable(process.env.conversationChatTableName, chatId);
         // removing old connection id and adding the new one
-        const connections = result.Item.connections;
+        const connections = conversationChatRecord.connections;
         arrayHelper.remove(connections, oldConnectionId);
         connections.push(newConnectionId);
         // adding updated connections
