@@ -1,5 +1,5 @@
 import handler from "./libs/handler-lib";
-import dynamoDb from "./libs/dynamodb-lib";
+import dynamoDb from "../../libs/dynamodb-lib";
 import * as stats from "../statistics/api.js";
 import * as instaCollabs from "./libs/instaCollab-lib";
 export const main = handler(async (event, context) => {

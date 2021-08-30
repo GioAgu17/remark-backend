@@ -1,5 +1,5 @@
 import * as consts from "./../constants.js";
-import dynamoDb from "./dynamodb-lib";
+import dynamoDb from "../../../libs/dynamodb-lib";
 export async function getCollabStats(userId, userType, userDetails){
     if(userType == "business"){
       const collabParams = {

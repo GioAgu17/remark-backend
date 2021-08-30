@@ -1,7 +1,7 @@
 import handler from "./libs/handler-lib";
 import * as consts from "./constants.js";
 import * as collabStats from "./libs/collabStats-lib";
-import dynamoDb from "./libs/dynamodb-lib";
+import dynamoDb from "../../libs/dynamodb-lib";
 import * as instaCollabs from "./libs/instaCollab-lib";
 export const main = handler(async (event, context) => {
   const params = {
