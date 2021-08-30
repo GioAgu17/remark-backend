@@ -2,7 +2,7 @@ import handler from "../../libs/handler-lib";
 import dynamoDb from "../../libs/dynamodb-lib";
 import * as chatSender from "../../libs/chatSender-lib";
 import * as connectionHelper from "./libs/userConnection-lib";
-import convTableHelper from "../../libs/convTableHelper-lib";
+import * as convTableHelper from "../../libs/convTableHelper-lib";
 
 export const main = handler(async (event, context) => {
   const payload = JSON.parse(event.body);

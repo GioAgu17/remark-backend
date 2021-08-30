@@ -1,5 +1,5 @@
 import dynamoDb from "../../../libs/dynamodb-lib";
-import convTableHelper from "../../../libs/convTableHelper-lib";
+import * as convTableHelper from "../../../libs/convTableHelper-lib";
 import * as arrayHelper from "../../../libs/arrayHelper-lib";
 
 export async function handleUserConnection(userId, connectionId){
