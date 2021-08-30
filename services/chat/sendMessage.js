@@ -1,5 +1,6 @@
 import handler from "../../libs/handler-lib";
 import dynamoDb from "../../libs/dynamodb-lib";
+import convTableHelper from "../../libs/convTableHelper-lib";
 import * as chatSender from "../../libs/chatSender-lib";
 export const main = handler(async (event, context) => {
   const connectionId = event.requestContext.connectionId;
@@ -10,26 +11,15 @@ export const main = handler(async (event, context) => {
   if(!payload.chatId || !payload.text || !payload.createdAt || !payload.senderId){
     throw new Error("No chatId or text or createdAt or senderId is present in message from message " + payload);
   }
-  const chatId = payload.chatId;
-  const readParams = {
-    TableName: process.env.conversationChatTableName,
-    Key:{
-      chatId: chatId
-    }
-  };
-  const result = await dynamoDb.get(readParams);
-  if(!result.Item){
-    throw new Error("No record was found in conversation table with chatId " + chatId);
-  }
-  const conversation = result.Item;
+  const conversation = convTableHelper.readFromConvTable(process.env.conversationChatTableName, payload.chatId);
   if(!conversation.members)
-    throw new Error("Cannot send message to chat as there are no members in chat " + chatId);
+    throw new Error("Cannot send message to chat as there are no members in chat " + payload.chatId);
   // send messages to all connections but the one sending this message
   var connectionsToSend = conversation.connections;
   const indexConnection = connectionsToSend.indexOf(connectionId);
   connectionsToSend.splice(indexConnection, 1);
   const message = {
-    chatId: chatId,
+    chatId: payload.chatId,
     text: payload.text,
     senderId: payload.senderId,
     createdAt: payload.createdAt,
@@ -57,53 +47,29 @@ export const main = handler(async (event, context) => {
     const connRecord = res.Items[0];
     userIds.push(connRecord.userId);
   }
-  await updateMessagesInConversationChatTable(message, chatId, userIds);
+  await updateMessagesInConversationChatTable(message, conversationRecord, userIds);
 });
 
-async function updateMessagesInConversationChatTable(message, chatId, userIds){
+
+async function updateMessagesInConversationChatTable(message, conversationRecord, userIds){
+  
+  const isNewArray = conversationRecord.isNew;
+  // users who are part of the chat that have at least one unread message
+  const isNewArrayExistingUsers = isNewArray.filter( u => userIds.includes(u.userId));
+  const isNewArrayExistingUsersIds = isNewArrayExistingUsers.map(u => u.userId);
+  // increment the number of unread messages by 1 for existing users
+  await incrementUnreadMessages(isNewArrayExistingUsersIds, conversationRecord.chatId, isNewArray);
+
+  // users who are part of the chat that don't have unread messages
+  const isNewArrayNewUsersIds = userIds.filter(clId => !isNewArrayExistingUsersIds.includes(clId));
+  const isNewArrayNewUsers = isNewArrayNewUsersIds.map(id => ({userId : id, unread : 1}));
+
+  // update the record with the new users and the message being sent with this API call
   const messageToSave = {
     text: message.text,
     createdAt: message.createdAt,
     senderId: message.senderId
   };
-  const readParams = {
-    TableName: process.env.conversationChatTableName,
-    Key: {
-      chatId: chatId
-    }
-  };
-  const res = await dynamoDb.get(readParams);
-  if(!res.Item){
-    throw new Error("Record not found in conversation table with chat " + chatId);
-  }
-  const isNewArray = res.Item.isNew;
-  const isNewArrayExistingUsers = isNewArray.filter( u => userIds.includes(u.userId));
-  const isNewArrayExistingUsersIds = isNewArrayExistingUsers.map(u => u.userId);
-  const isNewArrayNewUsersIds = userIds.filter(clId => !isNewArrayExistingUsersIds.includes(clId));
-  const isNewArrayNewUsers = isNewArrayNewUsersIds.map(id => ({userId : id, unread : 1}));
-  var indexes = [];
-  for(let existingUserId of isNewArrayExistingUsersIds){
-    const index = isNewArray.map(e => e.userId).indexOf(existingUserId);
-    if(index != -1)
-      indexes.push(index);
-  }
-  console.log(indexes);
-  for(let index of indexes){
-    const updateExistingParams = {
-      TableName: process.env.conversationChatTableName,
-      Key: {
-          chatId : chatId
-      },
-      UpdateExpression: "SET isNew["+index+"].#ur = isNew["+index+"].#ur + :val",
-      ExpressionAttributeValues: {
-        ":val": 1
-      },
-      ExpressionAttributeNames: {
-        "#ur" : "unread"
-      }
-    };
-    await dynamoDb.update(updateExistingParams);
-  }
   const updateMessageAndNewParams = {
       TableName: process.env.conversationChatTableName,
       Key: {
@@ -121,4 +87,29 @@ async function updateMessagesInConversationChatTable(message, chatId, userIds){
   };
   await dynamoDb.update(updateMessageAndNewParams);
   return;
+}
+
+async function incrementUnreadMessages(existingUserIds, chatId, isNewArray){
+  var indexes = [];
+  for(let existingUserId of existingUserIds){
+    const index = isNewArray.map(e => e.userId).indexOf(existingUserId);
+    if(index != -1)
+      indexes.push(index);
+  }
+  for(let index of indexes){
+    const updateExistingParams = {
+      TableName: process.env.conversationChatTableName,
+      Key: {
+          chatId : chatId
+      },
+      UpdateExpression: "SET isNew["+index+"].#ur = isNew["+index+"].#ur + :val",
+      ExpressionAttributeValues: {
+        ":val": 1
+      },
+      ExpressionAttributeNames: {
+        "#ur" : "unread"
+      }
+    };
+    await dynamoDb.update(updateExistingParams);
+  }
 }

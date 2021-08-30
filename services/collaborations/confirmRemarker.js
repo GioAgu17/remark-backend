@@ -2,6 +2,8 @@ import handler from "../../libs/handler-lib";
 import dynamoDb from "../../libs/dynamodb-lib";
 import * as consts from "./constants.js";
 import * as chatSender from "../../libs/chatSender-lib";
+import convTableHelper from "../../libs/convTableHelper-lib";
+
 export const main = handler(async (event, context) => {
   const body = JSON.parse(event.body);
   const remarkerId = body.remarkerId;
@@ -48,17 +50,10 @@ export const main = handler(async (event, context) => {
   messageToSend.action = "confirm";
   messageToSend.chatId = chatId;
   messageToSend.collaborationStatus = statusToUpdate;
-  const readMembersParams = {
-    TableName: process.env.conversationChatTableName,
-    Key: {
-      chatId: chatId
-    }
-  };
-  const convResult = await dynamoDb.get(readMembersParams);
-  if(!convResult.Item)
-    throw new Error("No conversation record found for chat " + chatId);
-  const members = convResult.Item.members;
+  const conversation = await convTableHelper.readFromConvTable(process.env.conversationChatTableName, chatId);
+  const members = conversation.members;
   messageToSend.members = members;
+
   const users = [];
   users.push(remarkerId);
   users.push(event.requestContext.identity.cognitoIdentityId);
@@ -80,7 +75,7 @@ export const main = handler(async (event, context) => {
   const connectionIds = Array.from(connectionsAndUsers.keys());
   await chatSender.sendAll(connectionIds, messageToSend, domainName, stage);
   const userIdsNotRead = connectionIds.map( connId => connectionsAndUsers.get(connId));
-  const isNewArray = convResult.Item.isNew;
+  const isNewArray = conversation.isNew;
   const isNewArrayExistingUsers = isNewArray.filter( u => userIdsNotRead.includes(u.userId));
   const isNewArrayExistingUsersIds = isNewArrayExistingUsers.map(u => u.userId);
   const isNewArrayNewUsersIds = userIdsNotRead.filter(clId => !isNewArrayExistingUsersIds.includes(clId));
