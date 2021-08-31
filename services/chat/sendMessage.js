@@ -1,6 +1,6 @@
 import handler from "../../libs/handler-lib";
 import dynamoDb from "../../libs/dynamodb-lib";
-import convTableHelper from "../../libs/convTableHelper-lib";
+import * as convTableHelper from "../../libs/convTableHelper-lib";
 import * as chatSender from "../../libs/chatSender-lib";
 export const main = handler(async (event, context) => {
   const connectionId = event.requestContext.connectionId;
@@ -11,7 +11,7 @@ export const main = handler(async (event, context) => {
   if(!payload.chatId || !payload.text || !payload.createdAt || !payload.senderId){
     throw new Error("No chatId or text or createdAt or senderId is present in message from message " + payload);
   }
-  const conversation = convTableHelper.readFromConvTable(process.env.conversationChatTableName, payload.chatId);
+  const conversation = await convTableHelper.readFromConvTable(process.env.conversationChatTableName, payload.chatId);
   if(!conversation.members)
     throw new Error("Cannot send message to chat as there are no members in chat " + payload.chatId);
   // send messages to all connections but the one sending this message
@@ -47,12 +47,11 @@ export const main = handler(async (event, context) => {
     const connRecord = res.Items[0];
     userIds.push(connRecord.userId);
   }
-  await updateMessagesInConversationChatTable(message, conversationRecord, userIds);
+  await updateMessagesInConversationChatTable(message, conversation, userIds);
 });
 
 
 async function updateMessagesInConversationChatTable(message, conversationRecord, userIds){
-  
   const isNewArray = conversationRecord.isNew;
   // users who are part of the chat that have at least one unread message
   const isNewArrayExistingUsers = isNewArray.filter( u => userIds.includes(u.userId));
@@ -73,7 +72,7 @@ async function updateMessagesInConversationChatTable(message, conversationRecord
   const updateMessageAndNewParams = {
       TableName: process.env.conversationChatTableName,
       Key: {
-          chatId : chatId
+          chatId : conversationRecord.chatId
       },
       UpdateExpression: "SET #ms = list_append(#ms, :vals), #in = list_append(#in, :isNew)",
       ExpressionAttributeValues: {
