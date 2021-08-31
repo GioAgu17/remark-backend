@@ -36,10 +36,20 @@ async function createConnection(userId, connectionId){
       chatIds: [],
       createdAt: new Date().toISOString(),
     },
-    ReturnValues: 'ALL_NEW'
+    ReturnValues: 'NONE'
   };
-  const res = await dynamoDb.put(insertParams);
-  return res.Attributes;
+  await dynamoDb.put(insertParams);
+  const readParams = {
+    TableName: process.env.connectionChatTableName,
+    Key : {
+      userId: userId
+    }
+  };
+  const res = await dynamoDb.get(readParams);
+  if(!res.Item || (typeof res.Item === "undefined"))
+    throw new Error("Cannot read newly inserted connection record with userId " + userId);
+  else
+    return res.Item;
 }
 
 // updates the mapping
