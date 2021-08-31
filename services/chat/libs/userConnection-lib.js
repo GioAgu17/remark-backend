@@ -56,7 +56,7 @@ async function updateConnectionTable(userId, connectionId){
 
 async function updateConversationTable(newConnectionId, oldConnectionId, chatIds){
     for(let chatId of chatIds){
-        const conversationChatRecord = convTableHelper.readFromConvTable(process.env.conversationChatTableName, chatId);
+        const conversationChatRecord = await convTableHelper.readFromConvTable(process.env.conversationChatTableName, chatId);
         // removing old connection id and adding the new one
         const connections = conversationChatRecord.connections;
         arrayHelper.remove(connections, oldConnectionId);

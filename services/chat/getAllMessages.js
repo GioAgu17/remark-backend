@@ -34,7 +34,7 @@ export const main = handler(async (event, context) => {
   }else{
     const chatIds = connection.chatIds;
     for(let chatId of chatIds){
-      const conversationChatItem = convTableHelper.readFromConvTable(process.env.conversationChatTableName, chatId);
+      const conversationChatItem = await convTableHelper.readFromConvTable(process.env.conversationChatTableName, chatId);
       var message = {
         chatId : chatId,
         messages: conversationChatItem.messages,
