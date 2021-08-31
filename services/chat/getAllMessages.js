@@ -1,47 +1,32 @@
 import handler from "../../libs/handler-lib";
-import dynamoDb from "../../libs/dynamodb-lib";
 import * as chatSender from "../../libs/chatSender-lib";
 import * as connectionHelper from "./libs/userConnection-lib";
-import * as convTableHelper from "../../libs/convTableHelper-lib";
 
 export const main = handler(async (event, context) => {
   const payload = JSON.parse(event.body);
   if(!payload || !payload.userId)
     throw new Error("Can't proceed without userId");
   const connectionId = event.requestContext.connectionId;
-  await connectionHelper.handleUserConnection(payload.userId, connectionId);
-  const domainName = event.requestContext.domainName;
-  const stage = event.requestContext.stage;
-  if(!connectionId){
+  if(!connectionId || typeof connectionId === 'undefined'){
     throw new Error("Cannot proceed without connectionId");
   }
-  const readParams = {
-    TableName: process.env.connectionChatTableName,
-    IndexName: process.env.connectionIdIndex,
-    KeyConditionExpression: 'connectionId = :conn_id',
-    ExpressionAttributeValues: {
-      ':conn_id': connectionId,
-    }
-  };
-  const result = await dynamoDb.query(readParams);
-  if(!result.Items){
-    throw new Error("Didn't find any user with connectionId "+connectionId);
-  }
-  const connection = result.Items[0];
+  const connectionAndChats = await connectionHelper.handleUserConnection(payload.userId, connectionId);
+  const domainName = event.requestContext.domainName;
+  const stage = event.requestContext.stage;
+  const connection = connectionAndChats.connection;
   var allMessages = [];
   if(typeof connection.chatIds === 'undefined' || !connection.chatIds){
     console.log("No chats available for the connection: " + connectionId);
   }else{
-    const chatIds = connection.chatIds;
-    for(let chatId of chatIds){
-      const conversationChatItem = await convTableHelper.readFromConvTable(process.env.conversationChatTableName, chatId);
+    const chats = connectionAndChats.chats;
+    for(let chat of chats){
       var message = {
-        chatId : chatId,
-        messages: conversationChatItem.messages,
-        members : conversationChatItem.members,
-        isNew: conversationChatItem.isNew,
-        collaborationStatus : conversationChatItem.collaborationStatus,
-        offerDetails: (typeof conversationChatItem.offerDetails === 'undefined') ? {} : conversationChatItem.offerDetails
+        chatId : chat.chatId,
+        messages: chat.messages,
+        members : chat.members,
+        isNew: chat.isNew,
+        collaborationStatus : chat.collaborationStatus,
+        offerDetails: (typeof chat.offerDetails === 'undefined') ? {} : chat.offerDetails
       };
       allMessages = allMessages.concat(message);
     }
