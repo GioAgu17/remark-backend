@@ -38,17 +38,10 @@ export async function newChat(userIds, businessId, members, offerDetails, offerI
   // write to all participants in the chat
   await chatSender.sendAll(connectionIds, messageToSend, domainName, stage);
   // insert new record inside conversationChatTable
-  var userIdsNotRead = [];
+  var isNewArray = [];
   for(let connId of connectionIds){
     const obj = {};
     obj.userId = connectionsAndUsers.get(connId);
-    obj.unread = 1;
-    userIdsNotRead.push(obj);
-  }
-  var isNewArray = [];
-  for(let userId of userIdsNotRead){
-    const obj = {};
-    obj.userId = userId;
     obj.unread = 1;
     isNewArray.push(obj);
   }

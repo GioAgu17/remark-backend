@@ -62,7 +62,7 @@ async function updateMessagesInConversationChatTable(message, conversationRecord
   // users who are part of the chat that don't have unread messages
   const isNewArrayNewUsersIds = userIds.filter(clId => !isNewArrayExistingUsersIds.includes(clId));
   const isNewArrayNewUsers = isNewArrayNewUsersIds.map(id => ({userId : id, unread : 1}));
-
+  
   // update the record with the new users and the message being sent with this API call
   const messageToSave = {
     text: message.text,
