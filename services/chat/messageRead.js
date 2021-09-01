@@ -1,6 +1,6 @@
 import handler from "../../libs/handler-lib";
 import dynamoDb from "../../libs/dynamodb-lib";
-import convTableHelper from "../../libs/convTableHelper-lib";
+import * as convTableHelper from "../../libs/convTableHelper-lib";
 
 export const main = handler(async (event, context) => {
   const payload = JSON.parse(event.body);
@@ -8,7 +8,7 @@ export const main = handler(async (event, context) => {
     throw new Error("Cannot proceed without userId");
   if(!payload.chatId)
     throw new Error("Cannot proceed without chatId");
-  const conversationRecord = convTableHelper.readFromConvTable(process.env.conversationChatTableName, payload.chatId);
+  const conversationRecord = await convTableHelper.readFromConvTable(process.env.conversationChatTableName, payload.chatId);
   const isNew = conversationRecord.isNew;
   var index = isNew.map(e => e.userId).indexOf(payload.userId);
   if(index != -1){
