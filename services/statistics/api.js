@@ -113,6 +113,8 @@ async function getProfileData(username){
  * this checks if the given username is existing in Instagram
  */
 export const checkUsername = handler(async (event, context) => {
+    if(event.queryStringParameters && event.queryStringParameters.email)
+        console.log(event.queryStringParameters.email);
     // Not using the unofficial endpoit nor the global fetch args
     return await fetch( buildUrl(event.pathParameters.id, false) )
         .then( res => res.status ).then( status => {
