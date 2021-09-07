@@ -7,7 +7,7 @@ export const main = handler(async (event, context) => {
     throw new Error("Cannot proceed without payload to show collaborations");
   if(!data.userId || data.userId === "undefined")
     throw new Error("Cannot proceed without information on userId to show collaborations");
-  if(!data.visiblity || data.visibility === "undefined" || data.visiblity != "private"){
+  if(!data.visibility || data.visibility === "undefined" || data.visibility != "private"){
     const queryParams = {
       TableName: process.env.collaborationTableName,
       KeyConditionExpression: '#id = :id',
