@@ -204,13 +204,19 @@ export const hasBeenTagged = handler(async (event, context) => {
         }
         if(tag){
             const images = [];
-            const multipleImages = node.edge_sidecar_to_children.edges;
-            if(!multipleImages || typeof multipleImages === "undefined" || ! Object.keys(taggedUsers).length){
+            const edgeSidecarToChildren = node.edge_sidecar_to_children;
+            if(!edgeSidecarToChildren || typeof edgeSidecarToChildren === "undefined"){
                 images.push(node.display_url);
             }else{
-                for(let key of multipleImages){
-                    images.push(key.node.display_url);
+                const edges = edgeSidecarToChildren.edges;
+                if(Array.isArray(edges)){
+                    for(let key of multipleImages){
+                        images.push(key.node.display_url);
+                    }
+                }else{
+                    console.log("Edges in edge sidecar to children are not an array");
                 }
+                
             }
             const likes = node.edge_liked_by;
             const comments = node.edge_media_to_comment;
