@@ -15,6 +15,7 @@ const agents = [
 
 async function storeProfilePic(image_url){
     let fileKey = uuidv4();
+    console.log(process.env.bucketName);
     // not using global fetch args as the profile pic url should be public
     const response = await fetch(image_url);
     if(response.ok){
