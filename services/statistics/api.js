@@ -179,7 +179,7 @@ export const hasBeenTagged = handler(async (event, context) => {
     if( typeof instagramData === 'undefined' || ! Object.keys(instagramData).length )
         throw new Error("No instagram data have been found for username " + data.accountIG);
     const usernamesToTag = data.tags;
-    const posts = data.graphql.user.edge_owner_to_timeline_media.edges;
+    const posts = instagramData.graphql.user.edge_owner_to_timeline_media.edges;
     var tag = false;
     var collabStats = {};
     const regexp = /#[\w]+(?=\s|$)/g;
