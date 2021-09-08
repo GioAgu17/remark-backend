@@ -31,7 +31,7 @@ export const main = handler(async (event, context) => {
     if(!collab.details)
         throw new Error("Collaboration does not have details!");
     const details = collab.details;
-    requestBody = {
+    const requestBody = {
         accountIG: data.accountIG,
         tags: data.tags
     };
