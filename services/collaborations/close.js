@@ -31,11 +31,13 @@ export const main = handler(async (event, context) => {
     if(!collab.details)
         throw new Error("Collaboration does not have details!");
     const details = collab.details;
-    const requestBody = {
-        accountIG: data.accountIG,
-        tags: data.tags
+    const requestBody = { 'body' : {
+            accountIG: data.accountIG,
+            tags: data.tags
+        }
     };
-    const collabStats = await stats.getCollabStats(requestBody);
+    const collabStats = await stats.collabStatistics(requestBody);
+    console.log(collabStats);
     details.images = collabStats.images;
     details.hashtags = collabStats.hashtags;
     details.comments = collabStats.comments;
@@ -94,14 +96,16 @@ export const main = handler(async (event, context) => {
         connIds.push(connection.connectionId);
         const chatIds = connection.chatIds;
         const index = chatIds.indexOf(chatId);
-        const updateParams = {
-            TableName: process.env.connectionChatTableName,
-            Key: {
-                userId : connection.userId
-            },
-            UpdateExpression: "REMOVE chatIds[" + index + "]"
-        };
-        await dynamoDb.update(updateParams);
+        if(index != -1){
+            const updateParams = {
+                TableName: process.env.connectionChatTableName,
+                Key: {
+                    userId : connection.userId
+                },
+                UpdateExpression: "REMOVE chatIds[" + index + "]"
+            };
+            await dynamoDb.update(updateParams);
+        }
     }
     //send delete message to frontend
     const delMessage = {

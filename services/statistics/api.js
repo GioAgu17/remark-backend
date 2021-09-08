@@ -220,7 +220,7 @@ export const hasBeenTagged = handler(async (event, context) => {
             }
             const likes = node.edge_liked_by;
             const comments = node.edge_media_to_comment;
-            var hashtags = "";
+            var hashtags = [];
             var caption = "";
             var captionEdges = node.edge_media_to_caption.edges;
             if(!captionEdges || typeof captionEdges === "undefined" || !Object.keys(captionEdges).length){
