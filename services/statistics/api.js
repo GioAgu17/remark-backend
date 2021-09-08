@@ -144,7 +144,7 @@ export const getProfilePic = handler(async (event, context) => {
  * - caption
  * - hashtags
  */
-export const getCollabStats = handler(async (event, context) => {
+export const collabStats = handler(async (event, context) => {
     const data = JSON.parse(event.body);
     if(!data.accountIG || typeof data.accountIG === "undefined")
         throw new Error("Cannot proceed without accountIG");

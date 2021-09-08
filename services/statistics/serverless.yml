@@ -53,7 +53,7 @@ functions:
           path: hasBeenTagged
           method: post
   collabStats:
-    handler: api.getCollabStats,
+    handler: api.collabStats,
     events:
       - http:
           path: collabStats
