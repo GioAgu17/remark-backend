@@ -135,6 +135,31 @@ export const getProfilePic = handler(async (event, context) => {
 
 
 /**
+ * request body has the username of the poster and the username
+ * of the tagged. Response can be true or false. Checks if in the 12 first published posts of
+ * the poster the tagged has been effectively tagged or not
+ */
+export const hasBeenTagged = handler(async (event, context) => {
+    const body = JSON.parse(event.body);
+    const data = await getProfileData(body.poster);
+    if( typeof data === 'undefined' || ! Object.keys(data).length )
+        return;
+    var found_flag = false;
+    const posts = data.graphql.user.edge_owner_to_timeline_media.edges;
+    Object.keys(posts).forEach(function(key) {
+        var post = posts[key];
+        var tagged_users = post.node.edge_media_to_tagged_user.edges;
+        if(typeof tagged_users !== 'undefined' && tagged_users.length)
+            Object.keys(tagged_users).forEach(function(key) {
+                var tagged_user = tagged_users[key].node.user;
+                if(tagged_user.username == body.tagged)
+                    found_flag = true;
+            });
+    });
+    return found_flag;
+});
+
+/**
  * return the statistics for a posted collaboration.
  * First checks if tag for remark is in the Instagram posts.
  * If yes, will take:
@@ -144,13 +169,13 @@ export const getProfilePic = handler(async (event, context) => {
  * - caption
  * - hashtags
  */
-export const collabStats = handler(async (event, context) => {
+ export const collabStatistics = handler(async (event, context) => {
     const data = JSON.parse(event.body);
     if(!data.accountIG || typeof data.accountIG === "undefined")
         throw new Error("Cannot proceed without accountIG");
     if(!data.tags || typeof data.tags === "undefined")
         throw new Error("Cannot proceed without tags requested");
-    const instagramData = await getProfileData(data.accountIG);
+    const instagramData = await api.getProfileData(data.accountIG);
     if( typeof instagramData === 'undefined' || ! Object.keys(instagramData).length )
         throw new Error("No instagram data have been found for username " + data.accountIG);
     const usernamesToTag = data.tags;
@@ -200,7 +225,7 @@ export const collabStats = handler(async (event, context) => {
             }
             const imageKeys = [];
             for(let image of images){
-                const imageKey = await storeProfilePic(image);
+                const imageKey = await api.storeProfilePic(image);
                 imageKeys.push(imageKey);
             }
             collabStats = {
@@ -251,29 +276,4 @@ export const userStatistics = handler(async (event, context) => {
         'website' : website
     };
     return statistics;
-});
-
-/**
- * request body has the username of the poster and the username
- * of the tagged. Response can be true or false. Checks if in the 12 first published posts of
- * the poster the tagged has been effectively tagged or not
- */
-export const hasBeenTagged = handler(async (event, context) => {
-    const body = JSON.parse(event.body);
-    const data = await getProfileData(body.poster);
-    if( typeof data === 'undefined' || ! Object.keys(data).length )
-        return;
-    var found_flag = false;
-    const posts = data.graphql.user.edge_owner_to_timeline_media.edges;
-    Object.keys(posts).forEach(function(key) {
-        var post = posts[key];
-        var tagged_users = post.node.edge_media_to_tagged_user.edges;
-        if(typeof tagged_users !== 'undefined' && tagged_users.length)
-            Object.keys(tagged_users).forEach(function(key) {
-                var tagged_user = tagged_users[key].node.user;
-                if(tagged_user.username == body.tagged)
-                    found_flag = true;
-            });
-    });
-    return found_flag;
 });
