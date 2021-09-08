@@ -210,13 +210,12 @@ export const hasBeenTagged = handler(async (event, context) => {
             }else{
                 const edges = edgeSidecarToChildren.edges;
                 if(Array.isArray(edges)){
-                    for(let key of multipleImages){
+                    for(let key of edges){
                         images.push(key.node.display_url);
                     }
                 }else{
                     console.log("Edges in edge sidecar to children are not an array");
                 }
-                
             }
             const likes = node.edge_liked_by;
             const comments = node.edge_media_to_comment;
