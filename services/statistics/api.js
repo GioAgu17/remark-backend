@@ -175,7 +175,7 @@ export const hasBeenTagged = handler(async (event, context) => {
         throw new Error("Cannot proceed without accountIG");
     if(!data.tags || typeof data.tags === "undefined")
         throw new Error("Cannot proceed without tags requested");
-    const instagramData = await api.getProfileData(data.accountIG);
+    const instagramData = await getProfileData(data.accountIG);
     if( typeof instagramData === 'undefined' || ! Object.keys(instagramData).length )
         throw new Error("No instagram data have been found for username " + data.accountIG);
     const usernamesToTag = data.tags;
@@ -225,7 +225,7 @@ export const hasBeenTagged = handler(async (event, context) => {
             }
             const imageKeys = [];
             for(let image of images){
-                const imageKey = await api.storeProfilePic(image);
+                const imageKey = await storeProfilePic(image);
                 imageKeys.push(imageKey);
             }
             collabStats = {
