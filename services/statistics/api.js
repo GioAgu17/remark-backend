@@ -171,7 +171,7 @@ export const hasBeenTagged = handler(async (event, context) => {
  * - hashtags
  */
  export const collabStatistics = handler(async (event, context) => {
-    const data = JSON.parse(event.body);
+    const data = event.body;
     if(!data.accountIG || typeof data.accountIG === "undefined")
         throw new Error("Cannot proceed without accountIG");
     if(!data.tags || typeof data.tags === "undefined")
