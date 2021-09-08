@@ -177,7 +177,8 @@ export const hasBeenTagged = handler(async (event, context) => {
     if(!data.tags || typeof data.tags === "undefined")
         throw new Error("Cannot proceed without tags requested");
     const instagramData = await getProfileData(data.accountIG);
-    if( typeof instagramData === 'undefined' || ! Object.keys(instagramData).length )
+    console.log(instagramData);
+    if( typeof instagramData === 'undefined' || !instagramData)
         throw new Error("No instagram data have been found for username " + data.accountIG);
     const usernamesToTag = data.tags;
     const posts = instagramData.graphql.user.edge_owner_to_timeline_media.edges;
