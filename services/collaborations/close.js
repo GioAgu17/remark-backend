@@ -2,6 +2,7 @@ import handler from "../../libs/handler-lib";
 import dynamoDb from "../../libs/dynamodb-lib";
 import * as chatSender from "../../libs/chatSender-lib";
 import * as consts from "./constants.js";
+import * as stats from "../statistics/api.js";
 export const main = handler(async (event, context) => {
     const stage = process.env.stage;
     const domainName = process.env.websocketApiId;
@@ -30,18 +31,17 @@ export const main = handler(async (event, context) => {
     if(!collab.details)
         throw new Error("Collaboration does not have details!");
     const details = collab.details;
-    var images = [];
-    images.push("collabPicTestResto.jpg");
-    images.push("collabPicTest.jpg");
-    var hashtags = [];
-    hashtags.push("sunset");
-    hashtags.push("together");
-    details.images = images;
-    details.hashtags = hashtags;
-    details.comments = 23;
-    details.likes = 1352;
-    details.impactScore = 78;
-    details.caption = "It was a great day here at @ostellobello! Thanks @remark for letting me discover this wonderful places!";
+    requestBody = {
+        accountIG: data.accountIG,
+        tags: data.tags
+    };
+    const collabStats = await stats.getCollabStats(requestBody);
+    details.images = collabStats.images;
+    details.hashtags = collabStats.hashtags;
+    details.comments = collabStats.comments;
+    details.likes = collabStats.likes;
+    details.impactScore = Math.random() * (95 - 77) + 77;
+    details.caption = collabStats.caption;
     const statusToUpdate = consts.statuses.POSTED;
     const updateParams = {
         TableName: process.env.collaborationTableName,

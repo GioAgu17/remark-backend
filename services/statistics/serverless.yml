@@ -52,6 +52,12 @@ functions:
       - http:
           path: hasBeenTagged
           method: post
+  collabStats:
+    handler: api.getCollabStats,
+    events:
+      - http:
+          path: collabStats
+          method: post
 resources:
   # API Gateway Errors
   - ${file(resources/api-gateway-errors.yml)}

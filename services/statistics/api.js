@@ -133,6 +133,89 @@ export const getProfilePic = handler(async (event, context) => {
     return res;
 });
 
+
+/**
+ * return the statistics for a posted collaboration.
+ * First checks if tag for remark is in the Instagram posts.
+ * If yes, will take:
+ * - number of likes
+ * - number of comments
+ * - images
+ * - caption
+ * - hashtags
+ */
+export const getCollabStats = handler(async (event, context) => {
+    const data = JSON.parse(event.body);
+    if(!data.accountIG || typeof data.accountIG === "undefined")
+        throw new Error("Cannot proceed without accountIG");
+    if(!data.tags || typeof data.tags === "undefined")
+        throw new Error("Cannot proceed without tags requested");
+    const instagramData = await getProfileData(data.accountIG);
+    if( typeof instagramData === 'undefined' || ! Object.keys(instagramData).length )
+        throw new Error("No instagram data have been found for username " + data.accountIG);
+    const usernamesToTag = data.tags;
+    const posts = data.graphql.user.edge_owner_to_timeline_media.edges;
+    var tag = false;
+    var collabStats = {};
+    const regexp = /#[\w]+(?=\s|$)/g;
+    for(let key of posts){
+        const node = key.node;
+        const taggedUsers = node.edge_media_to_tagged_user.edges;
+        if(!taggedUsers || typeof taggedUsers === "undefined" || ! Object.keys(taggedUsers).length){
+            console.log("No tagged users for this post ");
+        }else{
+            var usernamesTagged = [];
+            for(let taggedUser of taggedUsers){
+                const username = taggedUser.node.user.username;
+                usernamesTagged.push(username);
+            }
+            console.log(usernamesToTag);
+            console.log(usernamesTagged);
+            const usernamesLeftToTag = usernamesToTag.filter(u => !usernamesTagged.includes(u));
+            console.log(usernamesLeftToTag);
+            if(Array.isArray(usernamesLeftToTag) && usernamesLeftToTag.length === 0){
+                tag = true;
+            }
+        }
+        if(tag){
+            const images = [];
+            const multipleImages = node.edge_sidecar_to_children.edges;
+            if(!multipleImages || typeof multipleImages === "undefined" || ! Object.keys(taggedUsers).length){
+                images.push(node.display_url);
+            }else{
+                for(let key of multipleImages){
+                    images.push(key.node.display_url);
+                }
+            }
+            const likes = node.edge_liked_by;
+            const comments = node.edge_media_to_comment;
+            var hashtags = "";
+            var caption = "";
+            var captionEdges = node.edge_media_to_caption.edges;
+            if(!captionEdges || typeof captionEdges === "undefined" || !Object.keys(captionEdges).length){
+                console.log("No caption defined for this post");
+            }else{
+                caption = captionEdges[0].node.text;
+                hashtags = caption.match(regexp);
+            }
+            const imageKeys = [];
+            for(let image of images){
+                const imageKey = await storeProfilePic(image);
+                imageKeys.push(imageKey);
+            }
+            collabStats = {
+                'likes' : likes,
+                'comments' : comments,
+                'caption' : caption,
+                'hashtags' : hashtags,
+                'images' : imageKeys
+            };
+            break;
+        }
+    }
+    return collabStats;
+});
+
 /**
  * returns the statistics of a username, i.e. the following:
  *   - Number of followers
