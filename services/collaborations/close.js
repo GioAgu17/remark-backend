@@ -36,8 +36,8 @@ export const main = handler(async (event, context) => {
             tags: data.tags
         }
     };
-    const collabStats = await stats.collabStatistics(requestBody);
-    console.log(collabStats);
+    const collabStatsJS = await stats.collabStatistics(requestBody);
+    const collabStats = JSON.parse(collabStatsJS.body);
     details.images = collabStats.images;
     details.hashtags = collabStats.hashtags;
     details.comments = collabStats.comments;
@@ -90,7 +90,6 @@ export const main = handler(async (event, context) => {
     if(!res.Responses)
         throw new Error("Didn't find connection information for userIds " + userIds);
     const connections = res.Responses[process.env.connectionChatTableName];
-    console.log(connections);
     const connIds = [];
     for(let connection of connections){
         connIds.push(connection.connectionId);

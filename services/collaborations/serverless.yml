@@ -21,6 +21,7 @@ provider:
 
   environment:
     collaborationTableName: !ImportValue '${self:custom.sstApp}-ExtNewCollaborationTableName'
+    bucketName: !ImportValue '${self:custom.sstApp}-ExtAttachmentsBucketName'
     offersTableName: !ImportValue '${self:custom.sstApp}-ExtNewOffersTableName'
     collaborationTableIndex: ${env:COLLAB_TABLE_INDEX}
     exploreIndex: ${env:EXPLORE_INDEX}

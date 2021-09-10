@@ -15,7 +15,6 @@ const agents = [
 
 async function storeProfilePic(image_url){
     let fileKey = uuidv4();
-    console.log(process.env.bucketName);
     // not using global fetch args as the profile pic url should be public
     const response = await fetch(image_url);
     if(response.ok){
@@ -175,13 +174,11 @@ export const hasBeenTagged = handler(async (event, context) => {
     if(isJson(data)){
         data = JSON.parse(event.body);
     }
-    console.log(event.body);
     if(!data.accountIG || typeof data.accountIG === "undefined")
         throw new Error("Cannot proceed without accountIG");
     if(!data.tags || typeof data.tags === "undefined")
         throw new Error("Cannot proceed without tags requested");
     const instagramData = await getProfileData(data.accountIG);
-    console.log(instagramData);
     if( typeof instagramData === 'undefined' || !instagramData)
         throw new Error("No instagram data have been found for username " + data.accountIG);
     const usernamesToTag = data.tags;
@@ -200,10 +197,7 @@ export const hasBeenTagged = handler(async (event, context) => {
                 const username = taggedUser.node.user.username;
                 usernamesTagged.push(username);
             }
-            console.log(usernamesToTag);
-            console.log(usernamesTagged);
             const usernamesLeftToTag = usernamesToTag.filter(u => !usernamesTagged.includes(u));
-            console.log(usernamesLeftToTag);
             if(Array.isArray(usernamesLeftToTag) && usernamesLeftToTag.length === 0){
                 tag = true;
             }
