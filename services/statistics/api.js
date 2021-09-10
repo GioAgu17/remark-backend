@@ -171,7 +171,11 @@ export const hasBeenTagged = handler(async (event, context) => {
  * - hashtags
  */
  export const collabStatistics = handler(async (event, context) => {
-    const data = event.body;
+    var data = event.body;
+    if(isJson(data)){
+        data = JSON.parse(event.body);
+    }
+    console.log(event.body);
     if(!data.accountIG || typeof data.accountIG === "undefined")
         throw new Error("Cannot proceed without accountIG");
     if(!data.tags || typeof data.tags === "undefined")
@@ -247,6 +251,15 @@ export const hasBeenTagged = handler(async (event, context) => {
     }
     return collabStats;
 });
+
+function isJson(str) {
+    try {
+        JSON.parse(str);
+    } catch (e) {
+        return false;
+    }
+    return true;
+}
 
 /**
  * returns the statistics of a username, i.e. the following:
