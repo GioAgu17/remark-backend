@@ -34,31 +34,43 @@ export function rankOffers(offers, influencer){
         }else {
           maxFollowers = followersRange[1] *1;
         }
+        if(followers < (minFollowers * 0.8)){
+          continue;
+        }
         if(followers >= minFollowers && followers<=maxFollowers){
           item.rank+=process.env.followersWeight*1;
         }else if(followers > maxFollowers){
           item.rank+=process.env.followersWeight - 1;
-        }else if(followers >= (minFollowers*0.8)){
+        }else if(followers >= (minFollowers*0.9)){
           item.rank+=process.env.followersWeight - 2;
-        }else if(followers >= (minFollowers*0.7)){
+        }else if(followers >= (minFollowers*0.8)){
           item.rank+=process.env.followersWeight - 2.5;
         }
       }
       const ageRanges = offerDetails.ageRange;
-      if(!ageRanges && Array.isArray(ageRanges) && ageRanges.length != 0){
+      const ageVariance = process.env.ageVariance;
+      var canBeDropped = false;
+      if(typeof ageRanges !== "undefined" && Array.isArray(ageRanges) && ageRanges.length != 0 && !ageRanges.includes("N/A")){
+        canBeDropped = true;
         for(let ageRange of ageRanges){
           ageRange = ageRange.split("-");
           const minAge = ageRange[0] *1;
           const maxAge = ageRange[1] *1;
           if(age >= minAge && age <= maxAge){
             item.rank+=process.env.ageWeight*1;
+            canBeDropped = false;
+          }else if( (age < minAge && age + ageVariance >= minAge) || (age >= maxAge && age - ageVariance <= maxAge)){
+            item.rank+=process.env.ageWeight*0.75;
+            canBeDropped = false;
           }
         }
       }
+      if(canBeDropped)
+        continue;
     }
     offersToReturn.push(item);
-    console.log(offersToReturn);
   }
   offersToReturn.sort((a,b) => (a.rank < b.rank) ? 1 : -1);
+  console.log(offersToReturn);
   return offersToReturn;
 };

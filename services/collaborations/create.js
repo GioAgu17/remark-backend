@@ -6,7 +6,10 @@ import * as insertCollab from "./libs/insertCollab-lib";
 import * as readUsers from "./libs/readUsers-lib";
 import * as chatHelper from "./libs/chatHelper-lib";
 export const main = handler(async (event, context) => {
-  const data = JSON.parse(event.body);
+  var data = event.body;
+    if(isJson(data)){
+        data = JSON.parse(event.body);
+    }
   if(!data){
     throw new Error("Not getting data to create collaboration");
   }
@@ -77,3 +80,12 @@ export const main = handler(async (event, context) => {
   await deleteOffer.main(offer);
   return { status: true };
 });
+
+function isJson(str) {
+  try {
+      JSON.parse(str);
+  } catch (e) {
+      return false;
+  }
+  return true;
+}

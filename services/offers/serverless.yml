@@ -29,6 +29,7 @@ provider:
 
   environment:
     offersTableName: !ImportValue '${self:custom.sstApp}-ExtNewOffersTableName'
+    collaborationTableName: !ImportValue '${self:custom.sstApp}-ExtNewCollaborationTableName'
     offerTableIndex: ${env:OFFER_TABLE_INDEX}
     userTableName: !ImportValue '${self:custom.sstApp}-ExtUserTableName'
     hashKeyLength: ${env:HASHKEY_LENGTH}
@@ -37,8 +38,18 @@ provider:
     categoryWeight: ${env:CATEGORY_WEIGHT}
     followersWeight: ${env:FOLLOWERS_WEIGHT}
     ageWeight: ${env:AGE_WEIGHT}
-
+    ageVariance: ${env:AGE_VARIANCE}
+    websocketApiId: ${env:WEBSOCKET_APP_ID}
+    connectionChatTableName: !ImportValue '${self:custom.sstApp}-ExtConnectionChatTableName'
+    conversationChatTableName: !ImportValue '${self:custom.sstApp}-ExtConversationChatTableName'
+    stage: ${env:STAGE_ENV}
+    allowMacroInfluencersThreshold: ${env:ALLOW_MACRO_INFLU}
   iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - "execute-api:ManageConnections"
+      Resource:
+        - "arn:aws:execute-api:*:*:**/@connections/*"
     - Effect: Allow
       Action:
         - dynamodb:Scan
@@ -56,7 +67,10 @@ provider:
         - !ImportValue '${self:custom.sstApp}-ExtExpiredOffersTableArn'
         - !ImportValue '${self:custom.sstApp}-ExtNewOffersTableArn'
         - !ImportValue '${self:custom.sstApp}-ExtNewOffersTableArnIndex'
-
+        - !ImportValue '${self:custom.sstApp}-ExtNewCollaborationTableArn'
+        - !ImportValue '${self:custom.sstApp}-ExtNewCollaborationTableArnIndex'
+        - !ImportValue '${self:custom.sstApp}-ExtConnectionChatTableArn'
+        - !ImportValue '${self:custom.sstApp}-ExtConversationChatTableArn'
 
 functions:
   create:
