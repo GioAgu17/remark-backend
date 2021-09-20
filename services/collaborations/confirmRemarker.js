@@ -5,11 +5,11 @@ import * as chatSender from "../../libs/chatSender-lib";
 import * as convTableHelper from "../../libs/convTableHelper-lib";
 
 export const main = handler(async (event, context) => {
-  const body = JSON.parse(event.body);
-  const remarkerId = body.remarkerId;
+  const data = JSON.parse(event.body);
+  const remarkerId = data.remarkerId;
   if(!remarkerId)
     throw new Error("RemarkerId not present in request");
-  const offerId = body.offerId;
+  const offerId = data.offerId;
   if(!offerId)
     throw new Error("OfferId not present in request");
   const statusToUpdate = consts.statuses.POSTING;
@@ -41,8 +41,18 @@ export const main = handler(async (event, context) => {
   };
   await dynamoDb.update(updateCollabParams);
   // sending message to both businesses and remarker
+  var text = "";
+  if(typeof data.lang !== "undefined"){
+    if(data.lang === "EN")
+      text = consts.confirmMessage.EN;
+    else if(data.lang === "IT")
+      text = consts.confirmMessage.IT;
+    else
+      text = consts.confirmMessage.IT;
+  }else
+    text = consts.confirmMessage.IT;
   const messageToSave = {
-    text: "Il business ha appena confermato che il vostro incontro é andato a buon fine, ora manca solo la pubblicazione su Instagram!",
+    text: text,
     createdAt: new Date().toISOString(),
     senderId: "remark"
   };

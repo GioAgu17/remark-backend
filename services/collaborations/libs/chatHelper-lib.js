@@ -1,10 +1,16 @@
 import dynamoDb from "../../../libs/dynamodb-lib";
 import * as chatSender from "../../../libs/chatSender-lib";
 import * as consts from "./../constants.js";
-export async function newChat(userIds, businessId, members, offerDetails, offerId, chatId){
+export async function newChat(userIds, businessId, members, offerDetails, offerId, chatId, lang){
   const stage = process.env.stage;
   const domainName = process.env.websocketApiId;
-  const introMessage = "Welcome to the chat of the collaboration! Here you can discuss on everything you may want to ask, and especially schedule your meeting!";
+  var introMessage = "";
+  if(lang === "EN"){
+    introMessage = consts.firstMessageChat.EN;
+  }else if(lang === "IT"){
+    introMessage = consts.firstMessageChat.IT;
+  }else
+    introMessage = consts.firstMessageChat.IT;
   const messageToSend = {
     chatId: chatId,
     text: introMessage,
@@ -36,7 +42,12 @@ export async function newChat(userIds, businessId, members, offerDetails, offerI
   }
   const connectionIds = Array.from( connectionsAndUsers.keys());
   // write to all participants in the chat
-  await chatSender.sendAll(connectionIds, messageToSend, domainName, stage);
+  try{
+    await chatSender.sendAll(connectionIds, messageToSend, domainName, stage);
+  }catch(err){
+    console.log(err);
+    return false;
+  }
   // insert new record inside conversationChatTable
   var isNewArray = [];
   for(let connId of connectionIds){
@@ -62,6 +73,7 @@ export async function newChat(userIds, businessId, members, offerDetails, offerI
     }
   };
   await dynamoDb.put(insertParams);
+  return true;
 }
 async function updateConnectionChatTable(userId, chatId){
   const updateParams = {

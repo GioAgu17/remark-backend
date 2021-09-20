@@ -6,6 +6,7 @@ import * as insertCollab from "./libs/insertCollab-lib";
 import * as readUsers from "./libs/readUsers-lib";
 import * as chatHelper from "./libs/chatHelper-lib";
 export const main = handler(async (event, context) => {
+  var newChatCreated = false;
   var data = event.body;
     if(isJson(data)){
         data = JSON.parse(event.body);
@@ -14,8 +15,9 @@ export const main = handler(async (event, context) => {
     throw new Error("Not getting data to create collaboration");
   }
   const rangeKey = data.rangeKey;
+  const lang = data.lang;
   if(!rangeKey){
-    throw new Error("Cannot proceed without rnage Key in offer");
+    throw new Error("Cannot proceed without range Key in offer");
   }
   const readParams = {
     TableName: process.env.offersTableName,
@@ -75,9 +77,10 @@ export const main = handler(async (event, context) => {
     members.push(businessMember);
     members.push(member);
     await insertCollab.main(offerDetails, businessId, offerId, user.userId, user.userDetails.username, user.userDetails.profileImage, chatId);
-    await chatHelper.newChat([user.userId], businessId, members, offerDetails, offerId, chatId);
+    newChatCreated = await chatHelper.newChat([user.userId], businessId, members, offerDetails, offerId, chatId, lang);
   }
-  await deleteOffer.main(offer);
+  if(newChatCreated)
+    await deleteOffer.main(offer);
   return { status: true };
 });
 
