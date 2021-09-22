@@ -217,8 +217,8 @@ export const hasBeenTagged = handler(async (event, context) => {
                     console.log("Edges in edge sidecar to children are not an array");
                 }
             }
-            const likes = node.edge_liked_by;
-            const comments = node.edge_media_to_comment;
+            const likes = node.edge_liked_by.count;
+            const comments = node.edge_media_to_comment.count;
             var hashtags = [];
             var caption = "";
             var captionEdges = node.edge_media_to_caption.edges;
@@ -227,6 +227,8 @@ export const hasBeenTagged = handler(async (event, context) => {
             }else{
                 caption = captionEdges[0].node.text;
                 hashtags = caption.match(regexp);
+                if(hashtags === "Null")
+                    hashtags = [];
             }
             const imageKeys = [];
             for(let image of images){

@@ -6,6 +6,7 @@ export function rankOffers(offers, influencer){
   }
   const followers = userDetails.followers;
   const age = userDetails.age;
+  const gender = userDetails.gender;
   const offersToReturn = [];
   for(let item of offers){
     const offerDetails = item.offerDetails;
@@ -24,6 +25,7 @@ export function rankOffers(offers, influencer){
     if(!offerDetails.noOfFollowersRange || offerDetails.noOfFollowersRange.length == 0){
       console.log("Offer " + item.rangeKey + " doesn't have number of followers");
     }else{
+      var canBeDropped = false;
       const noOfFollowersRange = offerDetails.noOfFollowersRange;
       if(typeof noOfFollowersRange === 'string' || noOfFollowersRange instanceof String){
         const followersRange = offerDetails.noOfFollowersRange.split("-");
@@ -35,7 +37,7 @@ export function rankOffers(offers, influencer){
           maxFollowers = followersRange[1] *1;
         }
         if(followers < (minFollowers * 0.8)){
-          continue;
+          canBeDropped = true;
         }
         if(followers >= minFollowers && followers<=maxFollowers){
           item.rank+=process.env.followersWeight*1;
@@ -49,7 +51,6 @@ export function rankOffers(offers, influencer){
       }
       const ageRanges = offerDetails.ageRange;
       const ageVariance = process.env.ageVariance;
-      var canBeDropped = false;
       if(typeof ageRanges !== "undefined" && Array.isArray(ageRanges) && ageRanges.length != 0 && !ageRanges.includes("N/A")){
         canBeDropped = true;
         for(let ageRange of ageRanges){
@@ -65,6 +66,9 @@ export function rankOffers(offers, influencer){
           }
         }
       }
+      const genderOffer = offerDetails.gender;
+      if(typeof gender !== "undefined" && typeof genderOffer !== "undefined" && gender !== genderOffer)
+        canBeDropped = true;
       if(canBeDropped)
         continue;
     }

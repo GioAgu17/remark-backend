@@ -4,6 +4,10 @@ import * as collabStats from "./libs/collabStats-lib";
 import dynamoDb from "../../libs/dynamodb-lib";
 import * as instaCollabs from "./libs/instaCollab-lib";
 export const main = handler(async (event, context) => {
+  if (event.source === 'serverless-plugin-warmup') {
+    console.log('WarmUp - Lambda is warm!');
+    return 'Lambda is warm!';
+  }
   const params = {
     TableName: process.env.userTableName,
     Key: {

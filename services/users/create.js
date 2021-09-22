@@ -7,10 +7,10 @@ export const main = handler(async (event, context) => {
     const userID = event.requestContext.identity.cognitoIdentityId;
     const fakEvt = { 'pathParameters' : {'id' : data.accountIG} };
     let profileImage =  await stats.getProfilePic(fakEvt);
+    console.log(data);
     const params = {
         TableName: process.env.userTableName,
         Item: {
-            // The attributes of the item to be created
             userId : userID,
             userType: data.userType,
             loginInfo : {
@@ -23,6 +23,7 @@ export const main = handler(async (event, context) => {
                 age : data.userType == 'influencer' ? data.age : null,
                 caption : data.caption,
                 influencerCategories : data.influencerCategories,
+                gender: data.gender,
                 savedOffers: []
             },
             createdAt: Date.now(),

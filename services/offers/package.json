@@ -17,7 +17,8 @@
     "serverless-aws-documentation": "^1.1.0",
     "serverless-bundle": "3.2.0",
     "serverless-dotenv-plugin": "^3.8.1",
-    "serverless-offline": "^6.8.0"
+    "serverless-offline": "^6.8.0",
+    "serverless-plugin-warmup": "^5.3.1"
   },
   "dependencies": {
     "ngeohash": "^0.6.3",
