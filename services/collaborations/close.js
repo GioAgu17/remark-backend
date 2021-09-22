@@ -39,9 +39,21 @@ export const main = handler(async (event, context) => {
     if(!collab.details)
         throw new Error("Collaboration does not have details!");
 
+    // get remarker accountIG if not passed manually
+    let accountIG = null;
+    if(!data.accountIG){
+        const params = {
+          TableName: process.env.userTableName,
+          Key: { "userId": influencerId }
+        };
+        const remarker = await dynamoDb.get(params);
+        accountIG = remarker.Item.userDetails.accountIG;
+    }else
+        accountIG = data.accountIG;
+
     const details = collab.details;
-    const accountIG = data.accountIG || details.remarkerUsername;
-    const tags = data.tags || [details.offerDetails.businessName, consts.remarkIGAccountName];
+    // const accountIG = data.accountIG || details.remarkerUsername;
+    const tags = data.tags || [details.offerDetails.igAccount, consts.remarkIGAccountName];
 
     const requestBody = { 'body' : {
             accountIG: accountIG,
