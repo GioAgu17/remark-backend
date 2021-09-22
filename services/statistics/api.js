@@ -160,9 +160,9 @@ export const hasBeenTagged = handler(async (event, context) => {
 });
 
 /**
- * return the statistics for a posted collaboration.
- * First checks if tag for remark is in the Instagram posts.
- * If yes, will take:
+ * Returns the statistics for a posted collaboration
+ * or false if post tags won't match with all tags passed.
+ * It will output:
  * - number of likes
  * - number of comments
  * - images
@@ -243,7 +243,7 @@ export const hasBeenTagged = handler(async (event, context) => {
             break;
         }
     }
-    return collabStats;
+    return Object.keys(collabStats).length !== 0 ? collabStats : false;
 });
 
 function isJson(str) {
