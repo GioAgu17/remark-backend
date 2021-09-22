@@ -56,4 +56,4 @@ functions:
     handler: closeCollabs.main
     events:
       #scheduled every day at 6 am
-      schedule: cron(0 6 * * ? *)
+      - schedule: cron(0 6 * * ? *)
