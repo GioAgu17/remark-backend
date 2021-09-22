@@ -18,6 +18,7 @@ provider:
     offerTableIndex: ${env:OFFER_TABLE_INDEX}
     expiredOffersTable: !ImportValue '${self:custom.sstApp}-ExtExpiredOffersTableName'
     collaborationTableName: !ImportValue '${self:custom.sstApp}-ExtNewCollaborationTableName'
+    exploreIndex: ${env:EXPLORE_INDEX}
     bucketName: !ImportValue '${self:custom.sstApp}-ExtAttachmentsBucketName'
     connectionChatTableName: !ImportValue '${self:custom.sstApp}-ExtConnectionChatTableName'
     conversationChatTableName: !ImportValue '${self:custom.sstApp}-ExtConversationChatTableName'
