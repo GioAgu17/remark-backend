@@ -42,6 +42,8 @@ provider:
         - !ImportValue '${self:custom.sstApp}-ExtNewOffersTableArn'
         - !ImportValue '${self:custom.sstApp}-ExtNewOffersTableArnIndex'
         - !ImportValue '${self:custom.sstApp}-ExtAttachmentsBucketArn'
+        - !ImportValue '${self:custom.sstApp}-ExtNewCollaborationTableArn'
+        - !ImportValue '${self:custom.sstApp}-ExtNewCollaborationTableArnIndex'
 functions:
   moveOffers:
     handler: moveOffers.main
