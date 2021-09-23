@@ -3,6 +3,10 @@ import * as chatSender from "../../libs/chatSender-lib";
 import * as connectionHelper from "./libs/userConnection-lib";
 
 export const main = handler(async (event, context) => {
+  if (event.source === 'serverless-plugin-warmup') {
+    console.log('WarmUp - Lambda is warm!');
+    return 'Lambda is warm!';
+  }
   const payload = JSON.parse(event.body);
   if(!payload || !payload.userId)
     throw new Error("Can't proceed without userId");

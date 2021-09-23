@@ -6,6 +6,10 @@ import * as engine from "./libs/engine-lib";
    this part is to show the closest offers
 */
 export const main = handler(async (event, context) => {
+  if (event.source === 'serverless-plugin-warmup') {
+    console.log('WarmUp - Lambda is warm!');
+    return 'Lambda is warm!';
+  }
   // get the influencer for which we are going to show offers
   const influencerId = event.requestContext.identity.cognitoIdentityId;
   const params = {

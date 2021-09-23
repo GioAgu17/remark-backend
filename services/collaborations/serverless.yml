@@ -8,6 +8,7 @@ plugins:
   - serverless-bundle # Package our functions with Webpack
   - serverless-offline
   - serverless-dotenv-plugin # Load .env as environment variables
+  - serverless-plugin-warmup
 
 custom: ${file(../../serverless.common.yml):custom}
 
@@ -57,6 +58,10 @@ provider:
         - !ImportValue '${self:custom.sstApp}-ExtConnectionChatTableArn'
         - !ImportValue '${self:custom.sstApp}-ExtConversationChatTableArn'
         - !ImportValue '${self:custom.sstApp}-ExtUserTableArn'
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource: "*"
 functions:
   create:
     handler: create.main
@@ -83,6 +88,11 @@ functions:
           cors: true
           authorizer: aws_iam
   listForBusiness:
+    warmup:
+      testWarmer:
+        enabled:
+          - dev
+          - prod
     handler: listForBusiness.main
     events:
       - http:
@@ -91,6 +101,11 @@ functions:
           cors: true
           authorizer: aws_iam
   listForInfluencer:
+    warmup:
+      testWarmer:
+        enabled:
+          - dev
+          - prod
     handler: listForInfluencer.main
     events:
       - http:
@@ -99,6 +114,11 @@ functions:
           cors: true
           authorizer: aws_iam
   explore:
+    warmup:
+      testWarmer:
+        enabled:
+          - dev
+          - prod
     handler: explore.main
     events:
       - http:
