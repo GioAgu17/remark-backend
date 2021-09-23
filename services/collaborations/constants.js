@@ -11,3 +11,4 @@ export const confirmMessage = {
   EN: "Looks like the meeting went well! Now the only thing missing is the posting on Instagram!",
   IT: "Sembra che l’incontro sia andato a buon fine! Ora manca solo la pubblicazione su Instagram!"
 };
+export const remarkIGAccountName = "remarkapp";

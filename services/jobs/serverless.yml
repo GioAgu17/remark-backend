@@ -17,6 +17,11 @@ provider:
     offerTableName: !ImportValue '${self:custom.sstApp}-ExtNewOffersTableName'
     offerTableIndex: ${env:OFFER_TABLE_INDEX}
     expiredOffersTable: !ImportValue '${self:custom.sstApp}-ExtExpiredOffersTableName'
+    collaborationTableName: !ImportValue '${self:custom.sstApp}-ExtNewCollaborationTableName'
+    exploreIndex: ${env:EXPLORE_INDEX}
+    bucketName: !ImportValue '${self:custom.sstApp}-ExtAttachmentsBucketName'
+    connectionChatTableName: !ImportValue '${self:custom.sstApp}-ExtConnectionChatTableName'
+    conversationChatTableName: !ImportValue '${self:custom.sstApp}-ExtConversationChatTableName'
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -36,6 +41,7 @@ provider:
         - !ImportValue '${self:custom.sstApp}-ExtExpiredOffersTableArn'
         - !ImportValue '${self:custom.sstApp}-ExtNewOffersTableArn'
         - !ImportValue '${self:custom.sstApp}-ExtNewOffersTableArnIndex'
+        - !ImportValue '${self:custom.sstApp}-ExtAttachmentsBucketArn'
 functions:
   moveOffers:
     handler: moveOffers.main
@@ -47,3 +53,8 @@ functions:
     #events:
       #scheduled every day at 3 am
       #schedule: cron(0 3 * * ? *)
+  closeCollabs:
+    handler: closeCollabs.main
+    events:
+      #scheduled every day at 6 am
+      - schedule: cron(0 6 * * ? *)

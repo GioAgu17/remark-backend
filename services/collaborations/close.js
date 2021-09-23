@@ -3,6 +3,7 @@ import dynamoDb from "../../libs/dynamodb-lib";
 import * as chatSender from "../../libs/chatSender-lib";
 import * as consts from "./constants.js";
 import * as stats from "../statistics/api.js";
+
 export const main = handler(async (event, context) => {
     const stage = process.env.stage;
     const domainName = process.env.websocketApiId;
@@ -11,33 +12,63 @@ export const main = handler(async (event, context) => {
         throw new Error("Not getting data to close collaboration");
     }
     const businessId = data.businessId;
-    const influencerId = data.remarkerId;
+    const influencerId = data.remarkerId || data.influencerId;
     var userIds = [];
     userIds.push(businessId);
     userIds.push(influencerId);
     const offerId = data.offerId;
-    const readParams = {
-        TableName: process.env.collaborationTableName,
-        Key: {
-            influencerId: influencerId,
-            offerId: offerId
+    // console.log(influencerId);
+    let collab = null;
+    if(!data.details){
+        // we should reuse get.js
+        const readParams = {
+            TableName: process.env.collaborationTableName,
+            Key: {
+                influencerId: influencerId,
+                offerId: offerId
+            }
+        };
+        const result = await dynamoDb.get(readParams);
+        if(!result.Item){
+            throw new Error("No collaboration found for influencerId: " + influencerId + " and offerId: " + offerId);
         }
-    };
-    const result = await dynamoDb.get(readParams);
-    if(!result.Item){
-        throw new Error("No collaboration found for influencerId: " + influencerId + " and offerId: " + offerId);
-    }
-    const collab = result.Item;
+        collab = result.Item;
+    }else
+        collab = data;
+
     if(!collab.details)
         throw new Error("Collaboration does not have details!");
+
+    // get remarker accountIG if not passed manually
+    let accountIG = null;
+    if(!data.accountIG){
+        const params = {
+          TableName: process.env.userTableName,
+          Key: { "userId": influencerId }
+        };
+        const remarker = await dynamoDb.get(params);
+        accountIG = remarker.Item.userDetails.accountIG;
+    }else
+        accountIG = data.accountIG;
+
     const details = collab.details;
+    // const accountIG = data.accountIG || details.remarkerUsername;
+    const tags = data.tags || [details.offerDetails.igAccount, consts.remarkIGAccountName];
+
     const requestBody = { 'body' : {
-            accountIG: data.accountIG,
-            tags: data.tags
+            accountIG: accountIG,
+            tags: tags
         }
     };
     const collabStatsJS = await stats.collabStatistics(requestBody);
     const collabStats = JSON.parse(collabStatsJS.body);
+
+    // If there aren't matching tags to close the collaboration, return.
+    if(collabStats === false){
+        console.log('No match in account: '+ accountIG +' for tags: ['+ tags.toString() +']');
+        return false;
+    }
+
     details.images = collabStats.images;
     details.hashtags = collabStats.hashtags;
     details.comments = collabStats.comments;
