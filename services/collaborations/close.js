@@ -73,7 +73,7 @@ export const main = handler(async (event, context) => {
     details.hashtags = collabStats.hashtags;
     details.comments = collabStats.comments;
     details.likes = collabStats.likes;
-    details.impactScore = Math.random() * (95 - 77) + 77;
+    details.impactScore = Math.ceil(Math.random() * (95 - 77) + 77);
     details.caption = collabStats.caption;
     const statusToUpdate = consts.statuses.POSTED;
     const updateParams = {
