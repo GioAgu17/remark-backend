@@ -11,7 +11,7 @@ custom:
       enabled: false
       events:
         - schedule: rate(5 minutes)
-      concurrency: 10
+      concurrency: 3
       package:
         individually: true
       prewarm: true

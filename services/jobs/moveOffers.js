@@ -11,16 +11,17 @@ export const main = handler(async (event, context) => {
   }
   for(let user of users.Items){
     const userOffers = await findUserOffers.findUserOffers(user);
-    if(!userOffers.Items || userOffers.Items.length == 0){
+    if(!userOffers.Items || typeof userOffers === "undefined" || userOffers.Items.length === 0){
       console.log("Offers not found for user " + user.userId);
     }else{
       const userExpiredOffers = filterOffers.filterExpiredOffers(userOffers.Items);
-      if(userExpiredOffers == undefined || userExpiredOffers.length == 0){
+      if(typeof userExpiredOffers === "undefined"){
         console.log("No expired offers found for user id " + user.userId);
       }else{
         console.log(userExpiredOffers);
-        await insertExpOffers.insertExpiredOffers(userExpiredOffers);
-        await deleteOffers.deleteExpiredOffers(userExpiredOffers);
+        const inserted = await insertExpOffers.insertExpiredOffers(userExpiredOffers);
+        if(inserted)
+          await deleteOffers.deleteExpiredOffers(userExpiredOffers);
       }
     }
   }

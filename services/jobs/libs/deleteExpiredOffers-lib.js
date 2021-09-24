@@ -1,20 +1,15 @@
 import dynamoDb from "../../../libs/dynamodb-lib";
 const {offerTableName} = process.env;
-export function deleteExpiredOffers(expiredOffers){
-  let deleteItems = [];
-  expiredOffers.forEach( item =>
-    deleteItems.push({
-      DeleteRequest: {
+export async function deleteExpiredOffers(expiredOffers){
+  for(let offer of expiredOffers){
+    const deleteParams = {
+      TableName: offerTableName,
       Key: {
-        'hashKey' : item.hashKey,
-        'rangeKey' : item.rangeKey
+        hashKey: offer.hashKey,
+        rangeKey: offer.rangeKey
       }
-    }
-    })
-  );
-  let deleteParams = {
-    RequestItems: {},
-  };
-  deleteParams.RequestItems[offerTableName] = deleteItems;
-  return dynamoDb.batchWrite(deleteParams);
+    };
+    await dynamoDb.delete(deleteParams);
+    console.log("Deleted offer with rangeKey: " + offer.rangeKey);
+  }
 }

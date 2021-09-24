@@ -1,23 +1,21 @@
 import dynamoDb from "../../../libs/dynamodb-lib";
 const {expiredOffersTable} = process.env;
-export function insertExpiredOffers(expiredOffers){
-  let putItems = [];
-  expiredOffers.forEach( item =>
-    putItems.push({
-      PutRequest: {
-      Item: {
-        businessId: item.businessId ,
-        offerId: item.offerId,
-        offerDetails: item.offerDetails,
-        createdAt: Date.now()
-      }
+export async function insertExpiredOffers(expiredOffers){
+  try{
+    for(let expiredOffer of expiredOffers){
+      const insertParams = {
+        TableName: expiredOffersTable,
+        Item: {
+          businessId: expiredOffer.businessId ,
+          offerId: expiredOffer.offerId,
+          offerDetails: expiredOffer.offerDetails,
+          createdAt: new Date().toISOString()
+        }
+      };
+      await dynamoDb.put(insertParams);
     }
-    })
-  );
-  let insertParams = {
-    RequestItems: {},
-  };
-  console.log(putItems);
-  insertParams.RequestItems[expiredOffersTable] = putItems;
-  return dynamoDb.batchWrite(insertParams);
+    return true;
+  }catch(err){
+    return false;
+  }
 }
