@@ -31,7 +31,9 @@ export const main = handler(async (event, context) => {
     throw new Error("Offer not found. Failed to create collaboration");
   }
   const offer = offerResult.Item;
-  const businessId = event.requestContext.identity.cognitoIdentityId;
+  var businessId = event.requestContext.identity.cognitoIdentityId;
+  if(typeof data.businessId !== "undefined")
+    businessId = data.businessId;
   if(!offer.offerId){
     throw new Error("Offer ID not present in offer with rangeKey: "+rangeKey);
   }

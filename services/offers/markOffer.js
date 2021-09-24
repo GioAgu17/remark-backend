@@ -52,7 +52,8 @@ export const main = handler(async (event, context) => {
     };
     await dynamoDb.update(updateParams);
     event.body = {
-        rangeKey: offer.rangeKey
+        rangeKey: offer.rangeKey,
+        businessId: offer.businessId 
     };
     return await createCollab.main(event);
   }else{
