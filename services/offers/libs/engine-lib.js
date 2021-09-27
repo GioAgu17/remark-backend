@@ -67,7 +67,7 @@ export function rankOffers(offers, influencer){
         }
       }
       const genderOffer = offerDetails.gender;
-      if(typeof gender !== "undefined" && typeof genderOffer !== "undefined" && genderOffer !== "any" && gender !== genderOffer)
+      if(typeof gender !== "undefined" && typeof genderOffer !== "undefined" && genderOffer !== "both" && gender !== genderOffer)
         canBeDropped = true;
       if(canBeDropped)
         continue;
