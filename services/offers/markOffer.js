@@ -55,7 +55,8 @@ export const main = handler(async (event, context) => {
         rangeKey: offer.rangeKey,
         businessId: offer.businessId
     };
-    return await createCollab.main(event);
+    await createCollab.main(event);
+    return { status: true };
   }else{
     const unselected = applications.unselected;
     const newObj = {
