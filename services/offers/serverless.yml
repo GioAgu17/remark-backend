@@ -17,7 +17,7 @@ provider:
   name: aws
   runtime: nodejs12.x
   stage: dev
-  region: us-east-2
+  region: eu-west-3
   apiGateway:
     shouldStartNameWithService: true
   # To load environment variables externally

@@ -5,17 +5,8 @@ custom:
   sstAppMapping:
     prod: prod
     dev: dev
-  sstApp: ${self:custom.sstAppMapping.${self:custom.stage}, self:custom.sstAppMapping.dev}-remark-ext-infra
-  warmup:
-    testWarmer:
-      enabled: false
-      events:
-        - schedule: rate(5 minutes)
-      concurrency: 3
-      package:
-        individually: true
-      prewarm: true
-      role: IamRoleLambdaExecution
+  sstApp: ${self:custom.sstAppMapping.${self:custom.stage}, self:custom.sstAppMapping.dev}-remark3-ext-infra
+
 lambdaPolicyXRay:
   Effect: Allow
   Action:

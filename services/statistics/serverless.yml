@@ -14,14 +14,10 @@ provider:
   name: aws
   runtime: nodejs12.x
   stage: dev
-  region: us-east-2
-  tracing:
-    apiGateway: true
-    lambda: true
-
-  environment:
-    bucketName: !ImportValue '${self:custom.sstApp}-ExtAttachmentsBucketName'
-    stage: ${self:custom.stage}
+  region: eu-west-3
+  
+environment:
+  bucketName: !ImportValue '${self:custom.sstApp}-ExtAttachmentsBucketName'
 
 iamRoleStatements:
   - Effect: Allow
