@@ -1,27 +1,32 @@
 {
-  "first": {
-    "min": 40,
-    "max": 220
-  },
-  "second": {
-    "min": 220,
-    "max": 320
-  },
-  "third": {
-    "min": 320,
-    "max": 400
-  },
-  "fourth": {
-    "min": 400,
-    "max": 500
-  },
-  "fifth": {
-    "min": 500,
-    "max": 930
-  },
-  "sixth": {
-    "min": 930,
-    "max": 1500
-  },
-  "seventh": 1500
+    "ranges" : [
+        {
+            "fmin" : 7000, "fmax" : 15000,
+            "vmin" : 40, "vmax" : 220
+        },
+        {
+            "fmin" : 15000, "fmax" : 45000,
+            "vmin" : 220, "vmax" : 320
+        },
+        {
+            "fmin" : 45000, "fmax" : 80000,
+            "vmin" : 320, "vmax" : 400
+        },
+        {
+            "fmin" : 80000, "fmax" : 150000,
+            "vmin" : 400, "vmax" : 500
+        },
+        {
+            "fmin" : 150000, "fmax" : 200000,
+            "vmin" : 500, "vmax" : 930
+        },
+        {
+            "fmin" : 200000, "fmax" : 300000,
+            "vmin" : 930, "vmax" : 1500
+        },
+        {
+            "fmin" : 300000,
+            "vmin" : 1500
+        }
+    ]
 }
