@@ -1,4 +1,4 @@
-# Remark API - New organization
+# Remark API
 
 Remark API is a Serverless monorepo project for exposing RESTful services to the frontend user of Remark. The project uses [Lerna](https://lerna.js.org) and [Yarn Workspaces](https://classic.yarnpkg.com/en/docs/workspaces/).
 
