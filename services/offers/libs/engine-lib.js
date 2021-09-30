@@ -67,8 +67,12 @@ export function rankOffers(offers, influencer){
         }
       }
       const genderOffer = offerDetails.gender;
-      if(typeof gender !== "undefined" && typeof genderOffer !== "undefined" && genderOffer !== "both" && gender !== genderOffer)
-        canBeDropped = true;
+      console.log("GENDER OF THE OFFER " +genderOffer);
+      console.log("GENDER OF THE REMARKER " +gender);
+      if(typeof genderOffer !== "undefined" && genderOffer !== "both" && (typeof gender === "undefined" || (gender !== "any" && genderOffer !== gender))){
+          canBeDropped = true;
+          console.log("Gender is filtering out this offer " + item.rangeKey);
+      }
       if(canBeDropped)
         continue;
     }
