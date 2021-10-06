@@ -2,7 +2,7 @@ import AWS from "aws-sdk";
 export async function sendAll(connections, message, domainName, stage){
   var failedConnectionIds = [];
   const endpoint = domainName + '/' + stage;
-  console.log("ENDPOINT: "+endpoint);
+  console.log("ENDPOINT FOR SENDING MESSAGES: "+endpoint);
   const agma = new AWS.ApiGatewayManagementApi({
     endpoint: endpoint
   });
