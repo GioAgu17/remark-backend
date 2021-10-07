@@ -1,5 +1,6 @@
 import handler from "../../libs/handler-lib";
 import dynamoDb from "../../libs/dynamodb-lib";
+import * as expiredOffers from "./expiredOffers.js";
 
 /*
   listing all the offers for a particular business
@@ -18,8 +19,15 @@ export const main = handler(async (event, context) => {
     }
   };
   const result = await dynamoDb.query(params);
-  if ( ! result.Items) {
+
+  let expiredoffers = await expiredOffers.main(event);
+  expiredoffers = JSON.parse(expiredoffers.body);
+
+  const retval = [...result.Items, ...expiredoffers];
+  
+  // I did fix the check on the empty result,
+  // but should we really throw an error rather then just return an empty set?
+  if (! retval.length)
     throw new Error("Item not found.");
-  }
-  return result.Items;
+  return retval;
 });
