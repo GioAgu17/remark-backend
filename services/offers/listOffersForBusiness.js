@@ -23,11 +23,5 @@ export const main = handler(async (event, context) => {
   let expiredoffers = await expiredOffers.main(event);
   expiredoffers = JSON.parse(expiredoffers.body);
 
-  const retval = [...result.Items, ...expiredoffers];
-
-  // I did fix the check on the empty result,
-  // but should we really throw an error rather then just return an empty set?
-  if (! retval.length)
-    throw new Error("Item not found.");
-  return retval;
+  return [...result.Items, ...expiredoffers];
 });
