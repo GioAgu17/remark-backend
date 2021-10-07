@@ -5,10 +5,10 @@ import * as expiredOffers from "./expiredOffers.js";
 
 export const main = handler(async (event, context) => {
   const data = JSON.parse(event.body);
-
-  if(!data.expiryDate){
+  if(!data.expiryDate)
     throw new Error("Cannot proceed without expiryDate");
-  }
+  if(!data.offerId)
+    throw new Error("Cannot proceed without offerId");
 
   let expiredoffers = await expiredOffers.main(event);
   expiredoffers = JSON.parse(expiredoffers.body);

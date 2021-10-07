@@ -1,8 +1,8 @@
 {
-    "body":"{\"expiryDate\":\"2021-10-14T11:51:58.605Z\"}",
+    "body":"{\"expiryDate\":\"2021-10-14T11:51:58.605Z\",\"offerId\":\"0c2b74b0-0b4b-11ec-890a-71d1995b1b0d\"}",
     "requestContext":{
         "identity":{
-            "cognitoIdentityId":"eu-west-3:fc8d0b43-381c-4fb8-a6c1-1131b3dc678d"
+            "cognitoIdentityId":"eu-west-3:d1f36c5a-d61f-4d6e-a8b8-18d53e46f4e8"
         }
     }
 }
