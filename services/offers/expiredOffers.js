@@ -1,21 +1,33 @@
 import handler from "../../libs/handler-lib";
 import dynamoDb from "../../libs/dynamodb-lib";
 
-
 export const main = handler(async (event, context) => {
-  const businessId = event.requestContext.identity.cognitoIdentityId;
-  const expiredOffersParams = {
-    TableName: process.env.expiredOffersTable,
-    KeyConditionExpression: 'businessId = :businessId',
-    ExpressionAttributeValues: {
-      ':businessId': businessId,
+
+    const data = JSON.parse(event.body);
+    const offerId = data.offerId;
+    const businessId = event.requestContext.identity.cognitoIdentityId;
+
+    let expiredOffersParams = { TableName: process.env.expiredOffersTable };
+
+    if(offerId){
+        expiredOffersParams.Key = {
+            'businessId': businessId,
+            'offerId' : offerId
+        };
+    }else{
+        expiredOffersParams.KeyConditionExpression = 'businessId = :businessId';
+        expiredOffersParams.ExpressionAttributeValues = {
+            ':businessId': businessId
+        };
     }
-  };
-  const result = await dynamoDb.query(expiredOffersParams);
-  if(!result.Items){
-    throw new Error("Expired offers not found");
-  }
-  const expiredOffers = result.Items;
-  console.log(expiredOffers);
-  return expiredOffers;
+    const result = offerId ?
+        await dynamoDb.get(expiredOffersParams) :
+        await dynamoDb.query(expiredOffersParams);
+
+    const expiredOffers = offerId ?
+        ( result.Item ? [result.Item] : [] ) :
+        result.Items;
+
+    console.log(expiredOffers);
+    return expiredOffers;
 });

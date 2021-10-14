@@ -1,5 +1,6 @@
 import handler from "../../libs/handler-lib";
 import dynamoDb from "../../libs/dynamodb-lib";
+import * as expiredOffers from "./expiredOffers.js";
 
 /*
   listing all the offers for a particular business
@@ -18,8 +19,9 @@ export const main = handler(async (event, context) => {
     }
   };
   const result = await dynamoDb.query(params);
-  if ( ! result.Items) {
-    throw new Error("Item not found.");
-  }
-  return result.Items;
+
+  let expiredoffers = await expiredOffers.main(event);
+  expiredoffers = JSON.parse(expiredoffers.body);
+
+  return [...result.Items, ...expiredoffers];
 });
