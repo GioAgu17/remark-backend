@@ -4,11 +4,13 @@ import dynamoDb from "../../libs/dynamodb-lib";
 export const main = handler(async (event, context) => {
 
     const data = JSON.parse(event.body);
-    const offerId = data.offerId;
     const businessId = event.requestContext.identity.cognitoIdentityId;
 
     let expiredOffersParams = { TableName: process.env.expiredOffersTable };
-
+    var offerId;
+    if(data && data.offerId){
+        offerId = data.offerId;
+    }
     if(offerId){
         expiredOffersParams.Key = {
             'businessId': businessId,

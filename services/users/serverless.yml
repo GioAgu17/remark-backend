@@ -73,7 +73,6 @@ functions:
     warmup:
       testWarmer:
         enabled:
-          - dev
           - prod
     handler: get.main
     events:

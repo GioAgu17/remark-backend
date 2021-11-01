@@ -21,7 +21,8 @@ export const main = handler(async (event, context) => {
   const result = await dynamoDb.query(params);
 
   let expiredoffers = await expiredOffers.main(event);
-  expiredoffers = JSON.parse(expiredoffers.body);
-
-  return [...result.Items, ...expiredoffers];
+  let expiredoffersArr = JSON.parse(expiredoffers.body);
+  expiredoffersArr = expiredoffersArr.map(expiredOffer => ({...expiredOffer,expired : true}));
+  result.Items = result.Items.map(offer => ({...offer, expired: false}));
+  return [...result.Items, ...expiredoffersArr];
 });
