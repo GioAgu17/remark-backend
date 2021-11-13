@@ -1,0 +1,8 @@
+{
+    "body":"{\"expiryDate\":\"2021-11-30T11:51:58.605Z\",\"offerId\":\"be01efe0-2124-11ec-9f09-0977abac8df2\", \"businessId\":\"eu-west-3:7f4dd49e-0398-4dfd-a0a3-b21072a630d2\"}",
+    "requestContext":{
+        "identity":{
+            "cognitoIdentityId":"eu-west-3:fc8d0b43-381c-4fb8-a6c1-1131b3dc678d"
+        }
+    }
+}

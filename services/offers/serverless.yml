@@ -237,6 +237,14 @@ functions:
           method: post
           cors: true
           authorizer: aws_iam
+  relaunchTest:
+    handler: relaunchTest.main
+    events:
+      - http:
+          path: relaunchTest
+          method: post
+          cors: true
+          authorizer: aws_iam
 # Create our resources with separate CloudFormation templates
 # Create our resources with separate CloudFormation templates
 resources:
